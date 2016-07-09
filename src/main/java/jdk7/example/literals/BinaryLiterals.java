@@ -1,4 +1,4 @@
-package example.literals;
+package jdk7.example.literals;
 
 /**
  * Binary Literals (二进制常量).
