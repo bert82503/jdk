@@ -1,5 +1,8 @@
 package jdk7.example.resources;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -35,6 +38,9 @@ import java.util.zip.ZipFile;
  */
 public class TryWithResources {
 
+    private static final Logger logger = LoggerFactory.getLogger(TryWithResources.class);
+
+
     // Java SE 7 and later, implements the interface java.lang.AutoCloseable
     // 强烈推荐使用！
     /**
@@ -44,7 +50,7 @@ public class TryWithResources {
      */
     public static String readFirstLineFromFile(String path)
             throws IOException {
-        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(path))) { // 区别点
             return br.readLine(); // the exception thrown
         }
     }
@@ -57,11 +63,10 @@ public class TryWithResources {
         try {
             return br.readLine();
         } finally { // the exception thrown
-            if (br != null) {
-                br.close();
-            }
+            br.close();
         }
     }
+
 
     // declare one or more resources in a try-with-resources statement
     // 声明多个资源
@@ -71,7 +76,7 @@ public class TryWithResources {
         Path outputFilePath = Paths.get(outputFileName);
 
         // Open zip file and create output file with try-with-resources statement
-        try (
+        try ( // 区别点
                 ZipFile zf = new ZipFile(zipFileName);
                 BufferedWriter writer = Files.newBufferedWriter(outputFilePath, charset)
         ) {
@@ -87,11 +92,12 @@ public class TryWithResources {
         }
     }
 
+
     // uses a try-with-resources statement to automatically close a java.sql.Statement object
     public static void viewTable(Connection conn) throws SQLException {
         String query = "select COF_NAME, SUP_ID, PRICE, SALES, TOTAL from COFFEES";
 
-        try (Statement stmt = conn.createStatement()) {
+        try (Statement stmt = conn.createStatement()) { // 区别点
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
                 String coffeeName = rs.getString("COF_NAME");
@@ -100,8 +106,7 @@ public class TryWithResources {
                 int sales = rs.getInt("SALES");
                 int total = rs.getInt("TOTAL");
 
-                System.out.println(coffeeName + ", " + supplierId + ", " + price
-                        + ", " + sales + ", " + total);
+                logger.info("{}, {}, {}, {}, {}", coffeeName, supplierId, price, sales, total);
             }
         }
     }

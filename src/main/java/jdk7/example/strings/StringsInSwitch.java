@@ -17,7 +17,7 @@ public class StringsInSwitch {
     public String getTypeOfDayWithSwitchStatement(String dayOfWeek) {
         String typeOfDay;
         switch (dayOfWeek) {
-            case "Monday":
+            case "Monday": // 区别点
                 typeOfDay = "Start of work week";
                 break;
             case "Tuesday":
