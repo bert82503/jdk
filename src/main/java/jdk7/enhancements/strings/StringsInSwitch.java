@@ -1,4 +1,4 @@
-package jdk7.example.strings;
+package jdk7.enhancements.strings;
 
 /**
  * Strings in switch Statements (switch 语句中的字符串).

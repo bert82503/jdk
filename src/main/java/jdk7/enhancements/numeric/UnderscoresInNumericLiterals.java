@@ -1,4 +1,4 @@
-package jdk7.example.numeric;
+package jdk7.enhancements.numeric;
 
 /**
  * Underscores in Numeric Literals (数值常量中的下划线).

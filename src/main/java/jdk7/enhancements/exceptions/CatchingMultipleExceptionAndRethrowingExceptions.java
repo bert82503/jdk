@@ -1,4 +1,4 @@
-package jdk7.example.exceptions;
+package jdk7.enhancements.exceptions;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

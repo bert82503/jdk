@@ -1,4 +1,4 @@
-package jdk7.example.resources;
+package jdk7.enhancements.resources;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

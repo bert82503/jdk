@@ -1,4 +1,4 @@
-package jdk7.example.generic;
+package jdk7.enhancements.generic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
