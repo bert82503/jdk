@@ -35,7 +35,7 @@ package java.util;
  *
  * @since JDK1.1
  */
-
+// 事件监听机制
 public class EventObject implements java.io.Serializable {
 
     private static final long serialVersionUID = 5516075349620653480L;

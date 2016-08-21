@@ -50,6 +50,7 @@ package java.util;
  *
  * @since 1.4
  */
+// 事件监听机制
 public abstract class EventListenerProxy<T extends EventListener>
         implements EventListener {
 
