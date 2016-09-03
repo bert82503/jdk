@@ -50,7 +50,7 @@ public class EventObject implements java.io.Serializable {
      * </p>
      * 事件源：事件最初发生的对象。(触发事件的源头)
      */
-    protected transient Object  source; // 在不需要序列化的属性前添加关键字transient
+    protected transient Object source; // transient：不需要序列化的属性
 
     /**
      * Constructs a prototypical Event.
