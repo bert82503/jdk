@@ -37,6 +37,7 @@ package java.lang;
  * @see     java.lang.Class
  * @since   JDK1.0
  */
+// 核心类 Object类是类层次结构的根
 public class Object {
 
     // 注册原生本地方法
