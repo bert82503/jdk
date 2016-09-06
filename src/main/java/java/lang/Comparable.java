@@ -32,7 +32,7 @@ import java.util.*;
  * ordering</i>, and the class's <tt>compareTo</tt> method is referred to as
  * its <i>natural comparison method</i>.<p>
  *
- * 本接口使每一个实现该接口的类型的对象都意识到总排名。
+ * 本接口对每一个实现该接口的类型的对象都进行整体排序。
  * 这个排序称之为类型的自然顺序，<tt>compareTo</tt> 方法称之为 <i>自然比较法</i>。
  * <p/>
  *
@@ -105,7 +105,7 @@ import java.util.*;
  * @see java.util.Comparator
  * @since 1.2
  */
-// 核心接口 可比较的类型
+// 核心接口 [排序] 可比较的类型（类型的自然顺序）
 public interface Comparable<T> {
     /**
      * Compares this object with the specified object for order.  Returns a
@@ -122,6 +122,8 @@ public interface Comparable<T> {
      * <p>The implementor must also ensure that the relation is transitive:
      * <tt>(x.compareTo(y)&gt;0 &amp;&amp; y.compareTo(z)&gt;0)</tt> implies
      * <tt>x.compareTo(z)&gt;0</tt>.
+     * <p/>
+     * 实现者还必须确保关系是可传递的：
      *
      * <p>Finally, the implementor must ensure that <tt>x.compareTo(y)==0</tt>
      * implies that <tt>sgn(x.compareTo(z)) == sgn(y.compareTo(z))</tt>, for
