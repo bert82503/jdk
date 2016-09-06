@@ -46,10 +46,13 @@ package java.lang;
  * @see     java.lang.Short
  * @since   JDK1.0
  */
+
 public abstract class Number implements java.io.Serializable {
     /**
      * Returns the value of the specified number as an <code>int</code>.
      * This may involve rounding or truncation.
+     * <p/>
+     * 返回指定数字的整型值。
      *
      * @return  the numeric value represented by this object after conversion
      *          to type <code>int</code>.
@@ -59,6 +62,8 @@ public abstract class Number implements java.io.Serializable {
     /**
      * Returns the value of the specified number as a <code>long</code>.
      * This may involve rounding or truncation.
+     * <p/>
+     * 返回指定数字的长整型值。
      *
      * @return  the numeric value represented by this object after conversion
      *          to type <code>long</code>.
@@ -92,7 +97,7 @@ public abstract class Number implements java.io.Serializable {
      * @since   JDK1.1
      */
     public byte byteValue() {
-        return (byte)intValue();
+        return (byte) intValue();
     }
 
     /**
@@ -104,7 +109,7 @@ public abstract class Number implements java.io.Serializable {
      * @since   JDK1.1
      */
     public short shortValue() {
-        return (short)intValue();
+        return (short) intValue();
     }
 
     /** use serialVersionUID from JDK 1.0.2 for interoperability */
