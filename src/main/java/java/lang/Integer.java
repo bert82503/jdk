@@ -28,7 +28,7 @@ package java.lang;
 /**
  * The {@code Integer} class wraps a value of the primitive type
  * {@code int} in an object. An object of type {@code Integer}
- * contains a single field whose type is {@code int} (包含 int 类型的单个字段).
+ * contains a single field whose type is {@code int}. (包含 int 类型的单个字段)
  * <p/>
  * {@code Integer} 类型将 int 基本类型的值包装到对象中。
  *
