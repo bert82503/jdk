@@ -28,7 +28,7 @@
  * programming language. The most important classes are {@code
  * Object}, which is the root of the class hierarchy, and {@code
  * Class}, instances of which represent classes at run time.
- * <p/>
+ * <p>
  * 提供 Java 编程语言设计的基础类。
  * 最重要的类是 {@link java.lang.Object}，其是类层次结构的根。
  * {@link java.lang.Class} 表示运行时的类实例。
@@ -44,14 +44,14 @@
  * as supporting such standard methods as equals and hashCode.  The
  * {@code Void} class is a non-instantiable class that holds a
  * reference to a {@code Class} object representing the type void.
- * <p/>
+ * <p>
  * 基本类型的包装类
  *
  * <p>The class {@code Math} provides commonly used mathematical
  * functions such as sine, cosine, and square root. The classes {@code
  * String}, {@code StringBuffer}, and {@code StringBuilder} similarly
  * provide commonly used operations on character strings.
- * <p/>
+ * <p>
  * {@link java.lang.String} 和 {@link java.lang.StringBuilder} 提供公共的字符串操作
  *
  * <p>Classes {@code ClassLoader}, {@code Process}, {@code
@@ -60,7 +60,7 @@
  * loading of classes, creation of external processes, host
  * environment inquiries such as the time of day, and enforcement of
  * security policies.
- * <p/>
+ * <p>
  * {@link java.lang.ClassLoader}、{@link java.lang.Runtime}、
  * {@link java.lang.SecurityManager}、{@link java.lang.System} 提供系统操作，
  * 管理类型的动态加载、主机环境调查、安全策略的执行。
@@ -68,7 +68,7 @@
  * <p>Class {@code Throwable} encompasses objects that may be thrown
  * by the {@code throw} statement. Subclasses of {@code Throwable}
  * represent errors and exceptions.
- * <p/>
+ * <p>
  * {@link java.lang.Throwable} 的子类表示错误和异常。
  *
  * <a name="charenc"></a>
@@ -79,7 +79,7 @@
  * for character encodings as well as the set of standard encodings
  * that must be supported by every implementation of the Java
  * platform.
- * <p/>
+ * <p>
  * {@link java.nio.charset.Charset} 类的规范描述字符编码的命名规范。
  *
  * @since JDK1.0

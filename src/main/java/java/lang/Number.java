@@ -30,7 +30,7 @@ package java.lang;
  * <code>BigDecimal</code>, <code>BigInteger</code>,
  * <code>Byte</code>, <code>Double</code>, <code>Float</code>,
  * <code>Integer</code>, <code>Long</code>, and <code>Short</code>.
- * <p/>
+ * <p>
  * 数字抽象类，所有数字类的超类。
  * <p>
  * Subclasses of <code>Number</code> must provide methods to convert
@@ -53,7 +53,7 @@ public abstract class Number implements java.io.Serializable {
     /**
      * Returns the value of the specified number as an <code>int</code>.
      * This may involve rounding or truncation.
-     * <p/>
+     * <p>
      * 返回指定数字的整型值。
      *
      * @return  the numeric value represented by this object after conversion
@@ -64,7 +64,7 @@ public abstract class Number implements java.io.Serializable {
     /**
      * Returns the value of the specified number as a <code>long</code>.
      * This may involve rounding or truncation.
-     * <p/>
+     * <p>
      * 返回指定数字的长整型值。
      *
      * @return  the numeric value represented by this object after conversion

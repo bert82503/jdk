@@ -34,7 +34,7 @@ import java.util.*;
  *
  * 本接口对每一个实现该接口的类型的对象都进行整体排序。
  * 这个排序称之为类型的自然顺序，<tt>compareTo</tt> 方法称之为 <i>自然比较法</i>。
- * <p/>
+ * <p>
  *
  * Lists (and arrays) of objects that implement this interface can be sorted
  * automatically by {@link Collections#sort(List) Collections.sort} (and
@@ -46,7 +46,7 @@ import java.util.*;
  * 实现该接口的列表和数组可以通过集合排序({@link Collections#sort(List) Collections.sort}) 和
  * 数组排序({@link Arrays#sort(Object[]) Arrays.sort}))自动排序。
  * 实现该接口的对象可以用作有序映射表的键或者有序集合中的元素，不需要指定一个比较器({@linkplain Comparator comparator})。
- * <p/>
+ * <p>
  *
  * The natural ordering for a class <tt>C</tt> is said to be <i>consistent
  * with equals</i> if and only if <tt>e1.compareTo(e2) == 0</tt> has
@@ -65,7 +65,7 @@ import java.util.*;
  * method.<p>
  *
  * 强烈建议(但不要求)，自然顺序与相等性保持一致。
- * <p/>
+ * <p>
  *
  * For example, if one adds two keys <tt>a</tt> and <tt>b</tt> such that
  * <tt>(!a.equals(b) && a.compareTo(b) == 0)</tt> to a sorted
@@ -111,7 +111,7 @@ public interface Comparable<T> {
      * Compares this object with the specified object for order.  Returns a
      * negative integer, zero, or a positive integer as this object is less
      * than, equal to, or greater than the specified object.
-     * <p/>
+     * <p>
      * 比较该对象与指定对象的顺序，返回一个负整数、零或正整数作为本对象小于、等于或大于指定的对象。
      *
      * <p>The implementor must ensure <tt>sgn(x.compareTo(y)) ==
@@ -122,7 +122,7 @@ public interface Comparable<T> {
      * <p>The implementor must also ensure that the relation is transitive:
      * <tt>(x.compareTo(y)&gt;0 &amp;&amp; y.compareTo(z)&gt;0)</tt> implies
      * <tt>x.compareTo(z)&gt;0</tt>.
-     * <p/>
+     * <p>
      * 实现者还必须确保关系是可传递的：
      *
      * <p>Finally, the implementor must ensure that <tt>x.compareTo(y)==0</tt>

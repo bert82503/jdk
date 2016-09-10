@@ -29,7 +29,7 @@ package java.lang;
  * Thrown to indicate that the application has attempted to convert
  * a string to one of the numeric types, but that the string does not
  * have the appropriate format.
- * <p/>
+ * <p>
  * 数字格式异常：该字符串不具有适当的数字类型格式。
  *
  * @author  unascribed
@@ -60,7 +60,7 @@ class NumberFormatException extends IllegalArgumentException {
     /**
      * Factory method for making a <code>NumberFormatException</code>
      * given the specified input which caused the error.
-     * <p/>
+     * <p>
      * 静态工厂方法
      *
      * @param   s   the input causing the error

@@ -38,7 +38,7 @@ package java.util;
  * 比较函数，对某些对象集合进行整体排序。
  * 比较器也可以用于控制特定数据结构的顺序(如 有序集合或有序映射表)，
  * 或者提供未含有自然排序的对象集合的顺序。
- * <p/>
+ * <p>
  *
  * The ordering imposed by a comparator <tt>c</tt> on a set of elements
  * <tt>S</tt> is said to be <i>consistent with equals</i> if and only if
@@ -72,7 +72,7 @@ package java.util;
  *
  * 注意：比较器实现可序列化对象接口，这通常是一个好主意！
  * 它们也可以用于序列化数据结构的排序方法(像 树集合、树映射表)。
- * <p/>
+ * <p>
  *
  * For the mathematically inclined, the <i>relation</i> that defines the
  * <i>imposed ordering</i> that a given comparator <tt>c</tt> imposes on a
@@ -116,7 +116,7 @@ public interface Comparator<T> {
      *
      * 比较其两个参数的顺序。
      * 当第一个参数小于、等于或大于第二个参数时，返回一个负整数、零或正整数。
-     * <p/>
+     * <p>
      *
      * In the foregoing description, the notation
      * <tt>sgn(</tt><i>expression</i><tt>)</tt> designates the mathematical
