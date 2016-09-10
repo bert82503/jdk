@@ -35,7 +35,7 @@ import java.net.URL;
 /**
  * A simple service-provider loading facility.
  *
- * <p/>
+ * <p>
  * 一个简单的"服务-提供者"加载设施。
  *
  * <p> A <i>service</i> is a well-known set of interfaces and (usually
@@ -47,7 +47,7 @@ import java.net.URL;
  * directories.  Providers can also be made available by adding them to the
  * application's class path or by some other platform-specific means.
  *
- * <p/>
+ * <p>
  * 服务是接口和抽象类的集合，服务提供者是服务的特定实现。
  * 提供者中的类实现了服务本身定义的接口和子类，服务提供者可以通过扩展目录的 jar 文件或
  * 应用类路径被安装。
@@ -66,7 +66,7 @@ import java.net.URL;
  * provider classes must have a zero-argument constructor so that they can be
  * instantiated during loading.
  *
- * <p/>
+ * <p>
  * 对于加载的目的，一个服务表示单个类型，即单个接口或抽象类。
  * (可以使用一个具体的类，但建议不要这样做。)
  * 给定服务的提供者包含一个或多个具体的类，扩展此服务类型的数据和代码。
@@ -85,7 +85,7 @@ import java.net.URL;
  * each line all characters following the first comment character are ignored.
  * The file must be encoded in UTF-8.
  *
- * <p/>
+ * <p>
  * 服务提供者是由在资源目录META-INF/services中放置提供者配置文件的标识。
  * 该文件的名称是服务类型的完全限定二进制名称，
  * 该文件包含一个具体的提供者类的完全限定二进制名称的列表，每行一个。
@@ -102,7 +102,7 @@ import java.net.URL;
  * note that this is not necessarily the class loader from which the file was
  * actually loaded.
  *
- * <p/>
+ * <p>
  * 重复的具体提供者类都会被忽略。
  *
  * <p> Providers are located and instantiated lazily, that is, on demand.  A
@@ -113,7 +113,7 @@ import java.net.URL;
  * providers, adding each one to the cache in turn.  The cache can be cleared
  * via the {@link #reload reload} method.
  *
- * <p/>
+ * <p>
  * 提供者在需要时被延迟地定位和实例化(延迟迭代器)。
  * 服务加载器维护一个到目前为止已加载实例化的提供者的缓存。
  * 迭代器方法({@link #iterator iterator})的每次调用返回一个迭代器，它首先会以实例化顺序生成缓存中的所有元素，
@@ -125,14 +125,14 @@ import java.net.URL;
  * the methods of the iterators which they return, from within a privileged
  * security context.
  *
- * <p/>
+ * <p>
  * 服务加载器始终在调用者的安全上下文中执行。
  * 受信任的系统代码通常应调用此类中的方法，从特权的安全范围内。
  *
  * <p> Instances of this class are not safe for use by multiple concurrent
  * threads.
  *
- * <p/>
+ * <p>
  * 本类的实例在多个并发线程中使用是不安全的。
  *
  * <p> Unless otherwise specified, passing a <tt>null</tt> argument to any
@@ -193,7 +193,7 @@ import java.net.URL;
  * remote network URLs then those URLs will be dereferenced in the process of
  * searching for provider-configuration files.
  *
- * <p/>
+ * <p>
  * 使用说明：类加载器的类路径包含的远程网络 URLs 会在提供者配置文件搜索过程处理中被取消
  *
  * <p> This activity is normal, although it may cause puzzling entries to be
@@ -210,7 +210,7 @@ import java.net.URL;
  * problem is to fix the misconfigured web server to return the correct
  * response code (HTTP 404) along with the HTML error page.
  *
- * <p/>
+ * <p>
  * 当本类尝试将 HTML页面解析为提供者配置文件时，会抛出一个服务配置错误异常。
  *
  * @param  <S>
@@ -220,9 +220,7 @@ import java.net.URL;
  * @since 1.6
  */
 // [SPI机制] 服务加载器
-public final class ServiceLoader<S>
-        implements Iterable<S>
-{
+public final class ServiceLoader<S> implements Iterable<S> {
 
     /**
      * 服务资源目录(提供者配置文件)
@@ -266,11 +264,11 @@ public final class ServiceLoader<S>
      * <p> This method is intended for use in situations in which new providers
      * can be installed into a running Java virtual machine.
      *
-     * <p/>
+     * <p>
      * 清除该加载器的提供者缓存，以便所有提供者将被重新加载。
-     * <p/>
+     * <p>
      * 在调用此方法之后，随后迭代器方法的调用将从头开始延迟地查找并实例化提供者，就像是通过一个新创建的加载器。
-     * <p/>
+     * <p>
      * 本方法适用于这样场景：新的提供者可以安装到一个运行的Java虚拟机中(热部署机制)。
      */
     // 核心方法 清除该加载器的提供者缓存，重新加载所有提供者(热加载机制)
@@ -383,11 +381,8 @@ public final class ServiceLoader<S>
     }
 
     // Private inner class implementing fully-lazy provider lookup
-    // 私有内部类，实现完全延迟地提供者查找
-    private class LazyIterator
-            implements Iterator<S>
-    {
-
+    // 内部数据结构 私有内部类，实现完全延迟地提供者查找
+    private class LazyIterator implements Iterator<S> {
         /**
          * 服务类型
          */
@@ -483,7 +478,7 @@ public final class ServiceLoader<S>
     /**
      * Lazily loads the available providers of this loader's service.
      *
-     * <p/>
+     * <p>
      * 延迟地加载该服务的可用提供者。
      *
      * <p> The iterator returned by this method first yields all of the
@@ -491,7 +486,7 @@ public final class ServiceLoader<S>
      * loads and instantiates any remaining providers, adding each one to the
      * cache in turn.
      *
-     * <p/>
+     * <p>
      * 本方法返回的迭代器会首先产生提供者缓存中的所有元素，以实例化顺序。
      * 然后，才延迟地加载并实例化任何剩余的提供者，并依次添加他们到缓存中。
      *
@@ -562,7 +557,7 @@ public final class ServiceLoader<S>
      * Creates a new service loader for the given service type and class
      * loader.
      *
-     * <p/>
+     * <p>
      * 创建一个给定的服务类型和类加载器的服务加载器。
      *
      * @param  service
@@ -646,7 +641,7 @@ public final class ServiceLoader<S>
 
     /**
      * Returns a string describing this service.
-     * <p/>
+     * <p>
      * 返回描述此服务的字符串。
      *
      * @return  A descriptive string

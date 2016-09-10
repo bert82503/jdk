@@ -29,7 +29,7 @@ package java.lang;
  * The {@code Long} class wraps a value of the primitive type {@code
  * long} in an object. An object of type {@code Long} contains a
  * single field whose type is {@code long}. (包含 long 类型的单个字段)
- * <p/>
+ * <p>
  * {@code Long} 类型将 long 基本类型的值包装到对象中。
  *
  * <p> In addition, this class provides several methods for converting

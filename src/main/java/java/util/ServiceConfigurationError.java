@@ -29,7 +29,7 @@ package java.util;
 /**
  * Error thrown when something goes wrong while loading a service provider.
  *
- * <p/>
+ * <p>
  * 当加载服务提供者出现问题时，抛出的错误。
  *
  * <p> This error will be thrown in the following situations (在下列情况下将抛出此错误):
@@ -54,14 +54,11 @@ package java.util;
  *
  * </ul>
  *
- *
  * @author Mark Reinhold
  * @since 1.6
  */
 // [SPI机制] 服务配置错误
-public class ServiceConfigurationError
-    extends Error
-{
+public class ServiceConfigurationError extends Error {
 
     private static final long serialVersionUID = 74132770414881L;
 

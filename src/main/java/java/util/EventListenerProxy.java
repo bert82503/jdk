@@ -48,14 +48,14 @@ package java.util;
  * If the calling method is interested in retrieving the named property
  * then it would have to test the element to see if it is a proxy class.
  *
- * </p>
+ * <p>
  * 事件监听器类的一个抽象包装类，其将一组附加的参数与监听器关联。
  * 子类必须为附加的方法参数提供存储和访问器方法。
- * </p>
+ * <p>
  * 例如，支持命名属性的组件会有两个参数的方法签名，为一个属性添加属性更改监听器：
  * 如果组件实现了零参数的获取监听器列表的方法：
  * 然后，数组可能包含属性更改监听器代理对象在内的属性更改监听器列表。
- * </p>
+ * <p>
  * 如果调用方法有兴趣检索命名的属性，那就必须测试组件看看它是不是一个代理类。
  *
  * @since 1.4
@@ -71,7 +71,7 @@ public abstract class EventListenerProxy<T extends EventListener>
 
     /**
      * Creates a proxy for the specified listener.
-     * </p>
+     * <p>
      * 为指定的监听器创建一个代理。
      *
      * @param listener  the listener object (事件监听器对象)
@@ -82,7 +82,7 @@ public abstract class EventListenerProxy<T extends EventListener>
 
     /**
      * Returns the listener associated with the proxy.
-     * </p>
+     * <p>
      * 返回与代理关联的事件监听器。
      *
      * @return  the listener associated with the proxy (与代理关联的事件监听器)
