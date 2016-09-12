@@ -38,6 +38,8 @@ import java.util.Locale;
  * behaviors described in the
  * {@link LocaleServiceProvider LocaleServiceProvider}
  * specification.
+ * <p>
+ * 提供本地化的货币符号和显示名称。({@link Currency})
  *
  * @since        1.6
  */

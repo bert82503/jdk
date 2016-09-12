@@ -31,6 +31,8 @@ import java.util.Locale;
  * This is the super class of all the locale sensitive service provider
  * interfaces (SPIs).
  * <p>
+ * 这是所有语言环境敏感服务提供者接口(SPI)的超类。
+ * <p>
  * Locale sensitive service provider interfaces are interfaces that
  * correspond to locale sensitive classes in the <code>java.text</code>
  * and <code>java.util</code> packages. The interfaces enable the

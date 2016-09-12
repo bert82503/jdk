@@ -31,6 +31,8 @@ import java.util.Locale;
  * An abstract class for service providers that
  * provide localized names for the
  * {@link Locale Locale} class.
+ * <p>
+ * 提供本地化名称。({@link Locale})
  *
  * @since        1.6
  */

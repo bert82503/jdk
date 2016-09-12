@@ -35,6 +35,8 @@ import java.util.Locale;
  * this class are also the source for the
  * {@link java.text.DateFormatSymbols#getZoneStrings()
  * DateFormatSymbols.getZoneStrings()} method.
+ * <p>
+ * 提供本地化的时区名称。({@link java.util.TimeZone})
  *
  * @since        1.6
  */
