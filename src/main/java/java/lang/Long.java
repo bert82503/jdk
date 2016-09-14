@@ -559,7 +559,7 @@ public final class Long extends Number implements Comparable<Long> {
 
         static final Long cache[] = new Long[-(-128) + 127 + 1]; // 把频繁被请求的实例缓存起来
 
-        // 静态初始化
+        // 静态类初始化
         static {
             for(int i = 0; i < cache.length; i++) // 防止数组越界
                 cache[i] = new Long(i - 128); // 缓存长整型实例

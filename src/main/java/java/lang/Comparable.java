@@ -105,7 +105,7 @@ import java.util.*;
  * @see java.util.Comparator
  * @since 1.2
  */
-// 核心接口 [排序] 可比较的类型（类型的自然顺序）
+// 核心接口 [排序] 可比较的类型（对象的自然顺序）
 public interface Comparable<T> {
     /**
      * Compares this object with the specified object for order.  Returns a
