@@ -33,6 +33,11 @@ package java.io;
  * serializable.  The serialization interface has no methods or fields
  * and serves only to identify the semantics of being serializable. <p>
  *
+ * 启动类的可串行性通过实现 {@link Serializable} 接口。
+ * 未实现本接口的类不会有任何状态的序列化或反序列化。
+ * 所有可串行化类的子类都是可序列化的。
+ * 序列化接口没有任何方法或字段，并只识别被序列化的语义。(状态/行为<->字段/方法) <p>
+ *
  * To allow subtypes of non-serializable classes to be serialized, the
  * subtype may assume responsibility for saving and restoring the
  * state of the supertype's public, protected, and (if accessible)
@@ -42,11 +47,17 @@ package java.io;
  * Serializable if this is not the case.  The error will be detected at
  * runtime. <p>
  *
+ * 为了允许非序列化类的子类可以被序列化，子类负责保存和恢复公有的、保护的、包默认字段的状态。
+ * 如果子类继承拥有可访问的默认构造器的类来初始化类的状态，将在运行时检测到错误。 <p>
+ *
  * During deserialization, the fields of non-serializable classes will
  * be initialized using the public or protected no-arg constructor of
  * the class.  A no-arg constructor must be accessible to the subclass
  * that is serializable.  The fields of serializable subclasses will
  * be restored from the stream. <p>
+ *
+ * 在反序列化期间，非序列化类的字段将使用公有的或保护的默认构造器来初始化。
+ * 默认的构造器必须能被可序列化的子类访问到，该序列化子类的字段将从流中还原。<p>
  *
  * When traversing a graph, an object may be encountered that does not
  * support the Serializable interface. In this case the
@@ -57,11 +68,13 @@ package java.io;
  * deserialization process must implement special methods with these exact
  * signatures: <p>
  *
+ * 在序列化和反序列化过程中需要特殊处理的类必须实现下面这些精确签名的特殊方法：
+ *
  * <PRE>
  * private void writeObject(java.io.ObjectOutputStream out)
- *     throws IOException
+ *     throws IOException; (写入对象输出流)
  * private void readObject(java.io.ObjectInputStream in)
- *     throws IOException, ClassNotFoundException;
+ *     throws IOException, ClassNotFoundException; (读取对象输入流)
  * private void readObjectNoData()
  *     throws ObjectStreamException;
  * </PRE>
@@ -75,6 +88,8 @@ package java.io;
  * State is saved by writing the individual fields to the
  * ObjectOutputStream using the writeObject method or by using the
  * methods for primitive data types supported by DataOutput.
+ * <p>
+ * writeObject 方法负责写入对象的状态。
  *
  * <p>The readObject method is responsible for reading from the stream and
  * restoring the classes fields. It may call in.defaultReadObject to invoke
@@ -87,6 +102,8 @@ package java.io;
  * State is saved by writing the individual fields to the
  * ObjectOutputStream using the writeObject method or by using the
  * methods for primitive data types supported by DataOutput.
+ * <p>
+ * readObject 方法负责从流中读取并恢复类字段。
  *
  * <p>The readObjectNoData method is responsible for initializing the state of
  * the object for its particular class in the event that the serialization
@@ -101,7 +118,7 @@ package java.io;
  *
  * <p>Serializable classes that need to designate an alternative object to be
  * used when writing an object to the stream should implement this
- * special method with the exact signature: <p>
+ * special method with the exact signature: (向流中写入一个对象)<p>
  *
  * <PRE>
  * ANY-ACCESS-MODIFIER Object writeReplace() throws ObjectStreamException;
@@ -135,6 +152,8 @@ package java.io;
  * declaring a field named <code>"serialVersionUID"</code> that must be static,
  * final, and of type <code>long</code>:<p>
  *
+ * 序列化类版本号(serialVersionUID)用于在反序列化时，验证序列化对象的发送方和接收方是否与序列化是兼容的。
+ *
  * <PRE>
  * ANY-ACCESS-MODIFIER static final long serialVersionUID = 42L;
  * </PRE>
@@ -157,6 +176,17 @@ package java.io;
  * classes cannot declare an explicit serialVersionUID, so they always have
  * the default computed value, but the requirement for matching
  * serialVersionUID values is waived for array classes.
+ * <p>
+ * 如果序列化类未显示声明一个 serialVersionUID，则序列化运行时会基于类的各个方面计算一个默认的 serialVersionUID 值。
+ * （详见 Java 对象序列化规范）
+ * 但是，强烈推荐所有的序列化类型都显示地声明 serialVersionUID 值，
+ * 因为默认的 serialVersionUID 计算是高度敏感的类详细信息。
+ * 所以，为了保证在不同的 Java 编译器实现之间具有一致的 serialVersionUID 值，序列化类必须声明一个显示的 serialVersionUID。
+ * 还是强烈建议，显示的 serialVersionUID 声明使用 private static final long 修饰符，
+ * 因为这样的声明仅适用于立即声明类（serialVersionUID 字段不是继承的成员）。
+ *
+ * 数组类型不用声明一个显示的 serialVersionUID，所以他们总是有一些默认的计算值。
+ * 但是对于数组类型，匹配 serialVersionUID 值的要求是被放弃的。
  *
  * @author  unascribed
  * @see java.io.ObjectOutputStream
@@ -166,5 +196,6 @@ package java.io;
  * @see java.io.Externalizable
  * @since   JDK1.1
  */
+// 核心接口 [序列化与反序列化] 可串行化的类型
 public interface Serializable {
 }
