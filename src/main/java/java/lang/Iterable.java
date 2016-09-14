@@ -37,7 +37,7 @@ import java.util.Iterator;
  *
  * @since 1.5
  */
-// 核心接口 [遍历] 可迭代对象，允许对象为"foreach"语句的目标
+// 核心接口 [遍历] 可迭代的类型，允许对象为"foreach"语句的目标
 public interface Iterable<T> {
     /**
      * Returns an iterator over a set of elements of type T.

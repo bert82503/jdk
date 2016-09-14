@@ -606,7 +606,7 @@ public final class Integer extends Number implements Comparable<Integer> {
         static final int high;
         static final Integer cache[]; // 把频繁被请求的实例缓存起来
 
-        // 静态初始化
+        // 静态类初始化
         static {
             // high value may be configured by property
             int h = 127;
