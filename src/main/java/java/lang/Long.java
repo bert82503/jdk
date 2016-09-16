@@ -50,6 +50,7 @@ package java.lang;
  * @since   JDK1.0
  */
 // [包装类] 长整型：将long基本类型的值包装到对象中(不可变类)
+// final 修饰符来保证类不会被扩展
 public final class Long extends Number implements Comparable<Long> {
     /**
      * A constant holding the minimum value a {@code long} can
@@ -566,6 +567,7 @@ public final class Long extends Number implements Comparable<Long> {
         }
     }
 
+    // 工厂实例化
     // 基本类型转换为包装类
     /**
      * Returns a {@code Long} instance representing the specified
@@ -686,11 +688,12 @@ public final class Long extends Number implements Comparable<Long> {
     }
 
     /**
-     * The value of the {@code Long}.
-     * 长整型值
+     * The value of the {@code Long}. (长整型值)
      *
      * @serial
      */
+    // 使所有的域都成为私有的
+    // 使所有的域都是 final 的
     private final long value; // 初始化后就不能改变
 
     /**
@@ -1011,6 +1014,7 @@ public final class Long extends Number implements Comparable<Long> {
     // 核心方法 比较两个长整数值
     public static int compare(long x, long y) {
         return (x < y) ? -1 : ((x == y) ? 0 : 1);
+//        return x - y; // 相减防溢出
     }
 
 
@@ -1022,7 +1026,7 @@ public final class Long extends Number implements Comparable<Long> {
      *
      * @since 1.5
      */
-    public static final int SIZE = 64;
+    public static final int SIZE = 64; // 64位比特数
 
     /**
      * Returns a {@code long} value with at most a single one-bit, in the
