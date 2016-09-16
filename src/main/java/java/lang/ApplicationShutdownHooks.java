@@ -109,18 +109,18 @@ class ApplicationShutdownHooks {
     // 核心方法 循环访问所有应用程序的关闭挂钩
     static void runHooks() {
         Collection<Thread> threads; // 关闭挂钩线程集合
-        synchronized (ApplicationShutdownHooks.class) { // 类型监视器同步块
+        synchronized (ApplicationShutdownHooks.class) { // 类对象监视器同步语句
             threads = hooks.keySet();
             hooks = null; // 关闭程序启动后，就不可操作关闭挂钩
         }
 
         // 核心实现 启动并执行所有的关闭挂钩线程
         for (Thread hook : threads) {
-            hook.start(); // 触发此线程开始执行
+            hook.start(); // 启动此线程
         }
         for (Thread hook : threads) {
             try {
-                hook.join(); // 等待此线程销毁
+                hook.join(); // 导致当前线程暂停执行，直到hook线程终止
             } catch (InterruptedException x) {
                 // 忽略线程中断异常
             }

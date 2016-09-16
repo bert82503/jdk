@@ -97,7 +97,7 @@ class Shutdown {
      */
     // 核心方法 添加一个新的关闭挂钩
     static void add(int slot, boolean registerShutdownInProgress, Runnable hook) {
-        synchronized (lock) { // 锁对象监视器同步块
+        synchronized (lock) { // 锁对象监视器同步语句
             if (hooks[slot] != null)
                 throw new InternalError("Shutdown hook at slot " + slot + " already registered"); // 关闭钩槽已经注册过
 
@@ -199,7 +199,7 @@ class Shutdown {
     // 核心方法 退出虚拟机，被Runtime.exit方法调用，它会做所有的安全检查
     static void exit(int status) {
         boolean runMoreFinalizers = false;
-        synchronized (lock) { // 对象监视器同步块
+        synchronized (lock) { // 锁对象监视器同步语句
             if (status != 0) runFinalizersOnExit = false; // 非正常退出
             switch (state) {
             case RUNNING:       /* Initiate shutdown (启动关闭程序) */
@@ -224,7 +224,7 @@ class Shutdown {
             runAllFinalizers();
             halt(status);
         }
-        synchronized (Shutdown.class) { // 类对象监视器同步块，保证JVM内互斥
+        synchronized (Shutdown.class) { // 类对象监视器同步语句，保证JVM内互斥
             /* Synchronize on the class object, causing any other thread
              * that attempts to initiate shutdown to stall indefinitely
              * 在类对象上进行同步，造成任何其他线程尝试启动关闭程序都会无限期地拖延
@@ -252,7 +252,7 @@ class Shutdown {
                 break;
             }
         }
-        synchronized (Shutdown.class) { // 类对象监视器同步块，保证JVM内互斥
+        synchronized (Shutdown.class) { // 类对象监视器同步语句，保证JVM内互斥
             sequence(); // 执行关闭程序
         }
     }
