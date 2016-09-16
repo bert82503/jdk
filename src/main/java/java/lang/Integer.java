@@ -49,7 +49,7 @@ package java.lang;
  * @author  Joseph D. Darcy
  * @since JDK1.0
  */
-// [包装类] 整型：将int基本类型的值包装到对象中(不可变的类)
+// [包装类] 整型：将int基本类型的值包装到对象中(不可变类)
 public final class Integer extends Number implements Comparable<Integer> {
     /**
      * A constant holding the minimum value an {@code int} can

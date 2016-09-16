@@ -49,7 +49,7 @@ package java.lang;
  * @author  Joseph D. Darcy
  * @since   JDK1.0
  */
-// [包装类] 长整型：将long基本类型的值包装到对象中(不可变的类)
+// [包装类] 长整型：将long基本类型的值包装到对象中(不可变类)
 public final class Long extends Number implements Comparable<Long> {
     /**
      * A constant holding the minimum value a {@code long} can
