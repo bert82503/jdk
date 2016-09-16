@@ -68,7 +68,7 @@ import sun.reflect.annotation.AnnotationType;
  * @since   JDK1.0
  */
 // 核心类 系统类，包含一些有用的类的字段和方法
-public final class System { // 不可变类
+public final class System {
 
     /* register the natives via the static initializer.
      * 通过静态类初始化来注册原生本地方法。
@@ -242,7 +242,7 @@ public final class System { // 不可变类
      */
      public static Console console() {
          if (cons == null) {
-             synchronized (System.class) { // 类型监视器同步块
+             synchronized (System.class) { // 类对象监视器同步语句
                  cons = sun.misc.SharedSecrets.getJavaIOAccess().console();
              }
          }

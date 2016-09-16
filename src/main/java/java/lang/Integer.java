@@ -49,7 +49,8 @@ package java.lang;
  * @author  Joseph D. Darcy
  * @since JDK1.0
  */
-// [包装类] 整型：将int基本类型的值包装到对象中(不可变的类)
+// [包装类] 整型：将int基本类型的值包装到对象中(不可变类)
+// final 修饰符来保证类不会被扩展
 public final class Integer extends Number implements Comparable<Integer> {
     /**
      * A constant holding the minimum value an {@code int} can
@@ -630,6 +631,7 @@ public final class Integer extends Number implements Comparable<Integer> {
         private IntegerCache() {}
     }
 
+    // 工厂实例化
     // 基本类型转换为包装类
     /**
      * Returns an {@code Integer} instance representing the specified
@@ -656,11 +658,12 @@ public final class Integer extends Number implements Comparable<Integer> {
 
 
     /**
-     * The value of the {@code Integer}.
-     * 整型值
+     * The value of the {@code Integer}. (整型值)
      *
      * @serial
      */
+    // 使所有的域都成为私有的
+    // 使所有的域都是 final 的
     private final int value; // 初始化后就不能改变
 
     /**
@@ -788,6 +791,7 @@ public final class Integer extends Number implements Comparable<Integer> {
      *          {@code false} otherwise.
      */
     // 核心方法 整数值比较
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof Integer) { // 保护强制类型转换
             return value == ((Integer)obj).intValue();
@@ -1059,7 +1063,8 @@ public final class Integer extends Number implements Comparable<Integer> {
      */
     // 核心方法 比较两个整数值
     public static int compare(int x, int y) {
-        return (x < y) ? -1 : ((x == y) ? 0 : 1);
+//        return (x < y) ? -1 : ((x == y) ? 0 : 1);
+        return x - y; // 相减防溢出
     }
 
 
@@ -1071,7 +1076,7 @@ public final class Integer extends Number implements Comparable<Integer> {
      *
      * @since 1.5
      */
-    public static final int SIZE = 32;
+    public static final int SIZE = 32; // 32位比特数
 
     /**
      * Returns an {@code int} value with at most a single one-bit, in the
