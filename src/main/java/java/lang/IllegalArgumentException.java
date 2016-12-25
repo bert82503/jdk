@@ -1,42 +1,15 @@
-/*
- * Copyright (c) 1994, 2003, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
-
 package java.lang;
 
 /**
  * Thrown to indicate that a method has been passed an illegal or
  * inappropriate argument.
  * <p>
- * 非法参数异常：方法被传入了非法或不适当的参数。
+ * 非法参数异常：表示方法被传入了非法或不适当的参数。
  *
  * @author  unascribed
- * @see     java.lang.Thread#setPriority(int)
  * @since   JDK1.0
  */
-public
-class IllegalArgumentException extends RuntimeException {
+public class IllegalArgumentException extends RuntimeException {
     /**
      * Constructs an <code>IllegalArgumentException</code> with no
      * detail message.
@@ -55,6 +28,7 @@ class IllegalArgumentException extends RuntimeException {
         super(s);
     }
 
+    // JDK 1.5
     /**
      * Constructs a new exception with the specified detail message and
      * cause.

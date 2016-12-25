@@ -17,7 +17,7 @@ public class Object {
 
     // 注册本地方法
     private static native void registerNatives();
-    // 静态类初始化器
+    // 静态初始化块
     static {
         registerNatives();
     }
@@ -46,7 +46,7 @@ public class Object {
      * @jls 15.8.2 Class Literals (类字面常量)
      */
     // 核心方法 返回对象的运行时类
-    public final native Class<?> getClass();
+    public final native Class<?> getClass(); // ?：泛型通配符，表示未知类型
 
     // 等价性/散列映射
     /**
@@ -518,6 +518,7 @@ public class Object {
      * @see        java.lang.Object#notify()
      * @see        java.lang.Object#notifyAll()
      */
+    // 禁用 使当前线程无限等待
     public final void wait() throws InterruptedException {
         wait(0);
     }
