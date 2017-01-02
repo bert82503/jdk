@@ -9,7 +9,8 @@ package java.lang;
  * @author  unascribed
  * @since   JDK1.0
  */
-public class IllegalArgumentException extends RuntimeException {
+public
+class IllegalArgumentException extends RuntimeException {
     /**
      * Constructs an <code>IllegalArgumentException</code> with no
      * detail message.
