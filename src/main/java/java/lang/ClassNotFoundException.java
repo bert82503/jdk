@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1995, 2004, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
@@ -34,8 +10,15 @@ package java.lang;
  *     <code>ClassLoader</code> .
  * <li>The <code>loadClass</code> method in class <code>ClassLoader</code>.
  * </ul>
+ * 类未找到异常：表示当应用程序尝试通过其字符串名称加载类时抛出的异常，使用：
+ * <ul>
+ *     <li>{@link Class#forName(String)}</li>
+ *     <li>{@link ClassLoader#findSystemClass(String)}</li>
+ *     <li>{@link ClassLoader#loadClass(String, boolean)}</li>
+ * </ul>
  * <p>
  * but no definition for the class with the specified name could be found.
+ * (但没有找到指定名称的类型定义。)
  *
  * <p>As of release 1.4, this exception has been retrofitted to conform to
  * the general purpose exception-chaining mechanism.  The "optional exception
@@ -43,6 +26,7 @@ package java.lang;
  * construction time and accessed via the {@link #getException()} method is
  * now known as the <i>cause</i>, and may be accessed via the {@link
  * Throwable#getCause()} method, as well as the aforementioned "legacy method."
+ * <p>通用的异常链机制
  *
  * @author  unascribed
  * @see     java.lang.Class#forName(java.lang.String)
@@ -52,7 +36,7 @@ package java.lang;
  */
 public class ClassNotFoundException extends ReflectiveOperationException {
     /**
-     * use serialVersionUID from JDK 1.1.X for interoperability
+     * use serialVersionUID from JDK 1.1.X for interoperability (互操作性)
      */
      private static final long serialVersionUID = 9176873029745254542L;
 
@@ -60,6 +44,7 @@ public class ClassNotFoundException extends ReflectiveOperationException {
      * This field holds the exception ex if the
      * ClassNotFoundException(String s, Throwable ex) constructor was
      * used to instantiate the object
+     * (本字段持有异常实例)
      * @serial
      * @since 1.2
      */
@@ -119,7 +104,9 @@ public class ClassNotFoundException extends ReflectiveOperationException {
      * @return  the cause of this exception.
      * @since   1.4
      */
+    @Override
     public Throwable getCause() {
         return ex;
     }
+
 }

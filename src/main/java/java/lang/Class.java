@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1994, 2014, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
@@ -86,11 +62,15 @@ import sun.security.util.SecurityConstants;
  * {@code int}, {@code long}, {@code float}, and
  * {@code double}), and the keyword {@code void} are also
  * represented as {@code Class} objects.
+ * <p>表示运行应用中类型和接口的实例。
+ * 枚举是一种类型，注解是一种接口。
  *
  * <p> {@code Class} has no public constructor. Instead {@code Class}
  * objects are constructed automatically by the Java Virtual Machine as classes
  * are loaded and by calls to the {@code defineClass} method in the class
  * loader.
+ * <p>{@code Class}没有公共构造函数，但类对象由Java虚拟机在加载类和
+ * 调用类加载器中的{@code defineClass}方法时自动构建。
  *
  * <p> The following example uses a {@code Class} object to print the
  * class name of an object:
@@ -120,15 +100,18 @@ import sun.security.util.SecurityConstants;
  * @see     java.lang.ClassLoader#defineClass(byte[], int, int)
  * @since   JDK1.0
  */
+// 核心类 表示运行应用中类型和接口的实例
 public final class Class<T> implements java.io.Serializable,
                               GenericDeclaration,
                               Type,
                               AnnotatedElement {
-    private static final int ANNOTATION= 0x00002000;
-    private static final int ENUM      = 0x00004000;
+    private static final int ANNOTATION= 0x00002000; // 注解
+    private static final int ENUM      = 0x00004000; // 枚举
     private static final int SYNTHETIC = 0x00001000;
 
+    // 注册本地方法
     private static native void registerNatives();
+    // 静态初始化块
     static {
         registerNatives();
     }
@@ -137,6 +120,7 @@ public final class Class<T> implements java.io.Serializable,
      * Private constructor. Only the Java Virtual Machine creates Class objects.
      * This constructor is not used and prevents the default constructor being
      * generated.
+     * 私有构造函数，只有Java虚拟机创建类对象。
      */
     private Class(ClassLoader loader) {
         // Initialize final field for classLoader.  The initialization value of non-null
@@ -144,6 +128,7 @@ public final class Class<T> implements java.io.Serializable,
         classLoader = loader;
     }
 
+    // 字符串
     /**
      * Converts the object to a string. The string representation is the
      * string "class" or "interface", followed by a space, and then by the
@@ -152,9 +137,11 @@ public final class Class<T> implements java.io.Serializable,
      * primitive type, this method returns the name of the primitive type.  If
      * this {@code Class} object represents void this method returns
      * "void".
+     * <p>将对象转换为字符串。
      *
-     * @return a string representation of this class object.
+     * @return a string representation of this class object. (类对象的字符串表示)
      */
+    @Override
     public String toString() {
         return (isInterface() ? "interface " : (isPrimitive() ? "" : "class "))
             + getName();
@@ -163,6 +150,7 @@ public final class Class<T> implements java.io.Serializable,
     /**
      * Returns a string describing this {@code Class}, including
      * information about modifiers and type parameters.
+     * <p>返回描述类型的字符串，包括修饰符和类型参数的相关信息。
      *
      * The string is formatted as a list of type modifiers, if any,
      * followed by the kind of type (empty string for primitive types
@@ -186,41 +174,42 @@ public final class Class<T> implements java.io.Serializable,
      *
      * @since 1.8
      */
+    // 核心方法 返回描述类型的字符串
     public String toGenericString() {
-        if (isPrimitive()) {
+        if (isPrimitive()) { // 基本数据类型
             return toString();
         } else {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder(); // 多行字符串追加
 
             // Class modifiers are a superset of interface modifiers
             int modifiers = getModifiers() & Modifier.classModifiers();
             if (modifiers != 0) {
-                sb.append(Modifier.toString(modifiers));
+                sb.append(Modifier.toString(modifiers)); // 访问修饰符
                 sb.append(' ');
             }
 
-            if (isAnnotation()) {
+            if (isAnnotation()) { // 注解
                 sb.append('@');
             }
-            if (isInterface()) { // Note: all annotation types are interfaces
+            if (isInterface()) { // Note: all annotation types are interfaces (注意：所有注解类型都是接口)
                 sb.append("interface");
-            } else {
-                if (isEnum())
+            } else { // 类型
+                if (isEnum()) // 枚举
                     sb.append("enum");
                 else
                     sb.append("class");
             }
             sb.append(' ');
-            sb.append(getName());
+            sb.append(getName()); // 类名
 
-            TypeVariable<?>[] typeparms = getTypeParameters();
-            if (typeparms.length > 0) {
-                boolean first = true;
+            TypeVariable<?>[] typeParams = getTypeParameters(); // 泛型：类型参数
+            if (typeParams.length > 0) {
+                boolean first = true; // 第一个标记
                 sb.append('<');
-                for(TypeVariable<?> typeparm: typeparms) {
+                for (TypeVariable<?> typeParam : typeParams) {
                     if (!first)
                         sb.append(',');
-                    sb.append(typeparm.getTypeName());
+                    sb.append(typeParam.getTypeName()); // 类型名称
                     first = false;
                 }
                 sb.append('>');
@@ -230,6 +219,7 @@ public final class Class<T> implements java.io.Serializable,
         }
     }
 
+    // 类对象实例化
     /**
      * Returns the {@code Class} object associated with the class or
      * interface with the given string name.  Invoking this method is
@@ -241,6 +231,7 @@ public final class Class<T> implements java.io.Serializable,
      *
      * where {@code currentLoader} denotes the defining class loader of
      * the current class.
+     * <p>返回与给定字符串名称的类型或接口关联的类对象。
      *
      * <p> For example, the following code fragment returns the
      * runtime {@code Class} descriptor for the class named
@@ -253,21 +244,21 @@ public final class Class<T> implements java.io.Serializable,
      * A call to {@code forName("X")} causes the class named
      * {@code X} to be initialized.
      *
-     * @param      className   the fully qualified name of the desired class.
+     * @param      className   the fully qualified name of the desired class. (所需类的完全限定名称)
      * @return     the {@code Class} object for the class with the
      *             specified name.
      * @exception LinkageError if the linkage fails
      * @exception ExceptionInInitializerError if the initialization provoked
      *            by this method fails
-     * @exception ClassNotFoundException if the class cannot be located
+     * @exception ClassNotFoundException if the class cannot be located (如果类不能被定位)
      */
+    // 核心方法 返回与给定字符串名称的类型或接口关联的类对象
     @CallerSensitive
     public static Class<?> forName(String className)
-                throws ClassNotFoundException {
+            throws ClassNotFoundException {
         Class<?> caller = Reflection.getCallerClass();
         return forName0(className, true, ClassLoader.getClassLoader(caller), caller);
     }
-
 
     /**
      * Returns the {@code Class} object associated with the class or
@@ -333,19 +324,18 @@ public final class Class<T> implements java.io.Serializable,
     @CallerSensitive
     public static Class<?> forName(String name, boolean initialize,
                                    ClassLoader loader)
-        throws ClassNotFoundException
-    {
+            throws ClassNotFoundException {
         Class<?> caller = null;
-        SecurityManager sm = System.getSecurityManager();
+        SecurityManager sm = System.getSecurityManager(); // 安全管理器
         if (sm != null) {
             // Reflective call to get caller class is only needed if a security manager
             // is present.  Avoid the overhead of making this call otherwise.
-            caller = Reflection.getCallerClass();
-            if (sun.misc.VM.isSystemDomainLoader(loader)) {
-                ClassLoader ccl = ClassLoader.getClassLoader(caller);
+            caller = Reflection.getCallerClass(); // 调用者类对象
+            if (sun.misc.VM.isSystemDomainLoader(loader)) { // 系统域类加载器
+                ClassLoader ccl = ClassLoader.getClassLoader(caller); // 调用者类加载器
                 if (!sun.misc.VM.isSystemDomainLoader(ccl)) {
                     sm.checkPermission(
-                        SecurityConstants.GET_CLASSLOADER_PERMISSION);
+                        SecurityConstants.GET_CLASSLOADER_PERMISSION); // 检查获取类加载器的权限
                 }
             }
         }
@@ -353,16 +343,19 @@ public final class Class<T> implements java.io.Serializable,
     }
 
     /** Called after security check for system loader access checks have been made. */
+    // 核心实现 在进行系统类加载器访问检查的安全检查后调用
     private static native Class<?> forName0(String name, boolean initialize,
                                             ClassLoader loader,
                                             Class<?> caller)
-        throws ClassNotFoundException;
+            throws ClassNotFoundException;
 
+    // 对象实例化
     /**
      * Creates a new instance of the class represented by this {@code Class}
      * object.  The class is instantiated as if by a {@code new}
      * expression with an empty argument list.  The class is initialized if it
      * has not already been initialized.
+     * <p>创建由{@code Class}对象表示的类型的新实例。
      *
      * <p>Note that this method propagates any exception thrown by the
      * nullary constructor, including a checked exception.  Use of
@@ -393,12 +386,12 @@ public final class Class<T> implements java.io.Serializable,
      *          s.checkPackageAccess()} denies access to the package
      *          of this class.
      */
+    // 核心方法 创建由Class对象表示的类型的新实例
     @CallerSensitive
     public T newInstance()
-        throws InstantiationException, IllegalAccessException
-    {
-        if (System.getSecurityManager() != null) {
-            checkMemberAccess(Member.PUBLIC, Reflection.getCallerClass(), false);
+            throws InstantiationException, IllegalAccessException {
+        if (System.getSecurityManager() != null) { // 安全管理器
+            checkMemberAccess(Member.PUBLIC, Reflection.getCallerClass(), false); // 公开成员
         }
 
         // NOTE: the following code may not be strictly correct under
@@ -593,6 +586,7 @@ public final class Class<T> implements java.io.Serializable,
      * Returns the  name of the entity (class, interface, array class,
      * primitive type, or void) represented by this {@code Class} object,
      * as a {@code String}.
+     * 返回由类对象表示的实体的名称。实体可以是类型、接口、数组类型、基本数据类型或void。
      *
      * <p> If this class object represents a reference type that is not an
      * array type then the binary name of the class is returned, as specified
@@ -638,8 +632,9 @@ public final class Class<T> implements java.io.Serializable,
      * </pre></blockquote>
      *
      * @return  the name of the class or interface
-     *          represented by this object.
+     *          represented by this object. (由对象表示的类型或接口的名称)
      */
+    // 核心方法 返回实体的名称
     public String getName() {
         String name = this.name;
         if (name == null)
@@ -648,6 +643,10 @@ public final class Class<T> implements java.io.Serializable,
     }
 
     // cache the name to reduce the number of calls into the VM
+    // 缓存名称来减少JVM的调用次数
+    /**
+     * 类型名称
+     */
     private transient String name;
     private native String getName0();
 
@@ -689,7 +688,7 @@ public final class Class<T> implements java.io.Serializable,
         return cl;
     }
 
-    // Package-private to allow ClassLoader access
+    // Package-private to allow ClassLoader access (允许类加载器访问)
     ClassLoader getClassLoader0() { return classLoader; }
 
     // Initialized in JVM not by private constructor
@@ -2331,6 +2330,7 @@ public final class Class<T> implements java.io.Serializable,
     /*
      * Check if client is allowed to access members.  If access is denied,
      * throw a SecurityException.
+     * (检查客户端是否被允许访问成员)
      *
      * This method also enforces package access.
      *
@@ -2338,21 +2338,22 @@ public final class Class<T> implements java.io.Serializable,
      * control.
      */
     private void checkMemberAccess(int which, Class<?> caller, boolean checkProxyInterfaces) {
-        final SecurityManager s = System.getSecurityManager();
-        if (s != null) {
+        final SecurityManager sm = System.getSecurityManager(); // 安全管理器
+        if (sm != null) {
             /* Default policy allows access to all {@link Member#PUBLIC} members,
              * as well as access to classes that have the same class loader as the caller.
              * In all other cases, it requires RuntimePermission("accessDeclaredMembers")
              * permission.
+             * 默认策略：允许访问所有的公开成员，访问与调用者具有相同类加载器的类型。
              */
-            final ClassLoader ccl = ClassLoader.getClassLoader(caller);
-            final ClassLoader cl = getClassLoader0();
-            if (which != Member.PUBLIC) {
+            final ClassLoader ccl = ClassLoader.getClassLoader(caller); // 调用者的类加载器
+            final ClassLoader cl = getClassLoader0(); // 当前类加载器
+            if (which != Member.PUBLIC) { // 公开成员
                 if (ccl != cl) {
-                    s.checkPermission(SecurityConstants.CHECK_MEMBER_ACCESS_PERMISSION);
+                    sm.checkPermission(SecurityConstants.CHECK_MEMBER_ACCESS_PERMISSION); // 检查访问声明的成员的权限
                 }
             }
-            this.checkPackageAccess(ccl, checkProxyInterfaces);
+            this.checkPackageAccess(ccl, checkProxyInterfaces); // 检查包访问权限
         }
     }
 
@@ -2362,8 +2363,8 @@ public final class Class<T> implements java.io.Serializable,
      * throw a SecurityException.
      */
     private void checkPackageAccess(final ClassLoader ccl, boolean checkProxyInterfaces) {
-        final SecurityManager s = System.getSecurityManager();
-        if (s != null) {
+        final SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
             final ClassLoader cl = getClassLoader0();
 
             if (ReflectUtil.needsPackageAccessCheck(ccl, cl)) {
@@ -2373,7 +2374,7 @@ public final class Class<T> implements java.io.Serializable,
                     // skip the package access check on a proxy class in default proxy package
                     String pkg = name.substring(0, i);
                     if (!Proxy.isProxyClass(this) || ReflectUtil.isNonPublicProxyClass(this)) {
-                        s.checkPackageAccess(pkg);
+                        sm.checkPackageAccess(pkg);
                     }
                 }
             }

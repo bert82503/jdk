@@ -1,27 +1,4 @@
-/*
- * Copyright (c) 2013, 2015, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
+
 package java.lang;
 
 import java.io.File;
@@ -66,6 +43,7 @@ import sun.security.util.SecurityConstants;
  * locate or generate data that constitutes a definition for the class.  A
  * typical strategy is to transform the name into a file name and then read a
  * "class file" of that name from a file system.
+ * <p>类加载器是一个负责加载类的对象。
  *
  * <p> Every {@link Class <tt>Class</tt>} object contains a {@link
  * Class#getClassLoader() reference} to the <tt>ClassLoader</tt> that defined
@@ -174,6 +152,7 @@ import sun.security.util.SecurityConstants;
  * @see      #resolveClass(Class)
  * @since 1.0
  */
+// 核心类 类加载器是一个负责加载类的对象
 public abstract class ClassLoader {
 
     private static native void registerNatives();
@@ -1503,7 +1482,7 @@ public abstract class ClassLoader {
         return !to.isAncestor(from);
     }
 
-    // Returns the class's class loader, or null if none.
+    // Returns the class's class loader, or null if none. (返回类对象的类加载器)
     static ClassLoader getClassLoader(Class<?> caller) {
         // This can be null if the VM is requesting it
         if (caller == null) {
