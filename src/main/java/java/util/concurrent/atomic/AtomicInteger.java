@@ -1,41 +1,14 @@
 /*
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
-
-/*
- *
- *
- *
- *
- *
  * Written by Doug Lea with assistance from members of JCP JSR-166
  * Expert Group and released to the public domain, as explained at
  * http://creativecommons.org/publicdomain/zero/1.0/
  */
 
 package java.util.concurrent.atomic;
-import java.util.function.IntUnaryOperator;
+
 import java.util.function.IntBinaryOperator;
+import java.util.function.IntUnaryOperator;
+
 import sun.misc.Unsafe;
 
 /**
@@ -47,30 +20,40 @@ import sun.misc.Unsafe;
  * {@link Integer}. However, this class does extend
  * {@code Number} to allow uniform access by tools and utilities that
  * deal with numerically-based classes.
+ * <p>
+ * 一个可以原子地更新的整数值。
+ * 查看 {@link java.util.concurrent.atomic} 包有关原子变量属性描述的说明。
+ * 使用场景：原子地递增计数器。
+ * 但是，此类扩展了 {@code Number} 接口，以允许通过处理基于数字的类的工具和辅助类进行统一访问。
  *
- * @since 1.5
  * @author Doug Lea
-*/
-public class AtomicInteger extends Number implements java.io.Serializable {
-    private static final long serialVersionUID = 6214790243416807050L;
+ * @since 1.5
+ */
+public class AtomicInteger extends Number {
 
-    // setup to use Unsafe.compareAndSwapInt for updates
+    // setup to use Unsafe.compareAndSwapInt for updates (更新使用非安全的CAS（比较并交换）)
     private static final Unsafe unsafe = Unsafe.getUnsafe();
+    // 值偏移量
     private static final long valueOffset;
 
     static {
         try {
             valueOffset = unsafe.objectFieldOffset
-                (AtomicInteger.class.getDeclaredField("value"));
-        } catch (Exception ex) { throw new Error(ex); }
+                    (AtomicInteger.class.getDeclaredField("value")); // 通过反射获取字段
+        } catch (Exception ex) {
+            throw new Error(ex);
+        }
     }
 
-    private volatile int value;
+    /**
+     * 背后的整数值
+     */
+    private volatile int value; // 线程可见性
 
     /**
      * Creates a new AtomicInteger with the given initial value.
      *
-     * @param initialValue the initial value
+     * @param initialValue the initial value (初始值)
      */
     public AtomicInteger(int initialValue) {
         value = initialValue;
@@ -80,12 +63,13 @@ public class AtomicInteger extends Number implements java.io.Serializable {
      * Creates a new AtomicInteger with initial value {@code 0}.
      */
     public AtomicInteger() {
+        value = 0;
     }
 
     /**
      * Gets the current value.
      *
-     * @return the current value
+     * @return the current value (当前值)
      */
     public final int get() {
         return value;
@@ -94,7 +78,7 @@ public class AtomicInteger extends Number implements java.io.Serializable {
     /**
      * Sets to the given value.
      *
-     * @param newValue the new value
+     * @param newValue the new value (新值)
      */
     public final void set(int newValue) {
         value = newValue;
@@ -102,6 +86,7 @@ public class AtomicInteger extends Number implements java.io.Serializable {
 
     /**
      * Eventually sets to the given value.
+     * <p>最终设置为给定值。
      *
      * @param newValue the new value
      * @since 1.6
@@ -112,9 +97,10 @@ public class AtomicInteger extends Number implements java.io.Serializable {
 
     /**
      * Atomically sets to the given value and returns the old value.
+     * <p>原子地设置为给定值，并返回旧值。
      *
-     * @param newValue the new value
-     * @return the previous value
+     * @param newValue the new value (新值)
+     * @return the previous value (先前的值，旧值)
      */
     public final int getAndSet(int newValue) {
         return unsafe.getAndSetInt(this, valueOffset, newValue);
@@ -123,9 +109,10 @@ public class AtomicInteger extends Number implements java.io.Serializable {
     /**
      * Atomically sets the value to the given updated value
      * if the current value {@code ==} the expected value.
+     * <p>比较当前值与期望的值，原子地设置新值。
      *
-     * @param expect the expected value
-     * @param update the new value
+     * @param expect the expected value (期望的值)
+     * @param update the new value (新值)
      * @return {@code true} if successful. False return indicates that
      * the actual value was not equal to the expected value.
      */
@@ -149,10 +136,13 @@ public class AtomicInteger extends Number implements java.io.Serializable {
         return unsafe.compareAndSwapInt(this, valueOffset, expect, update);
     }
 
+    // Counter (计数器)
+
     /**
      * Atomically increments by one the current value.
+     * <p>原子地将当前值递增一，并返回旧值。
      *
-     * @return the previous value
+     * @return the previous value (先前的值，旧值)
      */
     public final int getAndIncrement() {
         return unsafe.getAndAddInt(this, valueOffset, 1);
@@ -160,8 +150,9 @@ public class AtomicInteger extends Number implements java.io.Serializable {
 
     /**
      * Atomically decrements by one the current value.
+     * <p>原子地将当前值递减一，并返回旧值。
      *
-     * @return the previous value
+     * @return the previous value (先前的值，旧值)
      */
     public final int getAndDecrement() {
         return unsafe.getAndAddInt(this, valueOffset, -1);
@@ -170,8 +161,8 @@ public class AtomicInteger extends Number implements java.io.Serializable {
     /**
      * Atomically adds the given value to the current value.
      *
-     * @param delta the value to add
-     * @return the previous value
+     * @param delta the value to add (待增加的值)
+     * @return the previous value (先前的值，旧值)
      */
     public final int getAndAdd(int delta) {
         return unsafe.getAndAddInt(this, valueOffset, delta);
@@ -188,8 +179,9 @@ public class AtomicInteger extends Number implements java.io.Serializable {
 
     /**
      * Atomically decrements by one the current value.
+     * <p>原子地将当前值递减一，并返回新值。
      *
-     * @return the updated value
+     * @return the updated value (更新后的值，新值)
      */
     public final int decrementAndGet() {
         return unsafe.getAndAddInt(this, valueOffset, -1) - 1;
@@ -204,6 +196,8 @@ public class AtomicInteger extends Number implements java.io.Serializable {
     public final int addAndGet(int delta) {
         return unsafe.getAndAddInt(this, valueOffset, delta) + delta;
     }
+
+    // JDK 8
 
     /**
      * Atomically updates the current value with the results of
@@ -252,7 +246,7 @@ public class AtomicInteger extends Number implements java.io.Serializable {
      * is applied with the current value as its first argument,
      * and the given update as the second argument.
      *
-     * @param x the update value
+     * @param x                   the update value
      * @param accumulatorFunction a side-effect-free function of two arguments
      * @return the previous value
      * @since 1.8
@@ -276,7 +270,7 @@ public class AtomicInteger extends Number implements java.io.Serializable {
      * is applied with the current value as its first argument,
      * and the given update as the second argument.
      *
-     * @param x the update value
+     * @param x                   the update value
      * @param accumulatorFunction a side-effect-free function of two arguments
      * @return the updated value
      * @since 1.8
@@ -293,8 +287,10 @@ public class AtomicInteger extends Number implements java.io.Serializable {
 
     /**
      * Returns the String representation of the current value.
+     *
      * @return the String representation of the current value
      */
+    @Override
     public String toString() {
         return Integer.toString(get());
     }
@@ -302,6 +298,7 @@ public class AtomicInteger extends Number implements java.io.Serializable {
     /**
      * Returns the value of this {@code AtomicInteger} as an {@code int}.
      */
+    @Override
     public int intValue() {
         return get();
     }
@@ -309,28 +306,32 @@ public class AtomicInteger extends Number implements java.io.Serializable {
     /**
      * Returns the value of this {@code AtomicInteger} as a {@code long}
      * after a widening primitive conversion.
+     *
      * @jls 5.1.2 Widening Primitive Conversions
      */
     public long longValue() {
-        return (long)get();
+        return (long) get();
     }
 
     /**
      * Returns the value of this {@code AtomicInteger} as a {@code float}
      * after a widening primitive conversion.
+     *
      * @jls 5.1.2 Widening Primitive Conversions
      */
     public float floatValue() {
-        return (float)get();
+        return (float) get();
     }
 
     /**
      * Returns the value of this {@code AtomicInteger} as a {@code double}
      * after a widening primitive conversion.
+     *
      * @jls 5.1.2 Widening Primitive Conversions
      */
     public double doubleValue() {
-        return (double)get();
+        return (double) get();
     }
 
+    private static final long serialVersionUID = 6214790243416807050L;
 }
