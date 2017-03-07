@@ -1,33 +1,11 @@
-/*
- * Copyright (c) 1997, 2006, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.util;
 
 /**
  * An object that maps keys to values.  A map cannot contain duplicate keys;
  * each key can map to at most one value.
+ * <p>将键映射到值的对象。
+ * 不能包含重复的键，每个键可以映射到至多一个值。
  *
  * <p>This interface takes the place of the <tt>Dictionary</tt> class, which
  * was a totally abstract class rather than an interface.
@@ -39,6 +17,8 @@ package java.util;
  * elements.  Some map implementations, like the <tt>TreeMap</tt> class, make
  * specific guarantees as to their order; others, like the <tt>HashMap</tt>
  * class, do not.
+ * <p>本接口提供三个<i>集合视图(collection views)</i>：键集合、值列表、键-值映射集合。
+ * 其顺序由映射的集合视图上迭代器的顺序决定。
  *
  * <p>Note: great care must be exercised if mutable objects are used as map
  * keys.  The behavior of a map is not specified if the value of an object is
@@ -48,6 +28,8 @@ package java.util;
  * permissible for a map to contain itself as a value, extreme caution is
  * advised: the <tt>equals</tt> and <tt>hashCode</tt> methods are no longer
  * well defined on such a map.
+ * <p>注意：如果可变对象用作映射的键，则必须非常小心。
+ * 建议极度小心：<tt>equals</tt> 和 <tt>hashCode</tt> 方法没有被很好地定义。
  *
  * <p>All general-purpose map implementation classes should provide two
  * "standard" constructors: a void (no arguments) constructor which creates an
@@ -57,6 +39,8 @@ package java.util;
  * producing an equivalent map of the desired class.  There is no way to
  * enforce this recommendation (as interfaces cannot contain constructors) but
  * all of the general-purpose map implementations in the JDK comply.
+ * <p>所有通用的映射实现都应该提供两个"标准"的构造函数：
+ * void无参数构造函数(创建空映射)和单个Map类型参数的构造函数(创建一个新的映射)
  *
  * <p>The "destructive" methods contained in this interface, that is, the
  * methods that modify the map on which they operate, are specified to throw
@@ -83,7 +67,7 @@ package java.util;
  *
  * <p>This interface is a member of the
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
- * Java Collections Framework</a>.
+ * Java Collections Framework</a> (Java集合框架).
  *
  * <p>Many methods in Collections Framework interfaces are defined
  * in terms of the {@link Object#equals(Object) equals} method.  For
@@ -101,9 +85,11 @@ package java.util;
  * the various Collections Framework interfaces are free to take advantage of
  * the specified behavior of underlying {@link Object} methods wherever the
  * implementor deems it appropriate.
+ * <p>{@link #containsKey(Object) containsKey(Object key)}: (key==null ? k==null : key.equals(k)).
+ * 规范保证具有不相等的散列码的两个对象不能相等。
  *
- * @param <K> the type of keys maintained by this map
- * @param <V> the type of mapped values
+ * @param <K> the type of keys maintained by this map (此映射维护的键类型)
+ * @param <V> the type of mapped values (映射值的类型)
  *
  * @author  Josh Bloch
  * @see HashMap
@@ -114,8 +100,9 @@ package java.util;
  * @see Set
  * @since 1.2
  */
+// 核心接口 将键映射到值的对象
 public interface Map<K,V> {
-    // Query Operations
+    // Query Operations (查询操作)
 
     /**
      * Returns the number of key-value mappings in this map.  If the
@@ -131,6 +118,7 @@ public interface Map<K,V> {
      *
      * @return <tt>true</tt> if this map contains no key-value mappings
      */
+    // 核心方法 此映射是否包含键-值映射
     boolean isEmpty();
 
     /**
@@ -139,8 +127,9 @@ public interface Map<K,V> {
      * this map contains a mapping for a key <tt>k</tt> such that
      * <tt>(key==null ? k==null : key.equals(k))</tt>.  (There can be
      * at most one such mapping.)
+     * <p>判断依据：(key==null ? k==null : key.equals(k))
      *
-     * @param key key whose presence in this map is to be tested
+     * @param key key whose presence in this map is to be tested (可以是任何类型)
      * @return <tt>true</tt> if this map contains a mapping for the specified
      *         key
      * @throws ClassCastException if the key is of an inappropriate type for
@@ -150,6 +139,7 @@ public interface Map<K,V> {
      *         does not permit null keys
      * (<a href="Collection.html#optional-restrictions">optional</a>)
      */
+    // 核心方法 此映射是否包含指定键的映射
     boolean containsKey(Object key);
 
     /**
@@ -180,6 +170,7 @@ public interface Map<K,V> {
      * {@code k} to a value {@code v} such that {@code (key==null ? k==null :
      * key.equals(k))}, then this method returns {@code v}; otherwise
      * it returns {@code null}.  (There can be at most one such mapping.)
+     * <p>判断依据：(key==null ? k==null : key.equals(k))
      *
      * <p>If this map permits null values, then a return value of
      * {@code null} does not <i>necessarily</i> indicate that the map
@@ -187,7 +178,7 @@ public interface Map<K,V> {
      * explicitly maps the key to {@code null}.  The {@link #containsKey
      * containsKey} operation may be used to distinguish these two cases.
      *
-     * @param key the key whose associated value is to be returned
+     * @param key the key whose associated value is to be returned (可以是任何类型)
      * @return the value to which the specified key is mapped, or
      *         {@code null} if this map contains no mapping for the key
      * @throws ClassCastException if the key is of an inappropriate type for
@@ -197,9 +188,10 @@ public interface Map<K,V> {
      *         does not permit null keys
      * (<a href="Collection.html#optional-restrictions">optional</a>)
      */
+    // 核心方法 返回指定键映射到的值/null
     V get(Object key);
 
-    // Modification Operations
+    // Modification Operations (修改操作)
 
     /**
      * Associates the specified value with the specified key in this map
@@ -225,6 +217,7 @@ public interface Map<K,V> {
      * @throws IllegalArgumentException if some property of the specified key
      *         or value prevents it from being stored in this map
      */
+    // 核心方法 将指定的值与指定的键相关联/替换旧值，并null/返回旧值
     V put(K key, V value);
 
     /**
@@ -260,7 +253,7 @@ public interface Map<K,V> {
     V remove(Object key);
 
 
-    // Bulk Operations
+    // Bulk Operations (批量操作)
 
     /**
      * Copies all of the mappings from the specified map to this map
@@ -281,6 +274,7 @@ public interface Map<K,V> {
      * @throws IllegalArgumentException if some property of a key or value in
      *         the specified map prevents it from being stored in this map
      */
+    // 核心方法 将指定映射中的所有映射条目复制到此映射
     void putAll(Map<? extends K, ? extends V> m);
 
     /**
@@ -293,7 +287,7 @@ public interface Map<K,V> {
     void clear();
 
 
-    // Views
+    // Views (视图)
 
     /**
      * Returns a {@link Set} view of the keys contained in this map.
@@ -310,6 +304,7 @@ public interface Map<K,V> {
      *
      * @return a set view of the keys contained in this map
      */
+    // 核心方法 返回此映射中包含的键的集合视图
     Set<K> keySet();
 
     /**
@@ -345,6 +340,7 @@ public interface Map<K,V> {
      *
      * @return a set view of the mappings contained in this map
      */
+    // 核心方法 返回此映射中包含的映射条目的集合视图
     Set<Map.Entry<K, V>> entrySet();
 
     /**
@@ -360,6 +356,7 @@ public interface Map<K,V> {
      * @see Map#entrySet()
      * @since 1.2
      */
+    // 核心接口 映射条目（键-值对）
     interface Entry<K,V> {
         /**
          * Returns the key corresponding to this entry.
@@ -369,6 +366,7 @@ public interface Map<K,V> {
          *         required to, throw this exception if the entry has been
          *         removed from the backing map.
          */
+        // 核心方法 返回与此条目对应的键
         K getKey();
 
         /**
@@ -381,6 +379,7 @@ public interface Map<K,V> {
          *         required to, throw this exception if the entry has been
          *         removed from the backing map.
          */
+        // 核心方法 返回与此条目对应的值
         V getValue();
 
         /**
@@ -388,6 +387,7 @@ public interface Map<K,V> {
          * value (optional operation).  (Writes through to the map.)  The
          * behavior of this call is undefined if the mapping has already been
          * removed from the map (by the iterator's <tt>remove</tt> operation).
+         * <p>写入到背后的映射
          *
          * @param value new value to be stored in this entry
          * @return old value corresponding to the entry
@@ -444,7 +444,7 @@ public interface Map<K,V> {
         int hashCode();
     }
 
-    // Comparison and hashing
+    // Comparison and hashing (比较和散列)
 
     /**
      * Compares the specified object with this map for equality.  Returns

@@ -1,39 +1,6 @@
-/*
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
-
-/*
- *
- *
- *
- *
- *
- * Written by Doug Lea with assistance from members of JCP JSR-166
- * Expert Group and released to the public domain, as explained at
- * http://creativecommons.org/publicdomain/zero/1.0/
- */
 
 package java.util.concurrent;
+
 import java.util.Map;
 
 /**
@@ -46,6 +13,8 @@ import java.util.Map;
  * <a href="package-summary.html#MemoryVisibility"><i>happen-before</i></a>
  * actions subsequent to the access or removal of that object from
  * the {@code ConcurrentMap} in another thread.
+ * <p>内存一致性效应：与其他并发集合一样，
+ * 当前线程中将对象放入并发映射作为键或值的动作优先于在其他线程中访问或删除该对象发生之前的动作，
  *
  * <p>This interface is a member of the
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
@@ -56,7 +25,8 @@ import java.util.Map;
  * @param <K> the type of keys maintained by this map
  * @param <V> the type of mapped values
  */
-public interface ConcurrentMap<K, V> extends Map<K, V> {
+// 核心接口 提供额外原子方法的并发映射
+public interface ConcurrentMap<K,V> extends Map<K,V> {
     /**
      * If the specified key is not already associated
      * with a value, associate it with the given value.
@@ -85,6 +55,7 @@ public interface ConcurrentMap<K, V> extends Map<K, V> {
      *         or value prevents it from being stored in this map
      *
      */
+    // 核心方法 如果指定的键尚未与某个值相关联，则将其与给定的值关联（SetEx-Get）
     V putIfAbsent(K key, V value);
 
     /**
@@ -120,6 +91,7 @@ public interface ConcurrentMap<K, V> extends Map<K, V> {
      *       return true;
      *   } else return false;</pre>
      * except that the action is performed atomically.
+     * <p>仅当当前映射到给定值时，才替换为键的条目。(CAS: Compare-And-Swap)
      *
      * @param key key with which the specified value is associated
      * @param oldValue value expected to be associated with the specified key
@@ -144,6 +116,7 @@ public interface ConcurrentMap<K, V> extends Map<K, V> {
      *       return map.put(key, value);
      *   } else return null;</pre>
      * except that the action is performed atomically.
+     * <p>替换已存在键的条目新值
      *
      * @param key key with which the specified value is associated
      * @param value value to be associated with the specified key

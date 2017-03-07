@@ -1,37 +1,3 @@
-/*
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
-
-/*
- *
- *
- *
- *
- *
- * Written by Doug Lea and Josh Bloch with assistance from members of JCP
- * JSR-166 Expert Group and released to the public domain, as explained at
- * http://creativecommons.org/publicdomain/zero/1.0/
- */
 
 package java.util;
 
@@ -46,6 +12,7 @@ package java.util;
  * {@code lowerKey}, {@code floorKey}, {@code ceilingKey}, and
  * {@code higherKey} return only the associated keys. All of these
  * methods are designed for locating, not traversing entries.
+ * <p>使用导航方法返回给定搜索目标的最接近匹配映射。
  *
  * <p>A {@code NavigableMap} may be accessed and traversed in either
  * ascending or descending key order.  The {@code descendingMap}
@@ -58,6 +25,7 @@ package java.util;
  * whether lower and upper bounds are inclusive versus exclusive.
  * Submaps of any {@code NavigableMap} must implement the {@code
  * NavigableMap} interface.
+ * <p>可以按照升序或降序的键访问和遍历导航的映射。
  *
  * <p>This interface additionally defines methods {@code firstEntry},
  * {@code pollFirstEntry}, {@code lastEntry}, and
@@ -92,11 +60,13 @@ package java.util;
  * @param <V> the type of mapped values
  * @since 1.6
  */
+// 核心接口 使用导航方法返回给定搜索目标的最接近匹配映射
 public interface NavigableMap<K,V> extends SortedMap<K,V> {
     /**
      * Returns a key-value mapping associated with the greatest key
      * strictly less than the given key, or {@code null} if there is
      * no such key.
+     * <p>严格小于给定的键的最大键
      *
      * @param key the key
      * @return an entry with the greatest key less than {@code key},

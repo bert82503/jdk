@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1998, 2006, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.util;
 
@@ -34,6 +10,8 @@ package java.util;
  * {@code entrySet}, {@code keySet} and {@code values} methods).
  * Several additional operations are provided to take advantage of the
  * ordering.  (This interface is the map analogue of {@link SortedSet}.)
+ * <p>提供键的总排序：键的自然排序、基于创建时间的比较器。
+ * 其顺序会在迭代排序映射的集合视图时被反映到
  *
  * <p>All keys inserted into a sorted map must implement the {@code Comparable}
  * interface (or be accepted by the specified comparator).  Furthermore, all
@@ -43,6 +21,7 @@ package java.util;
  * the sorted map.  Attempts to violate this restriction will cause the
  * offending method or constructor invocation to throw a
  * {@code ClassCastException}.
+ * <p>插入到排序映射中的所有键必须实现{@link Comparable}接口（或接受指定的比较器）。
  *
  * <p>Note that the ordering maintained by a sorted map (whether or not an
  * explicit comparator is provided) must be <em>consistent with equals</em> if
@@ -56,6 +35,7 @@ package java.util;
  * equal.  The behavior of a tree map <em>is</em> well-defined even if its
  * ordering is inconsistent with equals; it just fails to obey the general
  * contract of the {@code Map} interface.
+ * <p>请注意：排序映射维护的顺序必须与equals一致。
  *
  * <p>All general-purpose sorted map implementation classes should provide four
  * "standard" constructors. It is not possible to enforce this recommendation
@@ -109,17 +89,18 @@ package java.util;
  * @see ClassCastException
  * @since 1.2
  */
-// 核心接口
+// 核心接口 提供键的总排序的映射（Comparable、Comparator）
 public interface SortedMap<K,V> extends Map<K,V> {
     /**
      * Returns the comparator used to order the keys in this map, or
      * {@code null} if this map uses the {@linkplain Comparable
-     * natural ordering} of its keys.
+     * natural ordering} (可比较的自然排序) of its keys.
      *
      * @return the comparator used to order the keys in this map,
      *         or {@code null} if this map uses the natural ordering
      *         of its keys
      */
+    // 核心方法 返回用于此映射中的键排序的比较器
     Comparator<? super K> comparator();
 
     /**
@@ -151,6 +132,7 @@ public interface SortedMap<K,V> extends Map<K,V> {
      *         range, and {@code fromKey} or {@code toKey} lies
      *         outside the bounds of the range
      */
+    // 核心方法 返回键范围内的此映射的部分视图（[fromKey,toKey)）
     SortedMap<K,V> subMap(K fromKey, K toKey);
 
     /**
@@ -178,6 +160,7 @@ public interface SortedMap<K,V> extends Map<K,V> {
      *         restricted range, and {@code toKey} lies outside the
      *         bounds of the range
      */
+    // 核心方法 返回此映射的头部视图（[-&,toKey)）
     SortedMap<K,V> headMap(K toKey);
 
     /**
@@ -205,10 +188,12 @@ public interface SortedMap<K,V> extends Map<K,V> {
      *         restricted range, and {@code fromKey} lies outside the
      *         bounds of the range
      */
+    // 核心方法 返回此映射的尾部视图（[fromKey,-&)）
     SortedMap<K,V> tailMap(K fromKey);
 
     /**
      * Returns the first (lowest) key currently in this map.
+     * <p>返回第一个/最低的键。
      *
      * @return the first (lowest) key currently in this map
      * @throws NoSuchElementException if this map is empty
@@ -217,6 +202,7 @@ public interface SortedMap<K,V> extends Map<K,V> {
 
     /**
      * Returns the last (highest) key currently in this map.
+     * <p>返回最后/最高的键。
      *
      * @return the last (highest) key currently in this map
      * @throws NoSuchElementException if this map is empty
@@ -236,10 +222,12 @@ public interface SortedMap<K,V> extends Map<K,V> {
      * {@code removeAll}, {@code retainAll}, and {@code clear}
      * operations.  It does not support the {@code add} or {@code addAll}
      * operations.
+     * <p>集合的迭代器以升序返回键集合。
      *
      * @return a set view of the keys contained in this map, sorted in
-     *         ascending order
+     *         ascending order (按升序排序)
      */
+    @Override
     Set<K> keySet();
 
     /**
@@ -276,9 +264,11 @@ public interface SortedMap<K,V> extends Map<K,V> {
      * {@code Set.remove}, {@code removeAll}, {@code retainAll} and
      * {@code clear} operations.  It does not support the
      * {@code add} or {@code addAll} operations.
+     * <p>集合的迭代器以递增键的顺序返回条目集合。
      *
      * @return a set view of the mappings contained in this map,
-     *         sorted in ascending key order
+     *         sorted in ascending key order (按升序顺序排序)
      */
+    @Override
     Set<Map.Entry<K, V>> entrySet();
 }

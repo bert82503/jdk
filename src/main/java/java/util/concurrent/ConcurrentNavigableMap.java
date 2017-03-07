@@ -1,44 +1,13 @@
-/*
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
-
-/*
- *
- *
- *
- *
- *
- * Written by Doug Lea with assistance from members of JCP JSR-166
- * Expert Group and released to the public domain, as explained at
- * http://creativecommons.org/publicdomain/zero/1.0/
- */
 
 package java.util.concurrent;
-import java.util.*;
+
+import java.util.NavigableMap;
+import java.util.NavigableSet;
 
 /**
  * A {@link ConcurrentMap} supporting {@link NavigableMap} operations,
  * and recursively so for its navigable sub-maps.
+ * <p>递归地对其可导航子映射迭代
  *
  * <p>This interface is a member of the
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
@@ -49,6 +18,7 @@ import java.util.*;
  * @param <V> the type of mapped values
  * @since 1.6
  */
+// 核心接口 支持可导航映射操作的并发映射
 public interface ConcurrentNavigableMap<K,V>
     extends ConcurrentMap<K,V>, NavigableMap<K,V>
 {
@@ -57,6 +27,7 @@ public interface ConcurrentNavigableMap<K,V>
      * @throws NullPointerException     {@inheritDoc}
      * @throws IllegalArgumentException {@inheritDoc}
      */
+    @Override
     ConcurrentNavigableMap<K,V> subMap(K fromKey, boolean fromInclusive,
                                        K toKey,   boolean toInclusive);
 
@@ -129,7 +100,7 @@ public interface ConcurrentNavigableMap<K,V>
      *
      * @return a navigable set view of the keys in this map
      */
-    public NavigableSet<K> navigableKeySet();
+    NavigableSet<K> navigableKeySet();
 
     /**
      * Returns a {@link NavigableSet} view of the keys contained in this map.
@@ -173,5 +144,5 @@ public interface ConcurrentNavigableMap<K,V>
      *
      * @return a reverse order navigable set view of the keys in this map
      */
-    public NavigableSet<K> descendingKeySet();
+    NavigableSet<K> descendingKeySet();
 }
