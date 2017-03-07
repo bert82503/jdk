@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1994, 2011, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
@@ -42,6 +18,7 @@ package java.lang;
  * @jls 11.2 Compile-Time Checking of Exceptions
  * @since   JDK1.0
  */
+// 核心类 [链式异常设施] 所有异常的超类
 public class Exception extends Throwable {
     static final long serialVersionUID = -3387516993124229948L;
 

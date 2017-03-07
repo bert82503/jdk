@@ -3,8 +3,7 @@ package java.lang;
 /**
  * Thrown to indicate that a method has been passed an illegal or
  * inappropriate argument.
- * <p>
- * 非法参数异常：表示方法被传入了非法或不适当的参数。
+ * <p>非法参数异常：表示方法被传入了非法或不适当的参数。
  *
  * @author  unascribed
  * @since   JDK1.0
