@@ -1,31 +1,19 @@
-/*
- * Copyright (c) 1994, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
-import  java.io.*;
-import  java.util.*;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * The {@code Throwable} class is the superclass of all errors and
@@ -34,11 +22,16 @@ import  java.util.*;
  * can be thrown by the Java {@code throw} statement. Similarly, only
  * this class or one of its subclasses can be the argument type in a
  * {@code catch} clause.
+ * {@code Throwable}类是所有错误和异常的超类。
+ * 只有这个类或其子类之一的实例对象才可以由Java虚拟机抛出，或者由{@code throw}语句抛出。
+ * 类似地，只有这个类或其子类之一才可以是{@code catch}子句中的参数类型。
  *
- * For the purposes of compile-time checking of exceptions, {@code
+ * <p>For the purposes of compile-time checking of exceptions, {@code
  * Throwable} and any subclass of {@code Throwable} that is not also a
  * subclass of either {@link RuntimeException} or {@link Error} are
  * regarded as checked exceptions.
+ * 为了编译时检查异常的目的，Throwable及其任何子类不应该是
+ * {@link RuntimeException}或{@link Error}的子类，它们被视为受检查异常(checked exceptions)。
  *
  * <p>Instances of two subclasses, {@link Error} and
  * {@link Exception}, are conventionally used to indicate
@@ -90,11 +83,13 @@ import  java.util.*;
  * wish to allow causes to be associated with them should provide constructors
  * that take a cause and delegate (perhaps indirectly) to one of the
  * {@code Throwable} constructors that takes a cause.
+ * 异常原因可以通过两种方式与throwable相关联：构造函数或{@link #initCause(Throwable)}方法。
  *
  * Because the {@code initCause} method is public, it allows a cause to be
  * associated with any throwable, even a "legacy throwable" whose
  * implementation predates the addition of the exception chaining mechanism to
  * {@code Throwable}.
+ * 异常链机制(the exception chaining mechanism)
  *
  * <p>By convention, class {@code Throwable} and its subclasses have two
  * constructors, one that takes no arguments and one that takes a
@@ -107,23 +102,26 @@ import  java.util.*;
  *
  * @author  unascribed
  * @author  Josh Bloch (Added exception chaining and programmatic access to
- *          stack trace in 1.4.)
- * @jls 11.2 Compile-Time Checking of Exceptions
+ *          stack trace in 1.4.) 1.4版本添加异常链和执行堆栈跟踪访问
+ * @jls 11.2 Compile-Time Checking of Exceptions (异常的编译时检查)
  * @since JDK1.0
  */
+// 核心类 [链式异常设施] 所有错误和异常的超类
 public class Throwable implements Serializable {
     /** use serialVersionUID from JDK 1.0.2 for interoperability */
     private static final long serialVersionUID = -3042686055658047285L;
 
     /**
      * Native code saves some indication of the stack backtrace in this slot.
+     * 这个槽的执行堆栈回溯
      */
-    private transient Object backtrace;
+    private transient Object backtrace; // 内存可见性
 
     /**
      * Specific details about the Throwable.  For example, for
      * {@code FileNotFoundException}, this contains the name of
      * the file that could not be found.
+     * 关于异常的具体详细信息。
      *
      * @serial
      */
@@ -190,6 +188,7 @@ public class Throwable implements Serializable {
      * throwable is unknown.  If this field is equal to this throwable itself,
      * it indicates that the cause of this throwable has not yet been
      * initialized.
+     * 引起被抛出的这个异常的原因。
      *
      * @serial
      * @since 1.4
@@ -198,6 +197,7 @@ public class Throwable implements Serializable {
 
     /**
      * The stack trace, as returned by {@link #getStackTrace()}.
+     * 执行堆栈跟踪。
      *
      * The field is initialized to a zero-length array.  A {@code
      * null} value of this field indicates subsequent calls to {@link
@@ -220,6 +220,7 @@ public class Throwable implements Serializable {
      * unmodifiable sentinel list.  When a serialized Throwable is
      * read in, if the {@code suppressedExceptions} field points to a
      * zero-element list, the field is reset to the sentinel value.
+     * 被抑制的异常列表。
      *
      * @serial
      * @since 1.7
@@ -232,10 +233,10 @@ public class Throwable implements Serializable {
     /** Message for trying to suppress oneself. */
     private static final String SELF_SUPPRESSION_MESSAGE = "Self-suppression not permitted";
 
-    /** Caption  for labeling causative exception stack traces */
+    /** Caption  for labeling causative exception stack traces (用于标记原因的异常堆栈跟踪的标题) */
     private static final String CAUSE_CAPTION = "Caused by: ";
 
-    /** Caption for labeling suppressed exception stack traces */
+    /** Caption for labeling suppressed exception stack traces (被抑制的异常堆栈跟踪) */
     private static final String SUPPRESSED_CAPTION = "Suppressed: ";
 
     /**
@@ -244,8 +245,9 @@ public class Throwable implements Serializable {
      * call to {@link #initCause}.
      *
      * <p>The {@link #fillInStackTrace()} method is called to initialize
-     * the stack trace data in the newly created throwable.
+     * the stack trace data in the newly created throwable. (初始化执行堆栈跟踪数据)
      */
+    // [不建议使用] 异常详细消息和原因都未初始化
     public Throwable() {
         fillInStackTrace();
     }
@@ -261,8 +263,9 @@ public class Throwable implements Serializable {
      * @param   message   the detail message. The detail message is saved for
      *          later retrieval by the {@link #getMessage()} method.
      */
+    // 核心方法 指定异常详细消息（自定义异常，fast-fail）
     public Throwable(String message) {
-        fillInStackTrace();
+        fillInStackTrace(); // 同步方法
         detailMessage = message;
     }
 
@@ -283,8 +286,9 @@ public class Throwable implements Serializable {
      *         unknown.)
      * @since  1.4
      */
+    // 核心方法 指定异常详细消息和原因（异常包装）
     public Throwable(String message, Throwable cause) {
-        fillInStackTrace();
+        fillInStackTrace(); // 同步方法
         detailMessage = message;
         this.cause = cause;
     }
@@ -306,9 +310,10 @@ public class Throwable implements Serializable {
      *         unknown.)
      * @since  1.4
      */
+    // [不建议使用] 指定异常原因
     public Throwable(Throwable cause) {
         fillInStackTrace();
-        detailMessage = (cause==null ? null : cause.toString());
+        detailMessage = (cause==null ? null : cause.toString()); // 异常详细消息相同
         this.cause = cause;
     }
 
@@ -345,8 +350,9 @@ public class Throwable implements Serializable {
      * @param cause the cause.  (A {@code null} value is permitted,
      * and indicates that the cause is nonexistent or unknown.)
      * @param enableSuppression whether or not suppression is enabled or disabled
+     *                          (异常抑制是否启用或禁用)
      * @param writableStackTrace whether or not the stack trace should be
-     *                           writable
+     *                           writable (执行堆栈跟踪是否应该是可写的)
      *
      * @see OutOfMemoryError
      * @see NullPointerException
@@ -769,6 +775,7 @@ public class Throwable implements Serializable {
      * Fills in the execution stack trace. This method records within this
      * {@code Throwable} object information about the current state of
      * the stack frames for the current thread.
+     * 关于当前线程堆栈帧的当前状态的信息。
      *
      * <p>If the stack trace of this {@code Throwable} {@linkplain
      * Throwable#Throwable(String, Throwable, boolean, boolean) is not
@@ -777,6 +784,7 @@ public class Throwable implements Serializable {
      * @return  a reference to this {@code Throwable} instance.
      * @see     Throwable#printStackTrace()
      */
+    // 核心实现 [同步方法] 填充执行堆栈跟踪
     public synchronized Throwable fillInStackTrace() {
         if (stackTrace != null ||
             backtrace != null /* Out of protocol state */ ) {
@@ -786,6 +794,7 @@ public class Throwable implements Serializable {
         return this;
     }
 
+    // 构造整个执行堆栈跟踪
     private native Throwable fillInStackTrace(int dummy);
 
     /**
