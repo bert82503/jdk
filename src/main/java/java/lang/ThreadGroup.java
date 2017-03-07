@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1995, 2011, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
@@ -53,8 +29,8 @@ import sun.misc.VM;
  * and working off of that snapshot, rather than holding the thread group locked
  * while we work on the children.
  */
-public
-class ThreadGroup implements Thread.UncaughtExceptionHandler {
+public class ThreadGroup implements Thread.UncaughtExceptionHandler {
+
     private final ThreadGroup parent;
     String name;
     int maxPriority;
@@ -670,6 +646,7 @@ class ThreadGroup implements Thread.UncaughtExceptionHandler {
      *     {@link Thread#suspend} for details.
      */
     @Deprecated
+    @SuppressWarnings("deprecation")
     public final void suspend() {
         if (stopOrSuspend(true))
             Thread.currentThread().suspend();
@@ -682,6 +659,7 @@ class ThreadGroup implements Thread.UncaughtExceptionHandler {
      * if (and only if) the current thread is found to be in this thread
      * group or one of its subgroups.
      */
+    @SuppressWarnings("deprecation")
     private boolean stopOrSuspend(boolean suspend) {
         boolean suicide = false;
         Thread us = Thread.currentThread();
@@ -731,6 +709,7 @@ class ThreadGroup implements Thread.UncaughtExceptionHandler {
      *       deadlock-prone.  See {@link Thread#suspend} for details.
      */
     @Deprecated
+    @SuppressWarnings("deprecation")
     public final void resume() {
         int ngroupsSnapshot;
         ThreadGroup[] groupsSnapshot;
@@ -915,9 +894,6 @@ class ThreadGroup implements Thread.UncaughtExceptionHandler {
      *
      * @param  t
      *         the Thread whose start method was invoked
-     *
-     * @param  failed
-     *         true if the thread could not be started successfully
      */
     void threadStartFailed(Thread t) {
         synchronized(this) {
