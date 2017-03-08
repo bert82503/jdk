@@ -17,7 +17,7 @@ package java.util;
  * elements.  Some map implementations, like the <tt>TreeMap</tt> class, make
  * specific guarantees as to their order; others, like the <tt>HashMap</tt>
  * class, do not.
- * <p>本接口提供三个<i>集合视图(collection views)</i>：键集合、值列表、键-值映射集合。
+ * <p>此接口提供三个<i>集合视图(collection views)</i>：键集合、值列表、键-值映射集合。
  * 其顺序由映射的集合视图上迭代器的顺序决定。
  *
  * <p>Note: great care must be exercised if mutable objects are used as map
@@ -111,6 +111,7 @@ public interface Map<K,V> {
      *
      * @return the number of key-value mappings in this map
      */
+    // 核心方法 返回映射中的键-值映射条目的数量
     int size();
 
     /**
@@ -118,7 +119,7 @@ public interface Map<K,V> {
      *
      * @return <tt>true</tt> if this map contains no key-value mappings
      */
-    // 核心方法 此映射是否包含键-值映射
+    // 核心方法 判断映射是否包含键-值映射条目
     boolean isEmpty();
 
     /**
@@ -139,7 +140,7 @@ public interface Map<K,V> {
      *         does not permit null keys
      * (<a href="Collection.html#optional-restrictions">optional</a>)
      */
-    // 核心方法 此映射是否包含指定键的映射
+    // 核心方法 判断映射是否包含指定键的映射条目
     boolean containsKey(Object key);
 
     /**
@@ -217,7 +218,7 @@ public interface Map<K,V> {
      * @throws IllegalArgumentException if some property of the specified key
      *         or value prevents it from being stored in this map
      */
-    // 核心方法 将指定的值与指定的键相关联/替换旧值，并null/返回旧值
+    // 核心方法 将指定的值与指定的键相关联/替换旧值，并返回null/旧值
     V put(K key, V value);
 
     /**
@@ -301,10 +302,10 @@ public interface Map<K,V> {
      * <tt>removeAll</tt>, <tt>retainAll</tt>, and <tt>clear</tt>
      * operations.  It does not support the <tt>add</tt> or <tt>addAll</tt>
      * operations.
+     * <p>返回映射中包含的键的集合视图。
      *
      * @return a set view of the keys contained in this map
      */
-    // 核心方法 返回此映射中包含的键的集合视图
     Set<K> keySet();
 
     /**
@@ -340,7 +341,7 @@ public interface Map<K,V> {
      *
      * @return a set view of the mappings contained in this map
      */
-    // 核心方法 返回此映射中包含的映射条目的集合视图
+    // 核心方法 返回映射中包含的映射条目的集合视图
     Set<Map.Entry<K, V>> entrySet();
 
     /**
@@ -387,7 +388,7 @@ public interface Map<K,V> {
          * value (optional operation).  (Writes through to the map.)  The
          * behavior of this call is undefined if the mapping has already been
          * removed from the map (by the iterator's <tt>remove</tt> operation).
-         * <p>写入到背后的映射
+         * <p>将与此条目对应的值替换为指定的值。(写入到背后的映射)
          *
          * @param value new value to be stored in this entry
          * @return old value corresponding to the entry
