@@ -27,7 +27,7 @@ public interface Function<T, R> {
     // 核心方法 应用本函数到给定的参数
     R apply(T t);
 
-    // 组合函数(before、after)
+    // 连续组合的函数(before、after)
     /**
      * Returns a composed function that first applies the {@code before}
      * function to its input, and then applies this function to the result.

@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 2010, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 package java.util.function;
 
 import java.util.Objects;
@@ -30,6 +6,7 @@ import java.util.Objects;
  * Represents an operation that accepts a single input argument and returns no
  * result. Unlike most other functional interfaces, {@code Consumer} is expected
  * to operate via side-effects.
+ * 消费者被期望通过副作用操作。
  *
  * <p>This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #accept(Object)}.
@@ -38,6 +15,7 @@ import java.util.Objects;
  *
  * @since 1.8
  */
+// 核心接口 从T到void的一元函数，一个接受一个入参但不返回任何结果的操作
 @FunctionalInterface
 public interface Consumer<T> {
 
@@ -46,8 +24,10 @@ public interface Consumer<T> {
      *
      * @param t the input argument
      */
+    // 核心方法 对给定的参数执行本操作
     void accept(T t);
 
+    // 连续组合的消费者
     /**
      * Returns a composed {@code Consumer} that performs, in sequence, this
      * operation followed by the {@code after} operation. If performing either
