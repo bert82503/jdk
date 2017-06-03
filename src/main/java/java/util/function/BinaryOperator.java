@@ -18,7 +18,7 @@ import java.util.Comparator;
  * @see UnaryOperator
  * @since 1.8
  */
-// 二元操作符(两个相同类型的操作数，生产与操作数类型相同的结果)
+// 二元运算符(两个相同类型的操作数，生产与操作数类型相同的结果)
 @FunctionalInterface
 public interface BinaryOperator<T> extends BiFunction<T, T, T> {
     // 最小值、最大值 比较
@@ -32,7 +32,7 @@ public interface BinaryOperator<T> extends BiFunction<T, T, T> {
      *         according to the supplied {@code Comparator}
      * @throws NullPointerException if the argument is null
      */
-    public static <T> BinaryOperator<T> minBy(Comparator<? super T> comparator) {
+    static <T> BinaryOperator<T> minBy(Comparator<? super T> comparator) {
         Objects.requireNonNull(comparator);
         return (a, b) -> comparator.compare(a, b) <= 0 ? a : b;
     }
@@ -47,7 +47,7 @@ public interface BinaryOperator<T> extends BiFunction<T, T, T> {
      *         according to the supplied {@code Comparator}
      * @throws NullPointerException if the argument is null
      */
-    public static <T> BinaryOperator<T> maxBy(Comparator<? super T> comparator) {
+    static <T> BinaryOperator<T> maxBy(Comparator<? super T> comparator) {
         Objects.requireNonNull(comparator);
         return (a, b) -> comparator.compare(a, b) >= 0 ? a : b;
     }

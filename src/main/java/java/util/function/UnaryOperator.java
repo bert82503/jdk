@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 package java.util.function;
 
 /**
@@ -32,14 +8,16 @@ package java.util.function;
  * <p>This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #apply(Object)}.
  *
- * @param <T> the type of the operand and result of the operator
+ * @param <T> the type of the operand and result of the operator 运算符的操作数和结果的类型
  *
  * @see Function
  * @since 1.8
  */
+// 一元运算符(单个操作数，生产与操作数类型相同的结果)
 @FunctionalInterface
 public interface UnaryOperator<T> extends Function<T, T> {
 
+    // 返回总是返回其入参的一元运算符
     /**
      * Returns a unary operator that always returns its input argument.
      *
