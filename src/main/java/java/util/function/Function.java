@@ -4,34 +4,40 @@ import java.util.Objects;
 
 /**
  * Represents a function that accepts one argument and produces a result.
+ * 表示接受一个参数并产生一个结果的一元函数。
  *
  * <p>This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #apply(Object)}.
  *
- * @param <T> the type of the input to the function
- * @param <R> the type of the result of the function
+ * @param <T> the type of the input to the function 函数的入参类型
+ * @param <R> the type of the result of the function 函数的结果类型
  *
  * @since 1.8
  */
+// 核心接口 从T到R的一元函数，接受一个参数并产生一个结果的一元函数
 @FunctionalInterface
 public interface Function<T, R> {
 
     /**
      * Applies this function to the given argument.
      *
-     * @param t the function argument
-     * @return the function result
+     * @param t the function argument 函数参数
+     * @return the function result 函数结果
      */
+    // 核心方法 应用本函数到给定的参数
     R apply(T t);
 
+    // 组合函数(before、after)
     /**
      * Returns a composed function that first applies the {@code before}
      * function to its input, and then applies this function to the result.
      * If evaluation of either function throws an exception, it is relayed to
      * the caller of the composed function.
+     * 返回一个before的组合函数，首先应用{@code before}函数到其输入参数，然后应用本函数到中间结果。
+     * (V -> T -> R)
      *
      * @param <V> the type of input to the {@code before} function, and to the
-     *           composed function
+     *           composed function {@code before}函数的输入参数类型
      * @param before the function to apply before this function is applied
      * @return a composed function that first applies the {@code before}
      * function and then applies this function
@@ -49,6 +55,8 @@ public interface Function<T, R> {
      * its input, and then applies the {@code after} function to the result.
      * If evaluation of either function throws an exception, it is relayed to
      * the caller of the composed function.
+     * 返回一个after的组合函数。
+     * (T -> R -> V)
      *
      * @param <V> the type of output of the {@code after} function, and of the
      *           composed function
