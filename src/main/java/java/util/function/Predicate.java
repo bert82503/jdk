@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 2010, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 package java.util.function;
 
 import java.util.Objects;
@@ -36,6 +12,7 @@ import java.util.Objects;
  *
  * @since 1.8
  */
+// 核心接口 表示一个参数的谓词(返回布尔值的函数)
 @FunctionalInterface
 public interface Predicate<T> {
 
@@ -46,8 +23,10 @@ public interface Predicate<T> {
      * @return {@code true} if the input argument matches the predicate,
      * otherwise {@code false}
      */
+    // 核心方法 对给定的参数评估本谓词
     boolean test(T t);
 
+    // 谓词函数：与、非、或
     /**
      * Returns a composed predicate that represents a short-circuiting logical
      * AND of this predicate and another.  When evaluating the composed
@@ -101,6 +80,7 @@ public interface Predicate<T> {
         return (t) -> test(t) || other.test(t);
     }
 
+    // 测试两个参数是否相等
     /**
      * Returns a predicate that tests if two arguments are equal according
      * to {@link Objects#equals(Object, Object)}.

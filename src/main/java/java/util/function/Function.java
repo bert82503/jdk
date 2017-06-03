@@ -72,6 +72,7 @@ public interface Function<T, R> {
         return (T t) -> after.apply(apply(t));
     }
 
+    // 总是返回其入参的函数
     /**
      * Returns a function that always returns its input argument.
      *
