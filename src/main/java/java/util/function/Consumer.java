@@ -11,7 +11,7 @@ import java.util.Objects;
  * <p>This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #accept(Object)}.
  *
- * @param <T> the type of the input to the operation
+ * @param <T> the type of the input to the operation 操作的入参类型
  *
  * @since 1.8
  */

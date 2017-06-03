@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 package java.util.function;
 
 /**
@@ -29,14 +5,16 @@ package java.util.function;
  *
  * <p>There is no requirement that a new or distinct result be returned each
  * time the supplier is invoked.
+ * 没有强制要求，供应商的每次调用都返回一个新的或不同的结果。
  *
  * <p>This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #get()}.
  *
- * @param <T> the type of results supplied by this supplier
+ * @param <T> the type of results supplied by this supplier 该供应商提供的结果类型
  *
  * @since 1.8
  */
+// 核心接口 表示结果的供应商
 @FunctionalInterface
 public interface Supplier<T> {
 
@@ -45,5 +23,6 @@ public interface Supplier<T> {
      *
      * @return a result
      */
+    // 核心方法 获取一个结果
     T get();
 }

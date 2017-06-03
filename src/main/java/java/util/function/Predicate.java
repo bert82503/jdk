@@ -8,7 +8,7 @@ import java.util.Objects;
  * <p>This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #test(Object)}.
  *
- * @param <T> the type of the input to the predicate
+ * @param <T> the type of the input to the predicate 谓词的入参类型
  *
  * @since 1.8
  */
