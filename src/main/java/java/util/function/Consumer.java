@@ -27,7 +27,7 @@ public interface Consumer<T> {
     // 核心方法 对给定的参数执行本操作
     void accept(T t);
 
-    // 连续组合的消费者
+    // N多个消费者模式
     /**
      * Returns a composed {@code Consumer} that performs, in sequence, this
      * operation followed by the {@code after} operation. If performing either
