@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 2010, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 package java.util.function;
 
 import java.util.Objects;
@@ -33,13 +9,14 @@ import java.util.Objects;
  * <p>This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #apply(Object, Object)}.
  *
- * @param <T> the type of the first argument to the function
- * @param <U> the type of the second argument to the function
- * @param <R> the type of the result of the function
+ * @param <T> the type of the first argument to the function 函数的第一个参数类型
+ * @param <U> the type of the second argument to the function 函数的第二个参数类型
+ * @param <R> the type of the result of the function 函数的结果类型
  *
  * @see Function
  * @since 1.8
  */
+// 从T、U到R的二元函数，接受两个参数并产生一个结果的二元函数
 @FunctionalInterface
 public interface BiFunction<T, U, R> {
 
@@ -50,6 +27,7 @@ public interface BiFunction<T, U, R> {
      * @param u the second function argument
      * @return the function result
      */
+    // 应用本函数到所有给定的参数
     R apply(T t, U u);
 
     /**
@@ -65,6 +43,7 @@ public interface BiFunction<T, U, R> {
      * applies the {@code after} function
      * @throws NullPointerException if after is null
      */
+    // (T, U) -> R -> V
     default <V> BiFunction<T, U, V> andThen(Function<? super R, ? extends V> after) {
         Objects.requireNonNull(after);
         return (T t, U u) -> after.apply(apply(t, u));

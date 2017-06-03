@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 2010, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 package java.util.function;
 
 import java.util.Objects;
@@ -36,14 +12,16 @@ import java.util.Comparator;
  * <p>This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #apply(Object, Object)}.
  *
- * @param <T> the type of the operands and result of the operator
+ * @param <T> the type of the operands and result of the operator 运算符的操作数和结果的类型
  *
  * @see BiFunction
  * @see UnaryOperator
  * @since 1.8
  */
+// 二元操作符(两个相同类型的操作数，生产与操作数类型相同的结果)
 @FunctionalInterface
-public interface BinaryOperator<T> extends BiFunction<T,T,T> {
+public interface BinaryOperator<T> extends BiFunction<T, T, T> {
+    // 最小值、最大值 比较
     /**
      * Returns a {@link BinaryOperator} which returns the lesser of two elements
      * according to the specified {@code Comparator}.
