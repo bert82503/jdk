@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 2010, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 package java.util.function;
 
 import java.util.Objects;
@@ -37,6 +13,7 @@ import java.util.Objects;
  * @see Predicate
  * @since 1.8
  */
+// 整数参数的谓词(返回布尔值的函数)
 @FunctionalInterface
 public interface IntPredicate {
 
