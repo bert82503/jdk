@@ -17,7 +17,7 @@ import java.util.Objects;
  * @see Consumer
  * @since 1.8
  */
-// 一个接受两个入参但不返回任何结果的操作
+// 从T、U到void的二元函数，一个接受两个入参但不返回任何结果的操作
 @FunctionalInterface
 public interface BiConsumer<T, U> {
 
