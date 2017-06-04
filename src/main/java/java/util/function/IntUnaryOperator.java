@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 package java.util.function;
 
 import java.util.Objects;
@@ -37,6 +13,7 @@ import java.util.Objects;
  * @see UnaryOperator
  * @since 1.8
  */
+// 一元整数运算符
 @FunctionalInterface
 public interface IntUnaryOperator {
 
@@ -48,6 +25,7 @@ public interface IntUnaryOperator {
      */
     int applyAsInt(int operand);
 
+    // 连续组合的运算符(before、after)
     /**
      * Returns a composed operator that first applies the {@code before}
      * operator to its input, and then applies this operator to the result.
