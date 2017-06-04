@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 package java.util.function;
 
 /**
@@ -36,6 +12,7 @@ package java.util.function;
  * @see Function
  * @since 1.8
  */
+// 从T到int的一元函数
 @FunctionalInterface
 public interface ToIntFunction<T> {
 
