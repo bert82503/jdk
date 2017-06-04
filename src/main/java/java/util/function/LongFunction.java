@@ -23,5 +23,6 @@ public interface LongFunction<R> {
      * @param value the function argument
      * @return the function result
      */
+    // 应用本函数到给定的长整数
     R apply(long value);
 }

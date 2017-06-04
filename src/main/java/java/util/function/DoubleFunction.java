@@ -23,5 +23,6 @@ public interface DoubleFunction<R> {
      * @param value the function argument
      * @return the function result
      */
+    // 应用本函数到给定的浮点数
     R apply(double value);
 }

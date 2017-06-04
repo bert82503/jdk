@@ -23,5 +23,6 @@ public interface IntFunction<R> {
      * @param value the function argument
      * @return the function result
      */
+    // 应用本函数到给定的整数
     R apply(int value);
 }
