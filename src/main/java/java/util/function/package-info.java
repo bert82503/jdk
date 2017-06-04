@@ -63,7 +63,7 @@
  *     {@link java.util.function.Function} (unary function from {@code T} to {@code R}),
  *     {@link java.util.function.Consumer} (unary function from {@code T} to {@code void}),
  *     {@link java.util.function.Predicate} (unary function from {@code T} to {@code boolean}),
- *     and {@link java.util.function.Supplier} (nilary function to {@code R}).
+ *     and {@link java.util.function.Supplier} (nilary function to {@code T}).
  *     </li>
  *
  *     <li>Function shapes have a natural arity based on how they are most
@@ -98,10 +98,11 @@
  * </ul>
  * 本包中的函数式接口遵循一个可扩展的命名约定：
  * <ul>
- *     <li>几种基本的函数形式，包括{@link java.util.function.Function}(从T到R的一元函数)、
+ *     <li>几种基本的函数形式，包括
+ *     {@link java.util.function.Supplier}(生产T的函数)、
+ *     {@link java.util.function.Function}(从T到R的一元函数)、
  *     {@link java.util.function.Consumer}(从T到void的一元函数)、
- *     {@link java.util.function.Predicate}(从T到boolean的一元函数)、
- *     {@link java.util.function.Supplier}(生产R的函数)</li>
+ *     {@link java.util.function.Predicate}(从T到boolean的一元函数)</li>
  *
  *     <li>函数形式有基于最常用的天然数量。基本的形式可以修改一个实参数量的前缀或指示一个不同的数量。
  *     如{@link java.util.function.BiFunction}(从T、U到R的二元函数)</li>

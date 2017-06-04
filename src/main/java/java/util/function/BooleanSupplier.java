@@ -1,29 +1,4 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 package java.util.function;
-
 
 /**
  * Represents a supplier of {@code boolean}-valued results.  This is the
@@ -38,6 +13,7 @@ package java.util.function;
  * @see Supplier
  * @since 1.8
  */
+// 表示布尔值结果的供应商
 @FunctionalInterface
 public interface BooleanSupplier {
 

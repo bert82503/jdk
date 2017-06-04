@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 package java.util.function;
 
 /**
@@ -37,6 +13,7 @@ package java.util.function;
  * @see Supplier
  * @since 1.8
  */
+// 表示整数结果的供应商
 @FunctionalInterface
 public interface IntSupplier {
 
