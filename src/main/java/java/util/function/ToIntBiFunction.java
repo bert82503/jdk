@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 package java.util.function;
 
 /**
@@ -38,6 +14,7 @@ package java.util.function;
  * @see BiFunction
  * @since 1.8
  */
+// 从T、U到int的二元函数
 @FunctionalInterface
 public interface ToIntBiFunction<T, U> {
 
