@@ -22,5 +22,6 @@ public interface DoubleSupplier {
      *
      * @return a result
      */
+    // 获取一个浮点数的结果
     double getAsDouble();
 }

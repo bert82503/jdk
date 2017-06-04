@@ -22,5 +22,6 @@ public interface IntSupplier {
      *
      * @return a result
      */
+    // 获取一个整数的结果
     int getAsInt();
 }

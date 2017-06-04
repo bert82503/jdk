@@ -23,6 +23,6 @@ public interface Supplier<T> {
      *
      * @return a result
      */
-    // 核心方法 获取一个结果
+    // 核心方法 获取一个T类型的结果
     T get();
 }

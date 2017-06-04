@@ -22,5 +22,6 @@ public interface LongSupplier {
      *
      * @return a result
      */
+    // 获取一个长整数的结果
     long getAsLong();
 }

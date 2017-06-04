@@ -22,5 +22,6 @@ public interface BooleanSupplier {
      *
      * @return a result
      */
+    // 获取一个布尔值的结果
     boolean getAsBoolean();
 }
