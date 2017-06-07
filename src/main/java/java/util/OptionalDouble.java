@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 package java.util;
 
 import java.util.function.DoubleConsumer;
@@ -46,6 +22,7 @@ import java.util.function.Supplier;
  *
  * @since 1.8
  */
+// [函数式接口-使用场景-接口返回结果] 可能包含浮点数的容器对象
 public final class OptionalDouble {
     /**
      * Common instance for {@code empty()}.
@@ -54,6 +31,7 @@ public final class OptionalDouble {
 
     /**
      * If true then the value is present, otherwise indicates no value is present
+     * true表示值是存在的
      */
     private final boolean isPresent;
     private final double value;
@@ -65,7 +43,7 @@ public final class OptionalDouble {
      * should exist per VM.
      */
     private OptionalDouble() {
-        this.isPresent = false;
+        this.isPresent = false; // 值不存在
         this.value = Double.NaN;
     }
 
@@ -186,10 +164,11 @@ public final class OptionalDouble {
         if (isPresent) {
             return value;
         } else {
-            throw exceptionSupplier.get();
+            throw exceptionSupplier.get(); // 值为null，则抛出异常(fail-fast，快速失败)
         }
     }
 
+    // ----------------- Object -----------------
     /**
      * Indicates whether some other object is "equal to" this OptionalDouble. The
      * other object is considered equal if:
@@ -215,7 +194,7 @@ public final class OptionalDouble {
 
         OptionalDouble other = (OptionalDouble) obj;
         return (isPresent && other.isPresent)
-               ? Double.compare(value, other.value) == 0
+               ? Double.compare(value, other.value) == 0 // 注意：浮点数比较
                : isPresent == other.isPresent;
     }
 

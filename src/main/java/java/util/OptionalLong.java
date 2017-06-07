@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 package java.util;
 
 import java.util.function.LongConsumer;
@@ -46,6 +22,7 @@ import java.util.function.Supplier;
  *
  * @since 1.8
  */
+// [函数式接口-使用场景-接口返回结果] 可能包含长整数值的容器对象
 public final class OptionalLong {
     /**
      * Common instance for {@code empty()}.
@@ -54,9 +31,10 @@ public final class OptionalLong {
 
     /**
      * If true then the value is present, otherwise indicates no value is present
+     * true表示值是存在的
      */
     private final boolean isPresent;
-    private final long value;
+    private final long value; // 有意义的值
 
     /**
      * Construct an empty instance.
@@ -65,7 +43,7 @@ public final class OptionalLong {
      * should exist per VM.
      */
     private OptionalLong() {
-        this.isPresent = false;
+        this.isPresent = false; // 值不存在
         this.value = 0;
     }
 
@@ -113,6 +91,7 @@ public final class OptionalLong {
      *
      * @see OptionalLong#isPresent()
      */
+    // 核心方法 如果值是存在的，则返回该值；否则，抛出NoSuchElementException
     public long getAsLong() {
         if (!isPresent) {
             throw new NoSuchElementException("No value present");
@@ -186,10 +165,11 @@ public final class OptionalLong {
         if (isPresent) {
             return value;
         } else {
-            throw exceptionSupplier.get();
+            throw exceptionSupplier.get(); // 值为null，则抛出异常(fail-fast，快速失败)
         }
     }
 
+    // ----------------- Object -----------------
     /**
      * Indicates whether some other object is "equal to" this OptionalLong. The
      * other object is considered equal if:
@@ -205,6 +185,7 @@ public final class OptionalLong {
      */
     @Override
     public boolean equals(Object obj) {
+        // 《Effective Java》总结的优化实现
         if (this == obj) {
             return true;
         }
