@@ -134,7 +134,22 @@ public final class Optional<T> {
      */
     // 核心方法 如果是存在的值，则返回true；否则，返回false
     public boolean isPresent() {
-        return value != null; // 值存在判断条件
+        return value != null; // 值存在判断条件(非null)
+    }
+
+    /**
+     * If a value is present, invoke the specified consumer with the value,
+     * otherwise do nothing.
+     *
+     * @param consumer block to be executed if a value is present
+     * @throws NullPointerException if value is present and {@code consumer} is
+     * null
+     */
+    // 核心方法 如果值是存在的，则调用指定的操作消费该值；否则，什么都不做
+    public void ifPresent(Consumer<? super T> consumer) {
+//        if (value != null) // 坑：非null
+        if (isPresent()) // 非null
+            consumer.accept(value);
     }
 
     // 函数式接口
@@ -152,26 +167,13 @@ public final class Optional<T> {
     // 核心方法 如果值是存在的，并且值匹配给定的谓词，则返回描述该值的可选实例；否则，返回空实例
     public Optional<T> filter(Predicate<? super T> predicate) {
         Objects.requireNonNull(predicate);
-        if (!isPresent())
+        if (!isPresent()) // null
             return this;
         else
             return predicate.test(value) ? this : empty();
     }
 
-    /**
-     * If a value is present, invoke the specified consumer with the value,
-     * otherwise do nothing.
-     *
-     * @param consumer block to be executed if a value is present
-     * @throws NullPointerException if value is present and {@code consumer} is
-     * null
-     */
-    // 核心方法 如果值是存在的，则调用指定的操作消费该值；否则，什么都不做
-    public void ifPresent(Consumer<? super T> consumer) {
-        if (value != null)
-            consumer.accept(value);
-    }
-
+    // 使用规则：flatMap(mapper) { map(mapper) }
     /**
      * If a value is present, apply the provided mapping function to it,
      * and if the result is non-null, return an {@code Optional} describing the
@@ -207,7 +209,7 @@ public final class Optional<T> {
     // 核心方法 如果值是存在的，则应用给定的映射函数，并且结果是非null的，则返回描述该结果的可选实例(类型转换函数)；否则，返回空实例
     public <U> Optional<U> map(Function<? super T, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
-        if (!isPresent())
+        if (!isPresent()) // null
             return empty();
         else {
             return Optional.ofNullable(mapper.apply(value)); // 映射结果可能为null，包装成Optional
@@ -236,7 +238,7 @@ public final class Optional<T> {
     // 核心方法 如果值是可选的，则应用提供的可选关系映射函数，然后返回该结果；否则，返回空实例
     public <U> Optional<U> flatMap(Function<? super T, Optional<U>> mapper) {
         Objects.requireNonNull(mapper);
-        if (!isPresent())
+        if (!isPresent()) // null
             return empty();
         else {
             return Objects.requireNonNull(mapper.apply(value)); // Optional<U>不能为null，原生返回
@@ -252,7 +254,8 @@ public final class Optional<T> {
      */
     // 核心方法 如果值存在，则返回该值；否则，返回默认值other
     public T orElse(T other) {
-        return value != null ? value : other;
+//        return value != null ? value : other;
+        return isPresent() ? value : other;
     }
 
     /**
@@ -267,7 +270,8 @@ public final class Optional<T> {
      */
     // 核心方法 如果值存在，则返回该值；否则，调用结果提供者并返回调用的结果(异步)
     public T orElseGet(Supplier<? extends T> other) { // 统一返回结果定义
-        return value != null ? value : other.get();
+//        return value != null ? value : other.get();
+        return isPresent() ? value : other.get();
     }
 
     /**
@@ -290,12 +294,14 @@ public final class Optional<T> {
      */
     // 核心方法 如果值存在，则返回包含的值；否则，抛出一个由提供的供应商创建的异常(fail-fast)
     public <X extends Throwable> T orElseThrow(Supplier<? extends X> exceptionSupplier) throws X {
-        if (value != null) {
+//        if (value != null) {
+        if (isPresent()) {
             return value;
         } else {
             throw exceptionSupplier.get(); // 值为null，则抛出异常(fail-fast，快速失败)
         }
     }
+
 
     // ----------------- Object -----------------
     /**
@@ -350,7 +356,8 @@ public final class Optional<T> {
      */
     @Override
     public String toString() {
-        return value != null
+//        return value != null
+        return isPresent()
             ? String.format("Optional[%s]", value)
             : "Optional.empty"; // 空实例
     }
