@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1994, 2006, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
@@ -31,7 +7,7 @@ package java.lang;
  * {@code Boolean} contains a single field whose type is
  * {@code boolean}.
  * <p>
- * 将 boolean 基本类型的值包装到对象中。
+ * 将boolean基本类型的值包装到对象中。
  * <p>
  * In addition, this class provides many methods for
  * converting a {@code boolean} to a {@code String} and a
@@ -45,9 +21,10 @@ package java.lang;
  * @since   JDK1.0
  */
 // [包装类] 布尔类型
-// final 修饰符来保证类不会被扩展
+// final修饰符保证类不会被扩展
 public final class Boolean implements java.io.Serializable,
-                                      Comparable<Boolean> {
+                                      Comparable<Boolean>
+{
     /**
      * The {@code Boolean} object corresponding to the primitive
      * value {@code true}.
@@ -65,19 +42,20 @@ public final class Boolean implements java.io.Serializable,
      *
      * @since   JDK1.1
      */
-    public static final Class<Boolean> TYPE = Class.getPrimitiveClass("boolean");
-
-    /** use serialVersionUID from JDK 1.0.2 for interoperability */
-    private static final long serialVersionUID = -3665804199014368530L;
+    @SuppressWarnings("unchecked")
+    public static final Class<Boolean> TYPE = (Class<Boolean>) Class.getPrimitiveClass("boolean");
 
     /**
-     * The value of the Boolean. (布尔类型的值)
+     * The value of the Boolean.
+     * 布尔类型的值
      *
      * @serial
      */
-    // 使所有的域都成为私有的
-    // 使所有的域都是 final 的
-    private final boolean value; // 初始化后就不能改变
+    // 使所有的域都成为私有的，使所有的域都是final的
+    private final boolean value;
+
+    /** use serialVersionUID from JDK 1.0.2 for interoperability */
+    private static final long serialVersionUID = -3665804199014368530L;
 
     /**
      * Allocates a {@code Boolean} object representing the
@@ -90,9 +68,9 @@ public final class Boolean implements java.io.Serializable,
      *
      * @param   value   the value of the {@code Boolean}.
      */
-    // 核心方法 构造一个新分配的表示指定布尔值的布尔对象
+    // 构造一个新分配的表示指定布尔值的布尔对象
     public Boolean(boolean value) {
-        this.value = value; // 不要提供任何会修改对象状态的方法
+        this.value = value;
     }
 
     /**
@@ -109,7 +87,7 @@ public final class Boolean implements java.io.Serializable,
      * @param   s   the string to be converted to a {@code Boolean}.
      */
     public Boolean(String s) {
-        this(toBoolean(s));
+        this(parseBoolean(s));
     }
 
     // 解析字符串
@@ -126,9 +104,8 @@ public final class Boolean implements java.io.Serializable,
      * @return     the boolean represented by the string argument
      * @since 1.5
      */
-    // 核心方法 解析字符串参数为有符号的布尔值
     public static boolean parseBoolean(String s) {
-        return toBoolean(s);
+        return ((s != null) && s.equalsIgnoreCase("true"));
     }
 
     /**
@@ -141,8 +118,8 @@ public final class Boolean implements java.io.Serializable,
         return value;
     }
 
-    // 工厂实例化
-    // 基本类型转换为包装类
+    // 静态工厂模式
+    // 基本类型 -> 包装类
     /**
      * Returns a {@code Boolean} instance representing the specified
      * {@code boolean} value.  If the specified {@code boolean} value
@@ -157,7 +134,7 @@ public final class Boolean implements java.io.Serializable,
      * @return a {@code Boolean} instance representing {@code b}.
      * @since  1.4
      */
-    // 核心方法 返回一个表示指定的布尔值的布尔实例(选择用静态工厂代替公有的构造器可以让你以后有添加缓存的灵活性，而不必影响客户端)
+    // 返回一个表示指定的布尔值的布尔实例(选择用静态工厂代替公有的构造器可以让你以后有添加缓存的灵活性，而不必影响客户端)
     public static Boolean valueOf(boolean b) {
         return (b ? TRUE : FALSE);
     }
@@ -172,7 +149,7 @@ public final class Boolean implements java.io.Serializable,
      * @return  the {@code Boolean} value represented by the string.
      */
     public static Boolean valueOf(String s) {
-        return toBoolean(s) ? TRUE : FALSE;
+        return parseBoolean(s) ? TRUE : FALSE;
     }
 
     // 转换为字符串
@@ -186,11 +163,10 @@ public final class Boolean implements java.io.Serializable,
      * @return the string representation of the specified {@code boolean}
      * @since 1.4
      */
-    // 核心方法 返回表示指定布尔值的字符串对象
+    // 返回表示指定布尔值的字符串对象
     public static String toString(boolean b) {
         return b ? "true" : "false";
     }
-
 
     /**
      * Returns a {@code String} object representing this Boolean's
@@ -212,13 +188,25 @@ public final class Boolean implements java.io.Serializable,
      * {@code true}; returns the integer {@code 1237} if this
      * object represents {@code false}.
      */
-    // 核心方法 返回散列码
+    // 返回散列码
     @Override
     public int hashCode() {
-        return value ? 1231 : 1237;
+        return Boolean.hashCode(value);
     }
 
     /**
+     * Returns a hash code for a {@code boolean} value; compatible with
+     * {@code Boolean.hashCode()}.
+     *
+     * @param value the value to hash
+     * @return a hash code value for a {@code boolean} value.
+     * @since 1.8
+     */
+    public static int hashCode(boolean value) {
+        return value ? 1231 : 1237;
+    }
+
+   /**
      * Returns {@code true} if and only if the argument is not
      * {@code null} and is a {@code Boolean} object that
      * represents the same {@code boolean} value as this object.
@@ -227,7 +215,7 @@ public final class Boolean implements java.io.Serializable,
      * @return  {@code true} if the Boolean objects represent the
      *          same value; {@code false} otherwise.
      */
-    // 核心方法 布尔值比较
+    // 布尔值比较
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Boolean) {
@@ -250,20 +238,21 @@ public final class Boolean implements java.io.Serializable,
      *
      * @param   name   the system property name.
      * @return  the {@code boolean} value of the system property.
+     * @throws  SecurityException for the same reasons as
+     *          {@link System#getProperty(String) System.getProperty}
      * @see     java.lang.System#getProperty(java.lang.String)
      * @see     java.lang.System#getProperty(java.lang.String, java.lang.String)
      */
     public static boolean getBoolean(String name) {
         boolean result = false;
         try {
-            result = toBoolean(System.getProperty(name));
+            result = parseBoolean(System.getProperty(name));
         } catch (IllegalArgumentException | NullPointerException e) {
             // 忽略
         }
         return result;
     }
 
-    // 排序
     /**
      * Compares this {@code Boolean} instance with another.
      *
@@ -295,12 +284,53 @@ public final class Boolean implements java.io.Serializable,
      *         a value greater than {@code 0} if {@code x && !y}
      * @since 1.7
      */
-    // 核心方法 比较两个布尔值
+    // 比较两个布尔值
     public static int compare(boolean x, boolean y) {
         return (x == y) ? 0 : (x ? 1 : -1); // 比较规则
     }
 
-    private static boolean toBoolean(String name) {
-        return ((name != null) && name.equalsIgnoreCase("true"));
+    
+    // 二元运算符：与、或、非
+    // 函数式接口：BinaryOperator
+    /**
+     * Returns the result of applying the logical AND operator to the
+     * specified {@code boolean} operands.
+     *
+     * @param a the first operand
+     * @param b the second operand
+     * @return the logical AND of {@code a} and {@code b}
+     * @see java.util.function.BinaryOperator
+     * @since 1.8
+     */
+    public static boolean logicalAnd(boolean a, boolean b) {
+        return a && b;
+    }
+
+    /**
+     * Returns the result of applying the logical OR operator to the
+     * specified {@code boolean} operands.
+     *
+     * @param a the first operand
+     * @param b the second operand
+     * @return the logical OR of {@code a} and {@code b}
+     * @see java.util.function.BinaryOperator
+     * @since 1.8
+     */
+    public static boolean logicalOr(boolean a, boolean b) {
+        return a || b;
+    }
+
+    /**
+     * Returns the result of applying the logical XOR operator to the
+     * specified {@code boolean} operands.
+     *
+     * @param a the first operand
+     * @param b the second operand
+     * @return  the logical XOR of {@code a} and {@code b}
+     * @see java.util.function.BinaryOperator
+     * @since 1.8
+     */
+    public static boolean logicalXor(boolean a, boolean b) {
+        return a ^ b;
     }
 }
