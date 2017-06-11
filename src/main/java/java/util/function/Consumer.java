@@ -27,7 +27,7 @@ public interface Consumer<T> {
     // 核心方法 对给定的参数执行本操作
     void accept(T t);
 
-    // N多个消费者模式
+    // N个消费者模式
     /**
      * Returns a composed {@code Consumer} that performs, in sequence, this
      * operation followed by the {@code after} operation. If performing either
@@ -42,6 +42,6 @@ public interface Consumer<T> {
      */
     default Consumer<T> andThen(Consumer<? super T> after) {
         Objects.requireNonNull(after);
-        return (T t) -> { accept(t); after.accept(t); };
+        return (T t) -> { accept(t); after.accept(t); }; // 需要多次消费的场景
     }
 }

@@ -45,7 +45,7 @@ public interface Predicate<T> {
      */
     default Predicate<T> and(Predicate<? super T> other) {
         Objects.requireNonNull(other);
-        return (t) -> test(t) && other.test(t);
+        return (t) -> test(t) && other.test(t); // 与：&&
     }
 
     /**
@@ -56,7 +56,7 @@ public interface Predicate<T> {
      * predicate
      */
     default Predicate<T> negate() {
-        return (t) -> !test(t);
+        return (t) -> !test(t); // 非：!
     }
 
     /**
@@ -77,7 +77,7 @@ public interface Predicate<T> {
      */
     default Predicate<T> or(Predicate<? super T> other) {
         Objects.requireNonNull(other);
-        return (t) -> test(t) || other.test(t);
+        return (t) -> test(t) || other.test(t); // 或：||
     }
 
     // 测试两个参数是否相等
@@ -94,6 +94,6 @@ public interface Predicate<T> {
     static <T> Predicate<T> isEqual(Object targetRef) {
         return (null == targetRef)
                 ? Objects::isNull
-                : object -> targetRef.equals(object);
+                : obj -> targetRef.equals(obj);
     }
 }

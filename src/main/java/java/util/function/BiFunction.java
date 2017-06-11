@@ -16,7 +16,7 @@ import java.util.Objects;
  * @see Function
  * @since 1.8
  */
-// 从T、U到R的二元函数，接受两个参数并产生一个结果的二元函数
+// 从(T、U)到R的二元函数，接受两个参数并产生一个结果的二元函数
 @FunctionalInterface
 public interface BiFunction<T, U, R> {
 
@@ -30,6 +30,7 @@ public interface BiFunction<T, U, R> {
     // 应用本函数到所有给定的参数
     R apply(T t, U u);
 
+    // 与一元函数组合使用
     /**
      * Returns a composed function that first applies this function to
      * its input, and then applies the {@code after} function to the result.
