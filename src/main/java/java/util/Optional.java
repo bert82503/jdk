@@ -29,7 +29,7 @@ import java.util.function.Supplier;
  *
  * @since 1.8
  */
-// [函数式接口-使用场景-接口返回结果] 可能包含null值的容器对象
+// [函数式接口-使用场景-方法返回结果] 可能包含null值的容器对象(只有一个值，可包装方法的返回结果)
 public final class Optional<T> {
 
     /**
@@ -268,7 +268,7 @@ public final class Optional<T> {
      * @throws NullPointerException if value is not present and {@code other} is
      * null
      */
-    // 核心方法 如果值存在，则返回该值；否则，调用结果提供者并返回调用的结果(异步)
+    // 核心方法 如果值存在，则返回该值；否则，调用结果提供者并返回调用的结果
     public T orElseGet(Supplier<? extends T> other) { // 统一返回结果定义
 //        return value != null ? value : other.get();
         return isPresent() ? value : other.get();
