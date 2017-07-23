@@ -9,6 +9,7 @@ import java.util.function.Supplier;
  * A container object which may or may not contain a non-null value.
  * If a value is present, {@code isPresent()} will return {@code true} and
  * {@code get()} will return the value.
+ * <p>
  * 如果值是存在的，{@link #isPresent()}会返回true，{@link #get()}会返回该值。
  *
  * <p>Additional methods that depend on the presence or absence of a contained
@@ -16,6 +17,7 @@ import java.util.function.Supplier;
  * (return a default value if value not present) and
  * {@link #ifPresent(java.util.function.Consumer) ifPresent()} (execute a block
  * of code if the value is present).
+ * <p>
  * 其他方法，取决于提供的包含值是否存在。比如，
  * {@link #orElse(java.lang.Object) orElse()} (如果值不存在，则返回默认值)和
  * {@link #ifPresent(java.util.function.Consumer) ifPresent()} (如果值存在，则执行代码块)。
@@ -24,17 +26,17 @@ import java.util.function.Supplier;
  * class; use of identity-sensitive operations (including reference equality
  * ({@code ==}), identity hash code, or synchronization) on instances of
  * {@code Optional} may have unpredictable results and should be avoided.
+ * <p>
  * 这是一个基于值的类，使用可选实例上的身份敏感操作(包括引用相等性(==)，身份哈希码，同步)，
  * 可能产生不可预知的结果，应该避免。
  *
  * @since 1.8
  */
-// [函数式接口-使用场景-接口返回结果] 可能包含null值的容器对象
+// [函数式接口] 可能包含null值的容器对象
 public final class Optional<T> {
-
     /**
      * Common instance for {@code empty()}.
-     * 空实例
+     * 空实例({@linkplain #empty()})
      */
     private static final Optional<?> EMPTY = new Optional<>();
 
@@ -51,7 +53,7 @@ public final class Optional<T> {
      * should exist per VM.
      */
     private Optional() {
-        this.value = null; // 空实例
+        this.value = null;
     }
 
     /**
@@ -76,18 +78,18 @@ public final class Optional<T> {
     /**
      * Constructs an instance with the value present.
      *
-     * @param value the non-null value to be present 存在的非空值
+     * @param value the non-null value to be present 存在的非null值
      * @throws NullPointerException if value is null
      */
     private Optional(T value) {
-        this.value = Objects.requireNonNull(value);
+        this.value = Objects.requireNonNull(value); // 必须是非null值
     }
 
     /**
      * Returns an {@code Optional} with the specified present non-null value.
      *
-     * @param <T> the class of the value
-     * @param value the value to be present, which must be non-null
+     * @param <T> the class of the value 值的类型
+     * @param value the value to be present, which must be non-null 存在的值，必须不是非null
      * @return an {@code Optional} with the value present
      * @throws NullPointerException if value is null 如果值是null，则抛出NPE
      */
@@ -100,12 +102,12 @@ public final class Optional<T> {
      * Returns an {@code Optional} describing the specified value, if non-null,
      * otherwise returns an empty {@code Optional}.
      *
-     * @param <T> the class of the value
+     * @param <T> the class of the value 值的类型
      * @param value the possibly-null value to describe 描述可为null的值
      * @return an {@code Optional} with a present value if the specified value
      * is non-null, otherwise an empty {@code Optional}
      */
-    // 核心方法 如果值非null，返回一个描述指定值的可选实例；否则，返回一个空实例
+    // 核心方法 如果值非空，返回一个描述指定值的可选实例；否则，返回一个空实例
     public static <T> Optional<T> ofNullable(T value) {
         return value == null ? empty() : of(value);
     }
@@ -119,9 +121,10 @@ public final class Optional<T> {
      *
      * @see Optional#isPresent()
      */
-    // 核心方法 如果值存在，则返回该值；否则，抛出NoSuchElementException异常
+    // 核心方法 如果值存在，则返回该值；否则，抛出没有这个元素异常
     public T get() {
-        if (value == null) {
+//        if (value == null) {
+        if (!isPresent()) {
             throw new NoSuchElementException("No value present");
         }
         return value;
@@ -134,9 +137,10 @@ public final class Optional<T> {
      */
     // 核心方法 如果是存在的值，则返回true；否则，返回false
     public boolean isPresent() {
-        return value != null; // 值存在判断条件(非null)
+        return value != null;
     }
 
+    // 函数式接口
     /**
      * If a value is present, invoke the specified consumer with the value,
      * otherwise do nothing.
@@ -147,12 +151,13 @@ public final class Optional<T> {
      */
     // 核心方法 如果值是存在的，则调用指定的操作消费该值；否则，什么都不做
     public void ifPresent(Consumer<? super T> consumer) {
-//        if (value != null) // 坑：非null
-        if (isPresent()) // 非null
+//        if (value != null)
+        if (isPresent()) {
             consumer.accept(value);
+        }
     }
 
-    // 函数式接口
+    // 第一层：过滤
     /**
      * If a value is present, and the value matches the given predicate,
      * return an {@code Optional} describing the value, otherwise return an
@@ -167,10 +172,11 @@ public final class Optional<T> {
     // 核心方法 如果值是存在的，并且值匹配给定的谓词，则返回描述该值的可选实例；否则，返回空实例
     public Optional<T> filter(Predicate<? super T> predicate) {
         Objects.requireNonNull(predicate);
-        if (!isPresent()) // null
+        if (!isPresent()) {
             return this;
-        else
+        } else {
             return predicate.test(value) ? this : empty();
+        }
     }
 
     // 使用规则：flatMap(mapper) { map(mapper) }
@@ -184,6 +190,9 @@ public final class Optional<T> {
      * following code traverses a stream of file names, selects one that has
      * not yet been processed, and then opens that file, returning an
      * {@code Optional<FileInputStream>}:
+     * <p>
+     * 本方法支持可选值的后置处理，不需要显示地检查返回状态。
+     * 例如，下面的代码遍历文件名称列表的流，选择一个尚未被处理的，然后打开该文件，并返回文件输出流的可选实例：
      *
      * <pre>{@code
      *     Optional<FileInputStream> fis =
@@ -191,13 +200,12 @@ public final class Optional<T> {
      *                       .findFirst()
      *                       .map(name -> new FileInputStream(name));
      * }</pre>
-     * 本方法支持可选值的后置处理，不需要显示地检查返回状态。
-     * 例如，下面的代码遍历文件名称列表的流，选择一个尚未被处理的，然后打开该文件，并返回文件输出流的可选实例：
      *
      * Here, {@code findFirst} returns an {@code Optional<String>}, and then
      * {@code map} returns an {@code Optional<FileInputStream>} for the desired
      * file if one exists.
-     * 这里，{@code findFirst}返回一个字符串的可选实例，然后通过映射函数为存在的所需文件返回一个文件输入流的可选实例。
+     * <p>
+     * {@code findFirst}返回一个字符串的可选实例，然后通过映射函数为存在的所需文件返回一个文件输入流的可选实例。
      *
      * @param <U> The type of the result of the mapping function 映射函数的结果类型
      * @param mapper a mapping function to apply to the value, if present 如果值存在，应用到值的映射函数
@@ -206,12 +214,12 @@ public final class Optional<T> {
      * otherwise an empty {@code Optional} 返回一个描述应用映射函数到该可选实例值的结果的可选实例
      * @throws NullPointerException if the mapping function is null
      */
-    // 核心方法 如果值是存在的，则应用给定的映射函数，并且结果是非null的，则返回描述该结果的可选实例(类型转换函数)；否则，返回空实例
+    // 核心方法 如果值是存在的，则应用给定的映射函数，并且结果是非空的，则返回描述该结果的可选实例；否则，返回空实例
     public <U> Optional<U> map(Function<? super T, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
-        if (!isPresent()) // null
+        if (!isPresent()) {
             return empty();
-        else {
+        } else {
             return Optional.ofNullable(mapper.apply(value)); // 映射结果可能为null，包装成Optional
         }
     }
@@ -223,6 +231,7 @@ public final class Optional<T> {
      * but the provided mapper is one whose result is already an {@code Optional},
      * and if invoked, {@code flatMap} does not wrap it with an additional
      * {@code Optional}.
+     * <p>
      * 本方法和{@link #map(Function)}相似，但提供的映射函数的结果已是一个可选实例，
      * 如果被调用，本方法并不会使用一个额外的可选实例包装它。
      *
@@ -238,9 +247,9 @@ public final class Optional<T> {
     // 核心方法 如果值是可选的，则应用提供的可选关系映射函数，然后返回该结果；否则，返回空实例
     public <U> Optional<U> flatMap(Function<? super T, Optional<U>> mapper) {
         Objects.requireNonNull(mapper);
-        if (!isPresent()) // null
+        if (!isPresent()) {
             return empty();
-        else {
+        } else {
             return Objects.requireNonNull(mapper.apply(value)); // Optional<U>不能为null，原生返回
         }
     }
@@ -249,10 +258,10 @@ public final class Optional<T> {
      * Return the value if present, otherwise return {@code other}.
      *
      * @param other the value to be returned if there is no value present, may
-     * be null
+     * be null 可能为null
      * @return the value, if present, otherwise {@code other}
      */
-    // 核心方法 如果值存在，则返回该值；否则，返回默认值other
+    // 核心方法 如果值存在，则返回该值；否则，返回默认值
     public T orElse(T other) {
 //        return value != null ? value : other;
         return isPresent() ? value : other;
@@ -268,8 +277,9 @@ public final class Optional<T> {
      * @throws NullPointerException if value is not present and {@code other} is
      * null
      */
-    // 核心方法 如果值存在，则返回该值；否则，调用结果提供者并返回调用的结果(异步)
-    public T orElseGet(Supplier<? extends T> other) { // 统一返回结果定义
+    // 核心方法 如果值存在，则返回该值；否则，调用结果提供者并返回调用的结果
+    // 使用场景：数据多层保护设计，如Cache + DB
+    public T orElseGet(Supplier<? extends T> other) {
 //        return value != null ? value : other.get();
         return isPresent() ? value : other.get();
     }
@@ -280,9 +290,10 @@ public final class Optional<T> {
      *
      * @apiNote A method reference to the exception constructor with an empty
      * argument list can be used as the supplier. For example,
-     * {@code IllegalStateException::new}
+     * {@code IllegalStateException::new}.
+     * <p>
      * 一个引用使用空参数列表异常构造器的方法，可用于异常供应商。
-     * 例如，{@code IllegalStateException::new}
+     * 例如，{@code IllegalStateException::new}。
      *
      * @param <X> type of the exception to be thrown 待抛出的异常类型
      * @param exceptionSupplier The supplier which will return the exception to
@@ -292,13 +303,14 @@ public final class Optional<T> {
      * @throws NullPointerException if no value is present and
      * {@code exceptionSupplier} is null
      */
-    // 核心方法 如果值存在，则返回包含的值；否则，抛出一个由提供的供应商创建的异常(fail-fast)
+    // 核心方法 如果值存在，则返回包含的值；否则，抛出一个由提供的供应商创建的异常
+    // 使用场景：基于异常的快速失败设计(fail-fast)
     public <X extends Throwable> T orElseThrow(Supplier<? extends X> exceptionSupplier) throws X {
 //        if (value != null) {
         if (isPresent()) {
             return value;
         } else {
-            throw exceptionSupplier.get(); // 值为null，则抛出异常(fail-fast，快速失败)
+            throw exceptionSupplier.get(); // 值为null，则抛出异常
         }
     }
 
@@ -329,7 +341,7 @@ public final class Optional<T> {
         }
 
         Optional<?> other = (Optional<?>) obj;
-        return Objects.equals(value, other.value); // Objects辅助方法
+        return Objects.equals(value, other.value);
     }
 
     /**

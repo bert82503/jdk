@@ -5,6 +5,7 @@ package java.util.function;
  *
  * <p>There is no requirement that a new or distinct result be returned each
  * time the supplier is invoked.
+ * <p>
  * 没有强制要求，供应商的每次调用都返回一个新的或不同的结果。
  *
  * <p>This is a <a href="package-summary.html">functional interface</a>

@@ -4,6 +4,7 @@ import java.util.Objects;
 
 /**
  * Represents a function that accepts one argument and produces a result.
+ * <p>
  * 表示接受一个参数并产生一个结果的一元函数。
  *
  * <p>This is a <a href="package-summary.html">functional interface</a>
@@ -33,6 +34,7 @@ public interface Function<T, R> {
      * function to its input, and then applies this function to the result.
      * If evaluation of either function throws an exception, it is relayed to
      * the caller of the composed function.
+     * <p>
      * 返回一个before的组合函数，首先应用{@code before}函数到其输入参数，然后应用本函数到中间结果。
      * (V -> T -> R)
      *
@@ -55,6 +57,7 @@ public interface Function<T, R> {
      * its input, and then applies the {@code after} function to the result.
      * If evaluation of either function throws an exception, it is relayed to
      * the caller of the composed function.
+     * <p>
      * 返回一个after的组合函数。
      * (T -> R -> V)
      *
