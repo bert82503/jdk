@@ -21,8 +21,9 @@ import java.util.function.Supplier;
  * {@code OptionalDouble} may have unpredictable results and should be avoided.
  *
  * @since 1.8
+ * @see java.util.Optional
  */
-// [函数式接口-使用场景-接口返回结果] 可能包含浮点数的容器对象
+// [函数式接口] 可能包含浮点数的容器对象
 public final class OptionalDouble {
     /**
      * Common instance for {@code empty()}.
@@ -31,6 +32,7 @@ public final class OptionalDouble {
 
     /**
      * If true then the value is present, otherwise indicates no value is present
+     * <p>
      * true表示值是存在的
      */
     private final boolean isPresent;
@@ -116,8 +118,9 @@ public final class OptionalDouble {
      * null
      */
     public void ifPresent(DoubleConsumer consumer) {
-        if (isPresent)
+        if (isPresent) {
             consumer.accept(value);
+        }
     }
 
     /**
@@ -164,7 +167,7 @@ public final class OptionalDouble {
         if (isPresent) {
             return value;
         } else {
-            throw exceptionSupplier.get(); // 值为null，则抛出异常(fail-fast，快速失败)
+            throw exceptionSupplier.get(); // 值不存在，则抛出异常(fail-fast，快速失败)
         }
     }
 

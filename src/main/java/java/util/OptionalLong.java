@@ -22,7 +22,7 @@ import java.util.function.Supplier;
  *
  * @since 1.8
  */
-// [函数式接口-使用场景-接口返回结果] 可能包含长整数值的容器对象
+// [函数式接口] 可能包含长整数值的容器对象
 public final class OptionalLong {
     /**
      * Common instance for {@code empty()}.
@@ -31,10 +31,14 @@ public final class OptionalLong {
 
     /**
      * If true then the value is present, otherwise indicates no value is present
+     * <p>
      * true表示值是存在的
      */
     private final boolean isPresent;
-    private final long value; // 有意义的值
+    /**
+     * 有意义的值
+     */
+    private final long value;
 
     /**
      * Construct an empty instance.
@@ -91,7 +95,7 @@ public final class OptionalLong {
      *
      * @see OptionalLong#isPresent()
      */
-    // 核心方法 如果值是存在的，则返回该值；否则，抛出NoSuchElementException
+    // 核心方法 如果值是存在的，则返回该值；否则，抛出没有这个元素异常
     public long getAsLong() {
         if (!isPresent) {
             throw new NoSuchElementException("No value present");
@@ -117,8 +121,9 @@ public final class OptionalLong {
      * null
      */
     public void ifPresent(LongConsumer consumer) {
-        if (isPresent)
+        if (isPresent) {
             consumer.accept(value);
+        }
     }
 
     /**
@@ -165,7 +170,7 @@ public final class OptionalLong {
         if (isPresent) {
             return value;
         } else {
-            throw exceptionSupplier.get(); // 值为null，则抛出异常(fail-fast，快速失败)
+            throw exceptionSupplier.get(); // 值不存在，则抛出异常(fail-fast，快速失败)
         }
     }
 

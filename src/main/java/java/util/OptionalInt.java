@@ -22,8 +22,9 @@ import java.util.function.Supplier;
  * {@code OptionalInt} may have unpredictable results and should be avoided.
  *
  * @since 1.8
+ * @see java.util.Optional
  */
-// [函数式接口-使用场景-接口返回结果] 可能包含整数值的容器对象
+// [函数式接口] 可能包含整数值的容器对象
 public final class OptionalInt {
     /**
      * Common instance for {@code empty()}.
@@ -32,10 +33,14 @@ public final class OptionalInt {
 
     /**
      * If true then the value is present, otherwise indicates no value is present
+     * <p>
      * true表示值是存在的
      */
     private final boolean isPresent;
-    private final int value; // 有意义的值
+    /**
+     * 有意义的值
+     */
+    private final int value;
 
     /**
      * Construct an empty instance.
@@ -92,7 +97,7 @@ public final class OptionalInt {
      *
      * @see OptionalInt#isPresent()
      */
-    // 核心方法 如果值是存在的，则返回该值；否则，抛出NoSuchElementException
+    // 核心方法 如果值是存在的，则返回该值；否则，抛出没有这个元素异常
     public int getAsInt() {
         if (!isPresent) {
             throw new NoSuchElementException("No value present");
@@ -118,8 +123,9 @@ public final class OptionalInt {
      * null
      */
     public void ifPresent(IntConsumer consumer) {
-        if (isPresent)
+        if (isPresent) {
             consumer.accept(value);
+        }
     }
 
     /**
@@ -166,7 +172,7 @@ public final class OptionalInt {
         if (isPresent) {
             return value;
         } else {
-            throw exceptionSupplier.get(); // 值为null，则抛出异常(fail-fast，快速失败)
+            throw exceptionSupplier.get(); // 值不存在，则抛出异常(fail-fast，快速失败)
         }
     }
 
