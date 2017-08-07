@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1996, 2005, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.io;
 
@@ -32,7 +8,6 @@ package java.io;
  * deserialized.  All subtypes of a serializable class are themselves
  * serializable.  The serialization interface has no methods or fields
  * and serves only to identify the semantics of being serializable. <p>
- *
  * 启动类的可串行性通过实现 {@link Serializable} 接口。
  * 未实现本接口的类不会有任何状态的序列化或反序列化。
  * 所有可串行化类的子类都是可序列化的。
@@ -46,7 +21,6 @@ package java.io;
  * initialize the class's state.  It is an error to declare a class
  * Serializable if this is not the case.  The error will be detected at
  * runtime. <p>
- *
  * 为了允许非序列化类的子类可以被序列化，子类负责保存和恢复公有的、保护的、包默认字段的状态。
  * 如果子类继承拥有可访问的默认构造器的类来初始化类的状态，将在运行时检测到错误。 <p>
  *
@@ -55,7 +29,6 @@ package java.io;
  * the class.  A no-arg constructor must be accessible to the subclass
  * that is serializable.  The fields of serializable subclasses will
  * be restored from the stream. <p>
- *
  * 在反序列化期间，非序列化类的字段将使用公有的或保护的默认构造器来初始化。
  * 默认的构造器必须能被可序列化的子类访问到，该序列化子类的字段将从流中还原。<p>
  *
@@ -87,8 +60,7 @@ package java.io;
  * itself with the state belonging to its superclasses or subclasses.
  * State is saved by writing the individual fields to the
  * ObjectOutputStream using the writeObject method or by using the
- * methods for primitive data types supported by DataOutput.
- * <p>
+ * methods for primitive data types supported by DataOutput. <p>
  * writeObject 方法负责写入对象的状态。
  *
  * <p>The readObject method is responsible for reading from the stream and
@@ -101,8 +73,7 @@ package java.io;
  * concern itself with the state belonging to its superclasses or subclasses.
  * State is saved by writing the individual fields to the
  * ObjectOutputStream using the writeObject method or by using the
- * methods for primitive data types supported by DataOutput.
- * <p>
+ * methods for primitive data types supported by DataOutput. <p>
  * readObject 方法负责从流中读取并恢复类字段。
  *
  * <p>The readObjectNoData method is responsible for initializing the state of
@@ -118,7 +89,7 @@ package java.io;
  *
  * <p>Serializable classes that need to designate an alternative object to be
  * used when writing an object to the stream should implement this
- * special method with the exact signature: (向流中写入一个对象)<p>
+ * special method with the exact signature (向流中写入一个对象):
  *
  * <PRE>
  * ANY-ACCESS-MODIFIER Object writeReplace() throws ObjectStreamException;
@@ -132,7 +103,7 @@ package java.io;
  *
  * Classes that need to designate a replacement when an instance of it
  * is read from the stream should implement this special method with the
- * exact signature.<p>
+ * exact signature.
  *
  * <PRE>
  * ANY-ACCESS-MODIFIER Object readResolve() throws ObjectStreamException;
@@ -175,8 +146,7 @@ package java.io;
  * class--serialVersionUID fields are not useful as inherited members. Array
  * classes cannot declare an explicit serialVersionUID, so they always have
  * the default computed value, but the requirement for matching
- * serialVersionUID values is waived for array classes.
- * <p>
+ * serialVersionUID values is waived for array classes. <p>
  * 如果序列化类未显示声明一个 serialVersionUID，则序列化运行时会基于类的各个方面计算一个默认的 serialVersionUID 值。
  * （详见 Java 对象序列化规范）
  * 但是，强烈推荐所有的序列化类型都显示地声明 serialVersionUID 值，
