@@ -1,27 +1,4 @@
-/*
- * Copyright (c) 1994, 2014, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
+
 package java.lang;
 
 import java.io.BufferedInputStream;
@@ -33,19 +10,23 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Executable;
+import java.nio.channels.Channel;
+import java.nio.channels.spi.SelectorProvider;
 import java.security.AccessControlContext;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Map;
 import java.util.Properties;
 import java.util.PropertyPermission;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.nio.channels.Channel;
-import java.nio.channels.spi.SelectorProvider;
+
 import sun.nio.ch.Interruptible;
 import sun.reflect.CallerSensitive;
 import sun.reflect.Reflection;
-import sun.security.util.SecurityConstants;
 import sun.reflect.annotation.AnnotationType;
+import sun.security.util.SecurityConstants;
 
 /**
  * The <code>System</code> class contains several useful class fields
@@ -88,6 +69,7 @@ public final class System {
     private System() {
     }
 
+    // JVM实例（全局唯一）
     // 输入输出流
     /**
      * The "standard" input stream. This stream is already
@@ -99,7 +81,7 @@ public final class System {
      * 此流已打开，并准备提供输入数据。
      * 通常，此流对应于指定的键盘输入或另一个由宿主环境或用户指定的输入源。
      */
-    public final static InputStream in = null; // 全局唯一
+    public final static InputStream in = null;
 
     /**
      * The "standard" output stream. This stream is already
@@ -110,23 +92,23 @@ public final class System {
      * 标准输出流。
      * <p>
      * For simple stand-alone Java applications, a typical way to write
-     * a line of output data is: (写一行输出数据的一个典型方式)
+     * a line of output data is (写一行输出数据的一个典型方式):
      * <blockquote><pre>
      *     System.out.println(data)
      * </pre></blockquote>
      * <p>
      * See the <code>println</code> methods in class <code>PrintStream</code>.
      *
-     * @see     java.io.PrintStream#println()
-     * @see     java.io.PrintStream#println(boolean)
-     * @see     java.io.PrintStream#println(char)
-     * @see     java.io.PrintStream#println(char[])
-     * @see     java.io.PrintStream#println(double)
-     * @see     java.io.PrintStream#println(float)
-     * @see     java.io.PrintStream#println(int)
-     * @see     java.io.PrintStream#println(long)
-     * @see     java.io.PrintStream#println(java.lang.Object)
-     * @see     java.io.PrintStream#println(java.lang.String)
+     * @see     PrintStream#println()
+     * @see     PrintStream#println(boolean)
+     * @see     PrintStream#println(char)
+     * @see     PrintStream#println(char[])
+     * @see     PrintStream#println(double)
+     * @see     PrintStream#println(float)
+     * @see     PrintStream#println(int)
+     * @see     PrintStream#println(long)
+     * @see     PrintStream#println(Object)
+     * @see     PrintStream#println(String)
      */
     public final static PrintStream out = null;
 
@@ -169,7 +151,7 @@ public final class System {
      *        reassigning of the standard input stream.
      *
      * @see SecurityManager#checkPermission
-     * @see java.lang.RuntimePermission
+     * @see RuntimePermission
      *
      * @since   JDK1.1
      */
@@ -195,7 +177,7 @@ public final class System {
      *        reassigning of the standard output stream.
      *
      * @see SecurityManager#checkPermission
-     * @see java.lang.RuntimePermission
+     * @see RuntimePermission
      *
      * @since   JDK1.1
      */
@@ -221,7 +203,7 @@ public final class System {
      *        reassigning of the standard error output stream.
      *
      * @see SecurityManager#checkPermission
-     * @see java.lang.RuntimePermission
+     * @see RuntimePermission
      *
      * @since   JDK1.1
      */
@@ -242,7 +224,7 @@ public final class System {
      */
      public static Console console() {
          if (cons == null) {
-             synchronized (System.class) { // 类对象监视器同步语句
+             synchronized (System.class) { // 类对象监视器同步
                  cons = sun.misc.SharedSecrets.getJavaIOAccess().console();
              }
          }
@@ -316,7 +298,7 @@ public final class System {
      *             doesn't allow it to be replaced.
      * @see #getSecurityManager
      * @see SecurityManager#checkPermission
-     * @see java.lang.RuntimePermission
+     * @see RuntimePermission
      */
     public static
     void setSecurityManager(final SecurityManager s) {
@@ -429,13 +411,13 @@ public final class System {
      * the difference between two such values, obtained within the same
      * instance of a Java virtual machine, is computed.
      *
-     * <p> For example, to measure how long some code takes to execute: (测量一些代码执行需要多长时间)
+     * <p> For example, to measure how long some code takes to execute (测量一些代码执行需要多长时间):
      *  <pre> {@code
      * long startTime = System.nanoTime();
      * // ... the code being measured ...
      * long estimatedTime = System.nanoTime() - startTime;}</pre>
      *
-     * <p>To compare two nanoTime values: (比较两个纳秒时间值)
+     * <p>To compare two nanoTime values (比较两个纳秒时间值):
      *  <pre> {@code
      * long t0 = System.nanoTime();
      * ...
@@ -488,7 +470,7 @@ public final class System {
      * <p>
      * Otherwise, if any of the following is true, an
      * <code>ArrayStoreException</code> is thrown and the destination is
-     * not modified: (数组存储异常)
+     * not modified (数组存储异常):
      * <ul>
      * <li>The <code>src</code> argument refers to an object that is not an
      *     array.
@@ -506,7 +488,7 @@ public final class System {
      * <p>
      * Otherwise, if any of the following is true, an
      * <code>IndexOutOfBoundsException</code> is
-     * thrown and the destination is not modified: (数组下标越界异常)
+     * thrown and the destination is not modified (数组下标越界异常):
      * <ul>
      * <li>The <code>srcPos</code> argument is negative.
      * <li>The <code>destPos</code> argument is negative.
@@ -560,8 +542,8 @@ public final class System {
      * whether or not the given object's class overrides
      * hashCode().
      * The hash code for the null reference is zero.
-     * <p></p>
-     * 返回给定对象的相同的哈希值
+     * <p>
+     * 返回给定对象的相同的哈希值。
      *
      * @param x object for which the hashCode is to be calculated
      * @return  the hashCode
@@ -616,7 +598,7 @@ public final class System {
      * <tr><td><code>java.version</code></td>
      *     <td>Java Runtime Environment version</td></tr>
      * <tr><td><code>java.vendor</code></td>
-     *     <td>Java Runtime Environment vendor</td></tr
+     *     <td>Java Runtime Environment vendor</td></tr>
      * <tr><td><code>java.vendor.url</code></td>
      *     <td>Java vendor URL</td></tr>
      * <tr><td><code>java.home</code></td>
@@ -650,7 +632,10 @@ public final class System {
      * <tr><td><code>java.compiler</code></td>
      *     <td>Name of JIT compiler to use</td></tr>
      * <tr><td><code>java.ext.dirs</code></td>
-     *     <td>Path of extension directory or directories</td></tr>
+     *     <td>Path of extension directory or directories
+     *         <b>Deprecated.</b> <i>This property, and the mechanism
+     *            which implements it, may be removed in a future
+     *            release.</i> </td></tr>
      * <tr><td><code>os.name</code></td>
      *     <td>Operating system name</td></tr>
      * <tr><td><code>os.arch</code></td>
@@ -683,11 +668,10 @@ public final class System {
      *             <code>checkPropertiesAccess</code> method doesn't allow access
      *              to the system properties.
      * @see        #setProperties
-     * @see        java.lang.SecurityException
-     * @see        java.lang.SecurityManager#checkPropertiesAccess()
-     * @see        java.util.Properties
+     * @see        SecurityException
+     * @see        SecurityManager#checkPropertiesAccess()
+     * @see        Properties
      */
-    // 核心方法 确定当前的系统属性
     public static Properties getProperties() {
         SecurityManager sm = getSecurityManager();
         if (sm != null) {
@@ -706,6 +690,9 @@ public final class System {
      *
      * <p>On UNIX systems, it returns {@code "\n"}; on Microsoft
      * Windows systems it returns {@code "\r\n"}.
+     *
+     * @return the system-dependent line separator string
+     * @since 1.7
      */
     public static String lineSeparator() {
         return lineSeparator;
@@ -733,9 +720,9 @@ public final class System {
      *             <code>checkPropertiesAccess</code> method doesn't allow access
      *              to the system properties.
      * @see        #getProperties
-     * @see        java.util.Properties
-     * @see        java.lang.SecurityException
-     * @see        java.lang.SecurityManager#checkPropertiesAccess()
+     * @see        Properties
+     * @see        SecurityException
+     * @see        SecurityManager#checkPropertiesAccess()
      */
     public static void setProperties(Properties props) {
         SecurityManager sm = getSecurityManager();
@@ -773,9 +760,9 @@ public final class System {
      *             <code>null</code>.
      * @exception  IllegalArgumentException if <code>key</code> is empty.
      * @see        #setProperty
-     * @see        java.lang.SecurityException
-     * @see        java.lang.SecurityManager#checkPropertyAccess(java.lang.String)
-     * @see        java.lang.System#getProperties()
+     * @see        SecurityException
+     * @see        SecurityManager#checkPropertyAccess(String)
+     * @see        System#getProperties()
      */
     // 核心方法 获取由指定的键指示的系统属性
     public static String getProperty(String key) {
@@ -813,8 +800,8 @@ public final class System {
      *             <code>null</code>.
      * @exception  IllegalArgumentException if <code>key</code> is empty.
      * @see        #setProperty
-     * @see        java.lang.SecurityManager#checkPropertyAccess(java.lang.String)
-     * @see        java.lang.System#getProperties()
+     * @see        SecurityManager#checkPropertyAccess(String)
+     * @see        System#getProperties()
      */
     // 核心方法 获取由指定的键指示的系统属性
     public static String getProperty(String key, String def) {
@@ -852,9 +839,9 @@ public final class System {
      *             <code>value</code> is <code>null</code>.
      * @exception  IllegalArgumentException if <code>key</code> is empty.
      * @see        #getProperty
-     * @see        java.lang.System#getProperty(java.lang.String)
-     * @see        java.lang.System#getProperty(java.lang.String, java.lang.String)
-     * @see        java.util.PropertyPermission
+     * @see        System#getProperty(String)
+     * @see        System#getProperty(String, String)
+     * @see        PropertyPermission
      * @see        SecurityManager#checkPermission
      * @since      1.2
      */
@@ -893,17 +880,16 @@ public final class System {
      * @exception  IllegalArgumentException if <code>key</code> is empty.
      * @see        #getProperty
      * @see        #setProperty
-     * @see        java.util.Properties
-     * @see        java.lang.SecurityException
-     * @see        java.lang.SecurityManager#checkPropertiesAccess()
+     * @see        Properties
+     * @see        SecurityException
+     * @see        SecurityManager#checkPropertiesAccess()
      * @since 1.5
      */
     public static String clearProperty(String key) {
         checkKey(key);
         SecurityManager sm = getSecurityManager();
         if (sm != null) {
-            sm.checkPermission(new PropertyPermission(key,
-                    SecurityConstants.PROPERTY_WRITE_ACTION));
+            sm.checkPermission(new PropertyPermission(key, "write"));
         }
 
         return (String) props.remove(key);
@@ -1049,7 +1035,7 @@ public final class System {
      * @throws  SecurityException
      *        if a security manager exists and its <code>checkExit</code>
      *        method doesn't allow exit with the specified status.
-     * @see        java.lang.Runtime#exit(int)
+     * @see        Runtime#exit(int)
      */
     // 核心方法 终止当前正在运行的Java虚拟机
     public static void exit(int status) {
@@ -1076,7 +1062,7 @@ public final class System {
      * Runtime.getRuntime().gc()
      * </pre></blockquote>
      *
-     * @see     java.lang.Runtime#gc()
+     * @see     Runtime#gc()
      */
     public static void gc() {
         Runtime.getRuntime().gc();
@@ -1100,7 +1086,7 @@ public final class System {
      * Runtime.getRuntime().runFinalization()
      * </pre></blockquote>
      *
-     * @see     java.lang.Runtime#runFinalization()
+     * @see     Runtime#runFinalization()
      */
     public static void runFinalization() {
         Runtime.getRuntime().runFinalization();
@@ -1109,11 +1095,21 @@ public final class System {
 
     // 动态库
     /**
-     * Loads a code file with the specified filename from the local file
-     * system as a dynamic library. The filename
-     * argument must be a complete path name.
-     * <p>
-     * 从本地文件系统加载指定文件名的代码文件作为一个动态库。
+     * Loads the native library specified by the filename argument.  The filename
+     * argument must be an absolute path name.
+     *
+     * If the filename argument, when stripped of any platform-specific library
+     * prefix, path, and file extension, indicates a library whose name is,
+     * for example, L, and a native library called L is statically linked
+     * with the VM, then the JNI_OnLoad_L function exported by the library
+     * is invoked rather than attempting to load a dynamic library.
+     * A filename matching the argument does not have to exist in the
+     * file system.
+     * See the JNI Specification for more details.
+     *
+     * Otherwise, the filename argument is mapped to a native library image in
+     * an implementation-dependent manner.
+     *
      * <p>
      * The call <code>System.load(name)</code> is effectively equivalent
      * to the call:
@@ -1125,11 +1121,14 @@ public final class System {
      * @exception  SecurityException  if a security manager exists and its
      *             <code>checkLink</code> method doesn't allow
      *             loading of the specified dynamic library
-     * @exception  UnsatisfiedLinkError  if the file does not exist.
+     * @exception  UnsatisfiedLinkError  if either the filename is not an
+     *             absolute path name, the native library is not statically
+     *             linked with the VM, or the library cannot be mapped to
+     *             a native library image by the host system.
      * @exception  NullPointerException if <code>filename</code> is
      *             <code>null</code>
-     * @see        java.lang.Runtime#load(java.lang.String)
-     * @see        java.lang.SecurityManager#checkLink(java.lang.String)
+     * @see        Runtime#load(String)
+     * @see        SecurityManager#checkLink(String)
      */
     @CallerSensitive
     public static void load(String filename) {
@@ -1137,9 +1136,16 @@ public final class System {
     }
 
     /**
-     * Loads the system library specified by the <code>libname</code>
-     * argument. The manner in which a library name is mapped to the
-     * actual system library is system dependent.
+     * Loads the native library specified by the <code>libname</code>
+     * argument.  The <code>libname</code> argument must not contain any platform
+     * specific prefix, file extension or path. If a native library
+     * called <code>libname</code> is statically linked with the VM, then the
+     * JNI_OnLoad_<code>libname</code> function exported by the library is invoked.
+     * See the JNI Specification for more details.
+     *
+     * Otherwise, the libname argument is loaded from a system library
+     * location and mapped to a native library image in an implementation-
+     * dependent manner.
      * <p>
      * The call <code>System.loadLibrary(name)</code> is effectively
      * equivalent to the call
@@ -1151,11 +1157,14 @@ public final class System {
      * @exception  SecurityException  if a security manager exists and its
      *             <code>checkLink</code> method doesn't allow
      *             loading of the specified dynamic library
-     * @exception  UnsatisfiedLinkError  if the library does not exist.
+     * @exception  UnsatisfiedLinkError if either the libname argument
+     *             contains a file path, the native library is not statically
+     *             linked with the VM,  or the library cannot be mapped to a
+     *             native library image by the host system.
      * @exception  NullPointerException if <code>libname</code> is
      *             <code>null</code>
-     * @see        java.lang.Runtime#loadLibrary(java.lang.String)
-     * @see        java.lang.SecurityManager#checkLink(java.lang.String)
+     * @see        Runtime#loadLibrary(String)
+     * @see        SecurityManager#checkLink(String)
      */
     @CallerSensitive
     public static void loadLibrary(String libname) {
@@ -1170,11 +1179,24 @@ public final class System {
      * @return     a platform-dependent native library name.
      * @exception  NullPointerException if <code>libname</code> is
      *             <code>null</code>
-     * @see        java.lang.System#loadLibrary(java.lang.String)
-     * @see        java.lang.ClassLoader#findLibrary(java.lang.String)
+     * @see        System#loadLibrary(String)
+     * @see        ClassLoader#findLibrary(String)
      * @since      1.2
      */
     public static native String mapLibraryName(String libname);
+
+    /**
+     * Create PrintStream for stdout/err based on encoding.
+     */
+    private static PrintStream newPrintStream(FileOutputStream fos, String enc) {
+       if (enc != null) {
+            try {
+                return new PrintStream(new BufferedOutputStream(fos, 128), true, enc);
+            } catch (UnsupportedEncodingException uee) {}
+        }
+        return new PrintStream(new BufferedOutputStream(fos, 128), true);
+    }
+
 
     /**
      * Initialize the system class.  Called after thread initialization.
@@ -1214,13 +1236,13 @@ public final class System {
         lineSeparator = props.getProperty("line.separator"); // 行分隔符
         sun.misc.Version.init();
 
-        // 初始化输入输出流
         FileInputStream fdIn = new FileInputStream(FileDescriptor.in);
         FileOutputStream fdOut = new FileOutputStream(FileDescriptor.out);
         FileOutputStream fdErr = new FileOutputStream(FileDescriptor.err);
         setIn0(new BufferedInputStream(fdIn)); // 缓冲区输入流
-        setOut0(new PrintStream(new BufferedOutputStream(fdOut, 128), true)); // 输出打印流
-        setErr0(new PrintStream(new BufferedOutputStream(fdErr, 128), true));
+        setOut0(newPrintStream(fdOut, props.getProperty("sun.stdout.encoding"))); // 输出打印流
+        setErr0(newPrintStream(fdErr, props.getProperty("sun.stderr.encoding")));
+
         // Load the zip library now in order to keep java.util.zip.ZipFile
         // from trying to use itself to load this library later.
         loadLibrary("zip");
@@ -1254,10 +1276,10 @@ public final class System {
         sun.misc.VM.booted();
     }
 
-    // 设置 Java 语言访问机制
+    // 设置Java语言访问机制
     private static void setJavaLangAccess() {
         // Allow privileged classes outside of java.lang
-        sun.misc.SharedSecrets.setJavaLangAccess(new sun.misc.JavaLangAccess(){
+        sun.misc.SharedSecrets.setJavaLangAccess(new sun.misc.JavaLangAccess() {
             @Override
             public sun.reflect.ConstantPool getConstantPool(Class klass) { // 常量池
                 return klass.getConstantPool();
@@ -1269,6 +1291,11 @@ public final class System {
             }
 
             @Override
+            public Map<Class<? extends Annotation>, Annotation> getDeclaredAnnotationMap(Class<?> aClass) {
+                return null;
+            }
+
+            @Override
             public AnnotationType getAnnotationType(Class klass) { // 注解类型
                 return klass.getAnnotationType();
             }
@@ -1276,6 +1303,16 @@ public final class System {
             @Override
             public byte[] getRawClassAnnotations(Class<?> klass) { // 原生类注解
                 return klass.getRawAnnotations();
+            }
+
+            @Override
+            public byte[] getRawClassTypeAnnotations(Class<?> aClass) {
+                return new byte[0];
+            }
+
+            @Override
+            public byte[] getRawExecutableTypeAnnotations(Executable executable) {
+                return new byte[0];
             }
 
             @Override
@@ -1305,8 +1342,8 @@ public final class System {
             }
 
             @Override
-            public int getStringHash32(String string) {
-                return string.hash32();
+            public String newStringUnsafe(char[] chars) {
+                return new String(chars, true);
             }
 
             @Override
