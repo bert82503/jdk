@@ -29,18 +29,24 @@ package java.lang;
  * Class {@code Object} is the root of the class hierarchy.
  * Every class has {@code Object} as a superclass. All objects,
  * including arrays, implement the methods of this class.
+ * <p>
+ * {@link java.lang.Object} 类是类层次结构的根。
+ * 每个类都以 Object 作为其超类，所有对象(包括数组)都实现该类的方法。
  *
  * @author  unascribed
  * @see     java.lang.Class
  * @since   JDK1.0
  */
+// 核心类 Object类是类层次结构的根
 public class Object {
 
+    // 注册所有本地方法
     private static native void registerNatives();
     static {
         registerNatives();
     }
 
+    /// 类型体系 - Class
     /**
      * Returns the runtime class of this {@code Object}. The returned
      * {@code Class} object is the object that is locked by {@code
@@ -59,10 +65,12 @@ public class Object {
      * @return The {@code Class} object that represents the runtime
      *         class of this object.
      * @see    Class Literals, section 15.8.2 of
-     *         <cite>The Java&trade; Language Specification</cite>.
+     *         <cite>The Java&trade; Language Specification/Java语言规范</cite>.
      */
+    // 核心方法 返回对象的运行时类型实例(Class<?>)
     public final native Class<?> getClass();
 
+    /// 散列映射 - 散列表/哈希表(HashMap)
     /**
      * Returns a hash code value for the object. This method is
      * supported for the benefit of hash tables such as those provided by
@@ -76,15 +84,19 @@ public class Object {
      *     used in {@code equals} comparisons on the object is modified.
      *     This integer need not remain consistent from one execution of an
      *     application to another execution of the same application.
+     *     同一对象多次执行，必须始终返回相同的整数。
      * <li>If two objects are equal according to the {@code equals(Object)}
      *     method, then calling the {@code hashCode} method on each of
      *     the two objects must produce the same integer result.
+     *     如果两个对象相等，则分别调用这两个对象的 {@code hashCode} 方法必须产生相同的整数结果。
      * <li>It is <em>not</em> required that if two objects are unequal
      *     according to the {@link java.lang.Object#equals(java.lang.Object)}
      *     method, then calling the {@code hashCode} method on each of the
      *     two objects must produce distinct integer results.  However, the
      *     programmer should be aware that producing distinct integer results
      *     for unequal objects may improve the performance of hash tables.
+     *     如果两个对象不相等，则分别调用这两个对象的 {@code hashCode} 方法必须产生不同的整数结果。
+     *     应该知道，为不相等的对象产生不同的整数结果可以提高哈希表的性能。
      * </ul>
      * <p>
      * As much as is reasonably practical, the hashCode method defined by
@@ -98,32 +110,34 @@ public class Object {
      * @see     java.lang.Object#equals(java.lang.Object)
      * @see     java.lang.System#identityHashCode
      */
+    // 核心方法 返回对象的哈希码值
     public native int hashCode();
 
     /**
-     * Indicates whether some other object is "equal to" this one.
+     * Indicates whether some other object is "equal to/相等" this one.
      * <p>
      * The {@code equals} method implements an equivalence relation
-     * on non-null object references:
+     * on non-null object references/非null对象引用上的等价关系:
      * <ul>
-     * <li>It is <i>reflexive</i>: for any non-null reference value
+     * <li>It is <i>reflexive/自反性</i>: for any non-null reference value
      *     {@code x}, {@code x.equals(x)} should return
      *     {@code true}.
-     * <li>It is <i>symmetric</i>: for any non-null reference values
+     * <li>It is <i>symmetric/对称性</i>: for any non-null reference values
      *     {@code x} and {@code y}, {@code x.equals(y)}
      *     should return {@code true} if and only if
      *     {@code y.equals(x)} returns {@code true}.
-     * <li>It is <i>transitive</i>: for any non-null reference values
+     * <li>It is <i>transitive/传递性</i>: for any non-null reference values
      *     {@code x}, {@code y}, and {@code z}, if
      *     {@code x.equals(y)} returns {@code true} and
      *     {@code y.equals(z)} returns {@code true}, then
      *     {@code x.equals(z)} should return {@code true}.
-     * <li>It is <i>consistent</i>: for any non-null reference values
+     * <li>It is <i>consistent/一致性</i>: for any non-null reference values
      *     {@code x} and {@code y}, multiple invocations of
      *     {@code x.equals(y)} consistently return {@code true}
      *     or consistently return {@code false}, provided no
      *     information used in {@code equals} comparisons on the
      *     objects is modified.
+     *     多次调用一致地返回相同的结果
      * <li>For any non-null reference value {@code x},
      *     {@code x.equals(null)} should return {@code false}.
      * </ul>
@@ -139,6 +153,9 @@ public class Object {
      * method whenever this method is overridden, so as to maintain the
      * general contract for the {@code hashCode} method, which states
      * that equal objects must have equal hash codes.
+     * <p>
+     * 注意，通常需要重写 {@code hashCode} 方法，并与 {@code hashCode} 方法保持相同约定，
+     * 相等的对象必须具有相同的哈希码值。
      *
      * @param   obj   the reference object with which to compare.
      * @return  {@code true} if this object is the same as the obj
@@ -146,8 +163,9 @@ public class Object {
      * @see     #hashCode()
      * @see     java.util.HashMap
      */
+    // 核心方法 指示其他一些对象是否与此对象"相等"
     public boolean equals(Object obj) {
-        return (this == obj);
+        return (this == obj); // 同一个对象
     }
 
     /**
@@ -212,6 +230,7 @@ public class Object {
      */
     protected native Object clone() throws CloneNotSupportedException;
 
+    /// 字符串
     /**
      * Returns a string representation of the object. In general, the
      * {@code toString} method returns a string that
@@ -219,6 +238,9 @@ public class Object {
      * be a concise but informative representation that is easy for a
      * person to read.
      * It is recommended that all subclasses override this method.
+     * <p>
+     * 其结果应该是一个简洁而翔实的表示，给人易读的。
+     * 建议，所有子类都重写此方法。
      * <p>
      * The {@code toString} method for class {@code Object}
      * returns a string consisting of the name of the class of which the
@@ -233,10 +255,12 @@ public class Object {
      *
      * @return  a string representation of the object.
      */
+    // 核心方法 返回对象的字符串表示
     public String toString() {
-        return getClass().getName() + "@" + Integer.toHexString(hashCode());
+        return getClass().getName() + "@" + Integer.toHexString(hashCode()); // 类全路径名称@哈希码值十六进制
     }
 
+    /// 同步机制 - 线程等待/通知(Thread)
     /**
      * Wakes up a single thread that is waiting on this object's
      * monitor. If any threads are waiting on this object, one of them
@@ -269,6 +293,7 @@ public class Object {
      * @see        java.lang.Object#notifyAll()
      * @see        java.lang.Object#wait()
      */
+    // 核心方法 唤醒正在等待此对象监视器的单个线程
     public final native void notify();
 
     /**
@@ -293,6 +318,7 @@ public class Object {
      * @see        java.lang.Object#notify()
      * @see        java.lang.Object#wait()
      */
+    // 核心方法 唤醒正在等待此对象监视器的所有线程
     public final native void notifyAll();
 
     /**
@@ -380,6 +406,7 @@ public class Object {
      * @see        java.lang.Object#notify()
      * @see        java.lang.Object#notifyAll()
      */
+    // 核心方法 使当前线程一直等待，直到另一个线程调用notify()或notifyAll()方法
     public final native void wait(long timeout) throws InterruptedException;
 
     /**
@@ -445,6 +472,7 @@ public class Object {
      *             this exception is thrown.
      */
     public final void wait(long timeout, int nanos) throws InterruptedException {
+        // 入参有效性检测
         if (timeout < 0) {
             throw new IllegalArgumentException("timeout value is negative");
         }
@@ -458,7 +486,7 @@ public class Object {
             timeout++;
         }
 
-        wait(timeout);
+        wait(timeout); // 等待超时
     }
 
     /**
@@ -500,14 +528,18 @@ public class Object {
      * @see        java.lang.Object#notifyAll()
      */
     public final void wait() throws InterruptedException {
-        wait(0);
+        wait(0); // 可能会一直等待(饥饿现象)
     }
 
+    /// 垃圾收集
     /**
      * Called by the garbage collector on an object when garbage collection
      * determines that there are no more references to the object.
      * A subclass overrides the {@code finalize} method to dispose of
      * system resources or to perform other cleanup.
+     * <p>
+     * 由垃圾收集器在收集垃圾对象时调用，确定没有对此对象的引用。
+     * 子类重写 {@code finalize} 方法是为了处置系统资源或执行其它清理动作。
      * <p>
      * The general contract of {@code finalize} is that it is invoked
      * if and when the Java<font size="-2"><sup>TM</sup></font> virtual

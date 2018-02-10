@@ -30,7 +30,7 @@
  * Class}, instances of which represent classes at run time.
  * <p>
  * 提供 Java 编程语言设计的基础类。
- * 最重要的类是 {@link java.lang.Object}，其是类层次结构树的根；
+ * 最重要的类是 {@link java.lang.Object}，其是类层次结构的根；
  * {@link java.lang.Class} 表示运行时的类型实例。
  *
  * <p>Frequently it is necessary to represent a value of primitive

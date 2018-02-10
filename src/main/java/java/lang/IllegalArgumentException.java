@@ -28,6 +28,8 @@ package java.lang;
 /**
  * Thrown to indicate that a method has been passed an illegal or
  * inappropriate argument.
+ * <p>
+ * 非法参数异常，表示方法被传入了非法或不合适的参数。
  *
  * @author  unascribed
  * @see     java.lang.Thread#setPriority(int)
