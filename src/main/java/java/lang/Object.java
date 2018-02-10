@@ -29,28 +29,22 @@ package java.lang;
  * Class {@code Object} is the root of the class hierarchy.
  * Every class has {@code Object} as a superclass. All objects,
  * including arrays, implement the methods of this class.
- * <p>
- * Object 类是类层次结构的根。
- * 每个类型都以 Object 作为其超类，所有的对象(包括数组)都实现该类的方法。
  *
  * @author  unascribed
  * @see     java.lang.Class
  * @since   JDK1.0
  */
-// 核心类 Object类是类层次结构的根
 public class Object {
 
-    // 注册原生本地方法
     private static native void registerNatives();
     static {
         registerNatives();
     }
 
-    /// 类型体系
     /**
      * Returns the runtime class of this {@code Object}. The returned
      * {@code Class} object is the object that is locked by {@code
-     * static synchronized} methods of the represented class. (静态同步方法的锁)
+     * static synchronized} methods of the represented class.
      *
      * <p><b>The actual result type is {@code Class<? extends |X|>}
      * where {@code |X|} is the erasure of the static type of the
@@ -64,16 +58,14 @@ public class Object {
      *
      * @return The {@code Class} object that represents the runtime
      *         class of this object.
-     * @see    <b>Class Literals (类字面常量)</b>, section 15.8.2 of
-     *         <cite>The Java&trade; Language Specification (Java 语言规范)</cite>.
+     * @see    Class Literals, section 15.8.2 of
+     *         <cite>The Java&trade; Language Specification</cite>.
      */
-    // 核心方法 返回该对象的运行时类型
     public final native Class<?> getClass();
 
-    /// 散列映射
     /**
      * Returns a hash code value for the object. This method is
-     * supported for the benefit of hash tables (哈希表) such as those provided by
+     * supported for the benefit of hash tables such as those provided by
      * {@link java.util.HashMap}.
      * <p>
      * The general contract of {@code hashCode} is:
@@ -106,7 +98,6 @@ public class Object {
      * @see     java.lang.Object#equals(java.lang.Object)
      * @see     java.lang.System#identityHashCode
      */
-    // 核心方法 返回对象的散列码
     public native int hashCode();
 
     /**
@@ -155,9 +146,8 @@ public class Object {
      * @see     #hashCode()
      * @see     java.util.HashMap
      */
-    // 核心方法 指示其他一些对象是"等于"这个对象
     public boolean equals(Object obj) {
-        return (this == obj); // 同一个对象
+        return (this == obj);
     }
 
     /**
@@ -222,7 +212,6 @@ public class Object {
      */
     protected native Object clone() throws CloneNotSupportedException;
 
-    /// 字符串
     /**
      * Returns a string representation of the object. In general, the
      * {@code toString} method returns a string that
@@ -244,12 +233,10 @@ public class Object {
      *
      * @return  a string representation of the object.
      */
-    // 核心方法 返回对象的字符串表示
     public String toString() {
-        return getClass().getName() + "@" + Integer.toHexString(hashCode()); // 类全路径名称@散列值十六进制字符串表示
+        return getClass().getName() + "@" + Integer.toHexString(hashCode());
     }
 
-    /// 同步机制
     /**
      * Wakes up a single thread that is waiting on this object's
      * monitor. If any threads are waiting on this object, one of them
@@ -282,7 +269,6 @@ public class Object {
      * @see        java.lang.Object#notifyAll()
      * @see        java.lang.Object#wait()
      */
-    // 核心方法 唤醒正在等待此对象监视器的单个线程
     public final native void notify();
 
     /**
@@ -307,7 +293,6 @@ public class Object {
      * @see        java.lang.Object#notify()
      * @see        java.lang.Object#wait()
      */
-    // 核心方法 唤醒正在等待此对象监视器的所有线程
     public final native void notifyAll();
 
     /**
@@ -395,7 +380,6 @@ public class Object {
      * @see        java.lang.Object#notify()
      * @see        java.lang.Object#notifyAll()
      */
-    // 核心方法 使当前线程一直等待，直到另一个线程调用notify()或notifyAll()方法
     public final native void wait(long timeout) throws InterruptedException;
 
     /**
@@ -460,9 +444,7 @@ public class Object {
      *             status</i> of the current thread is cleared when
      *             this exception is thrown.
      */
-    // 核心方法 使当前线程一直等待，直到另一个线程调用notify()或notifyAll()方法
     public final void wait(long timeout, int nanos) throws InterruptedException {
-        // 入参有效性检测
         if (timeout < 0) {
             throw new IllegalArgumentException("timeout value is negative");
         }
@@ -476,7 +458,7 @@ public class Object {
             timeout++;
         }
 
-        wait(timeout); // 等待超时，基于原生 wait 方法实现
+        wait(timeout);
     }
 
     /**
@@ -518,10 +500,9 @@ public class Object {
      * @see        java.lang.Object#notifyAll()
      */
     public final void wait() throws InterruptedException {
-        wait(0); // 一直等待(饥饿)
+        wait(0);
     }
 
-    /// 垃圾收集器
     /**
      * Called by the garbage collector on an object when garbage collection
      * determines that there are no more references to the object.

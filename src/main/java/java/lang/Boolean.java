@@ -31,23 +31,18 @@ package java.lang;
  * {@code Boolean} contains a single field whose type is
  * {@code boolean}.
  * <p>
- * 将 boolean 基本类型的值包装到对象中。
- * <p>
  * In addition, this class provides many methods for
  * converting a {@code boolean} to a {@code String} and a
  * {@code String} to a {@code boolean}, as well as other
  * constants and methods useful when dealing with a
  * {@code boolean}.
- * <p>
- * 提供与字符串的互相转换。
  *
  * @author  Arthur van Hoff
  * @since   JDK1.0
  */
-// [包装类] 布尔类型
-// final 修饰符来保证类不会被扩展
 public final class Boolean implements java.io.Serializable,
-                                      Comparable<Boolean> {
+                                      Comparable<Boolean>
+{
     /**
      * The {@code Boolean} object corresponding to the primitive
      * value {@code true}.
@@ -67,17 +62,15 @@ public final class Boolean implements java.io.Serializable,
      */
     public static final Class<Boolean> TYPE = Class.getPrimitiveClass("boolean");
 
-    /** use serialVersionUID from JDK 1.0.2 for interoperability */
-    private static final long serialVersionUID = -3665804199014368530L;
-
     /**
-     * The value of the Boolean. (布尔类型的值)
+     * The value of the Boolean.
      *
      * @serial
      */
-    // 使所有的域都成为私有的
-    // 使所有的域都是 final 的
-    private final boolean value; // 初始化后就不能改变
+    private final boolean value;
+
+    /** use serialVersionUID from JDK 1.0.2 for interoperability */
+    private static final long serialVersionUID = -3665804199014368530L;
 
     /**
      * Allocates a {@code Boolean} object representing the
@@ -90,9 +83,8 @@ public final class Boolean implements java.io.Serializable,
      *
      * @param   value   the value of the {@code Boolean}.
      */
-    // 核心方法 构造一个新分配的表示指定布尔值的布尔对象
     public Boolean(boolean value) {
-        this.value = value; // 不要提供任何会修改对象状态的方法
+        this.value = value;
     }
 
     /**
@@ -112,7 +104,6 @@ public final class Boolean implements java.io.Serializable,
         this(toBoolean(s));
     }
 
-    // 解析字符串
     /**
      * Parses the string argument as a boolean.  The {@code boolean}
      * returned represents the value {@code true} if the string argument
@@ -126,7 +117,6 @@ public final class Boolean implements java.io.Serializable,
      * @return     the boolean represented by the string argument
      * @since 1.5
      */
-    // 核心方法 解析字符串参数为有符号的布尔值
     public static boolean parseBoolean(String s) {
         return toBoolean(s);
     }
@@ -141,8 +131,6 @@ public final class Boolean implements java.io.Serializable,
         return value;
     }
 
-    // 工厂实例化
-    // 基本类型转换为包装类
     /**
      * Returns a {@code Boolean} instance representing the specified
      * {@code boolean} value.  If the specified {@code boolean} value
@@ -157,7 +145,6 @@ public final class Boolean implements java.io.Serializable,
      * @return a {@code Boolean} instance representing {@code b}.
      * @since  1.4
      */
-    // 核心方法 返回一个表示指定的布尔值的布尔实例(选择用静态工厂代替公有的构造器可以让你以后有添加缓存的灵活性，而不必影响客户端)
     public static Boolean valueOf(boolean b) {
         return (b ? TRUE : FALSE);
     }
@@ -175,7 +162,6 @@ public final class Boolean implements java.io.Serializable,
         return toBoolean(s) ? TRUE : FALSE;
     }
 
-    // 转换为字符串
     /**
      * Returns a {@code String} object representing the specified
      * boolean.  If the specified boolean is {@code true}, then
@@ -186,11 +172,9 @@ public final class Boolean implements java.io.Serializable,
      * @return the string representation of the specified {@code boolean}
      * @since 1.4
      */
-    // 核心方法 返回表示指定布尔值的字符串对象
     public static String toString(boolean b) {
         return b ? "true" : "false";
     }
-
 
     /**
      * Returns a {@code String} object representing this Boolean's
@@ -200,7 +184,6 @@ public final class Boolean implements java.io.Serializable,
      *
      * @return  a string representation of this object.
      */
-    @Override
     public String toString() {
         return value ? "true" : "false";
     }
@@ -212,8 +195,6 @@ public final class Boolean implements java.io.Serializable,
      * {@code true}; returns the integer {@code 1237} if this
      * object represents {@code false}.
      */
-    // 核心方法 返回散列码
-    @Override
     public int hashCode() {
         return value ? 1231 : 1237;
     }
@@ -227,8 +208,6 @@ public final class Boolean implements java.io.Serializable,
      * @return  {@code true} if the Boolean objects represent the
      *          same value; {@code false} otherwise.
      */
-    // 核心方法 布尔值比较
-    @Override
     public boolean equals(Object obj) {
         if (obj instanceof Boolean) {
             return value == ((Boolean)obj).booleanValue();
@@ -257,13 +236,12 @@ public final class Boolean implements java.io.Serializable,
         boolean result = false;
         try {
             result = toBoolean(System.getProperty(name));
-        } catch (IllegalArgumentException | NullPointerException e) {
-            // 忽略
+        } catch (IllegalArgumentException e) {
+        } catch (NullPointerException e) {
         }
         return result;
     }
 
-    // 排序
     /**
      * Compares this {@code Boolean} instance with another.
      *
@@ -276,7 +254,6 @@ public final class Boolean implements java.io.Serializable,
      * @see     Comparable
      * @since  1.5
      */
-    @Override
     public int compareTo(Boolean b) {
         return compare(this.value, b.value);
     }
@@ -295,9 +272,8 @@ public final class Boolean implements java.io.Serializable,
      *         a value greater than {@code 0} if {@code x && !y}
      * @since 1.7
      */
-    // 核心方法 比较两个布尔值
     public static int compare(boolean x, boolean y) {
-        return (x == y) ? 0 : (x ? 1 : -1); // 比较规则
+        return (x == y) ? 0 : (x ? 1 : -1);
     }
 
     private static boolean toBoolean(String name) {

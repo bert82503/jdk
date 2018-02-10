@@ -24,21 +24,14 @@
  */
 package java.lang;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.Console;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.security.AccessControlContext;
-import java.util.Map;
 import java.util.Properties;
 import java.util.PropertyPermission;
+import java.util.StringTokenizer;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.AllPermission;
 import java.nio.channels.Channel;
 import java.nio.channels.spi.SelectorProvider;
 import sun.nio.ch.Interruptible;
@@ -50,56 +43,41 @@ import sun.reflect.annotation.AnnotationType;
 /**
  * The <code>System</code> class contains several useful class fields
  * and methods. It cannot be instantiated.
- * <p>
- * 包含一些有用的类的字段和方法。
- * 它不能被实例化。
  *
  * <p>Among the facilities provided by the <code>System</code> class
  * are standard input, standard output, and error output streams;
  * access to externally defined properties and environment
  * variables; a means of loading files and libraries; and a utility
  * method for quickly copying a portion of an array.
- * <p>
- * 在由系统类提供的设施中有标准输入、标准输出和错误输出流；
- * 访问外部定义的属性和环境变量；加载文件和库的一种手段；
- * 快速复制数组的一部分的一个实用方法。
  *
  * @author  unascribed
  * @since   JDK1.0
  */
-// 核心类 系统类，包含一些有用的类的字段和方法
 public final class System {
 
     /* register the natives via the static initializer.
-     * 通过静态类初始化来注册原生本地方法。
      *
      * VM will invoke the initializeSystemClass method to complete
      * the initialization for this class separated from clinit.
      * Note that to use properties set by the VM, see the constraints
      * described in the initializeSystemClass method.
-     * 虚拟机将调用初始化系统类(initializeSystemClass)方法来完成类的初始化过程。
      */
     private static native void registerNatives();
     static {
         registerNatives();
     }
 
-    /** Don't let anyone instantiate this class (不要让任何人实例化这个类) */
+    /** Don't let anyone instantiate this class */
     private System() {
     }
 
-    // 输入输出流
     /**
      * The "standard" input stream. This stream is already
      * open and ready to supply input data. Typically this stream
      * corresponds to keyboard input or another input source specified by
      * the host environment or user.
-     * <p>
-     * 标准输入流。
-     * 此流已打开，并准备提供输入数据。
-     * 通常，此流对应于指定的键盘输入或另一个由宿主环境或用户指定的输入源。
      */
-    public final static InputStream in = null; // 全局唯一
+    public final static InputStream in = null;
 
     /**
      * The "standard" output stream. This stream is already
@@ -107,10 +85,8 @@ public final class System {
      * corresponds to display output or another output destination
      * specified by the host environment or user.
      * <p>
-     * 标准输出流。
-     * <p>
      * For simple stand-alone Java applications, a typical way to write
-     * a line of output data is: (写一行输出数据的一个典型方式)
+     * a line of output data is:
      * <blockquote><pre>
      *     System.out.println(data)
      * </pre></blockquote>
@@ -134,8 +110,6 @@ public final class System {
      * The "standard" error output stream. This stream is already
      * open and ready to accept output data.
      * <p>
-     * 标准错误输出流。
-     * <p>
      * Typically this stream corresponds to display output or another
      * output destination specified by the host environment or user. By
      * convention, this output stream is used to display error messages
@@ -143,25 +117,22 @@ public final class System {
      * of a user even if the principal output stream, the value of the
      * variable <code>out</code>, has been redirected to a file or other
      * destination that is typically not continuously monitored.
-     * <p>
-     * 根据约定，此输出流是用来显示错误消息。
      */
     public final static PrintStream err = null;
 
-    /** The security manager for the system. (系统安全管理器) */
+    /* The security manager for the system.
+     */
     private static volatile SecurityManager security = null;
 
     /**
      * Reassigns the "standard" input stream.
-     * <p>
-     * 重新分配标准输入流。
      *
      * <p>First, if there is a security manager, its <code>checkPermission</code>
-     * method is called with a <code>RuntimePermission("setIO")</code> permission (setIO 权限)
+     * method is called with a <code>RuntimePermission("setIO")</code> permission
      *  to see if it's ok to reassign the "standard" input stream.
      * <p>
      *
-     * @param in the new standard input stream. (新的标准输入流)
+     * @param in the new standard input stream.
      *
      * @throws SecurityException
      *        if a security manager exists and its
@@ -174,14 +145,12 @@ public final class System {
      * @since   JDK1.1
      */
     public static void setIn(InputStream in) {
-        checkIO(); // 权限检查
+        checkIO();
         setIn0(in);
     }
 
     /**
      * Reassigns the "standard" output stream.
-     * <p>
-     * 重新分配标准输出流。
      *
      * <p>First, if there is a security manager, its <code>checkPermission</code>
      * method is called with a <code>RuntimePermission("setIO")</code> permission
@@ -206,8 +175,6 @@ public final class System {
 
     /**
      * Reassigns the "standard" error output stream.
-     * <p>
-     * 重新分配标准错误输出流。
      *
      * <p>First, if there is a security manager, its <code>checkPermission</code>
      * method is called with a <code>RuntimePermission("setIO")</code> permission
@@ -230,7 +197,6 @@ public final class System {
         setErr0(err);
     }
 
-    /** 控制台 */
     private static volatile Console cons = null;
     /**
      * Returns the unique {@link java.io.Console Console} object associated
@@ -242,7 +208,7 @@ public final class System {
      */
      public static Console console() {
          if (cons == null) {
-             synchronized (System.class) { // 类对象监视器同步语句
+             synchronized (System.class) {
                  cons = sun.misc.SharedSecrets.getJavaIOAccess().console();
              }
          }
@@ -252,20 +218,18 @@ public final class System {
     /**
      * Returns the channel inherited from the entity that created this
      * Java virtual machine.
-     * <p>
-     * 返回继承自这个Java虚拟机创建的实体的通道。
      *
      * <p> This method returns the channel obtained by invoking the
      * {@link java.nio.channels.spi.SelectorProvider#inheritedChannel
      * inheritedChannel} method of the system-wide default
-     * {@link java.nio.channels.spi.SelectorProvider} object. (选择器和可选择的通道) </p>
+     * {@link java.nio.channels.spi.SelectorProvider} object. </p>
      *
-     * <p> In addition to the network-oriented channels described in (面向网络的通道)
+     * <p> In addition to the network-oriented channels described in
      * {@link java.nio.channels.spi.SelectorProvider#inheritedChannel
      * inheritedChannel}, this method may return other kinds of
      * channels in the future.
      *
-     * @return  The inherited channel, if any, otherwise <tt>null</tt>. (继承的通道)
+     * @return  The inherited channel, if any, otherwise <tt>null</tt>.
      *
      * @throws  IOException
      *          If an I/O error occurs
@@ -283,7 +247,7 @@ public final class System {
     private static void checkIO() {
         SecurityManager sm = getSecurityManager();
         if (sm != null) {
-            sm.checkPermission(new RuntimePermission("setIO")); // 权限检查
+            sm.checkPermission(new RuntimePermission("setIO"));
         }
     }
 
@@ -291,12 +255,8 @@ public final class System {
     private static native void setOut0(PrintStream out);
     private static native void setErr0(PrintStream err);
 
-
-    // 安全策略
     /**
      * Sets the System security.
-     * <p>
-     * 设置系统安全管理器。
      *
      * <p> If there is a security manager already installed, this method first
      * calls the security manager's <code>checkPermission</code> method
@@ -348,7 +308,6 @@ public final class System {
             // which will loop infinitely if there is a non-system class
             // (in this case: the new security manager class) on the stack).
             AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                @Override
                 public Object run() {
                     s.getClass().getProtectionDomain().implies
                         (SecurityConstants.ALL_PERMISSION);
@@ -362,21 +321,16 @@ public final class System {
 
     /**
      * Gets the system security interface.
-     * <p>
-     * 获取系统的安全接口。
      *
      * @return  if a security manager has already been established for the
      *          current application, then that security manager is returned;
      *          otherwise, <code>null</code> is returned.
      * @see     #setSecurityManager
      */
-    // 核心方法 获取系统的安全接口
     public static SecurityManager getSecurityManager() {
         return security;
     }
 
-
-    // 系统时间
     /**
      * Returns the current time in milliseconds.  Note that
      * while the unit of time of the return value is a millisecond,
@@ -384,9 +338,6 @@ public final class System {
      * operating system and may be larger.  For example, many
      * operating systems measure time in units of tens of
      * milliseconds.
-     * <p>
-     * 以毫秒为单位返回当前时间。
-     * 值的粒度取决于底层操作系统。
      *
      * <p> See the description of the class <code>Date</code> for
      * a discussion of slight discrepancies that may arise between
@@ -396,14 +347,11 @@ public final class System {
      *          the current time and midnight, January 1, 1970 UTC.
      * @see     java.util.Date
      */
-    // 核心方法 返回当前时间(毫秒)
     public static native long currentTimeMillis();
 
     /**
      * Returns the current value of the running Java Virtual Machine's
      * high-resolution time source, in nanoseconds.
-     * <p>
-     * 返回当前运行的Java虚拟机的高分辨率时间源的值(纳秒)。
      *
      * <p>This method can only be used to measure elapsed time and is
      * not related to any other notion of system or wall-clock time.
@@ -412,14 +360,11 @@ public final class System {
      * may be negative).  The same origin is used by all invocations of
      * this method in an instance of a Java virtual machine; other
      * virtual machine instances are likely to use a different origin.
-     * <p>
-     * 此方法只能用于测量运行时间
      *
      * <p>This method provides nanosecond precision, but not necessarily
      * nanosecond resolution (that is, how frequently the value changes)
      * - no guarantees are made except that the resolution is at least as
      * good as that of {@link #currentTimeMillis()}.
-     * 此方法提供纳秒精度，但不一定纳秒分辨率
      *
      * <p>Differences in successive calls that span greater than
      * approximately 292 years (2<sup>63</sup> nanoseconds) will not
@@ -429,30 +374,27 @@ public final class System {
      * the difference between two such values, obtained within the same
      * instance of a Java virtual machine, is computed.
      *
-     * <p> For example, to measure how long some code takes to execute: (测量一些代码执行需要多长时间)
+     * <p> For example, to measure how long some code takes to execute:
      *  <pre> {@code
      * long startTime = System.nanoTime();
      * // ... the code being measured ...
      * long estimatedTime = System.nanoTime() - startTime;}</pre>
      *
-     * <p>To compare two nanoTime values: (比较两个纳秒时间值)
+     * <p>To compare two nanoTime values
      *  <pre> {@code
      * long t0 = System.nanoTime();
      * ...
      * long t1 = System.nanoTime();}</pre>
      *
      * one should use {@code t1 - t0 < 0}, not {@code t1 < t0},
-     * because of the possibility of numerical overflow. (应该使用 {@code t1 - t0 < 0}，由于数值溢出的可能性)
+     * because of the possibility of numerical overflow.
      *
      * @return the current value of the running Java Virtual Machine's
      *         high-resolution time source, in nanoseconds
      * @since 1.5
      */
-    // 核心方法 返回当前运行的Java虚拟机的高分辨率时间源的值(纳秒)
     public static native long nanoTime();
 
-
-    // 数组拷贝
     /**
      * Copies an array from the specified source array, beginning at the
      * specified position, to the specified position of the destination array.
@@ -466,8 +408,6 @@ public final class System {
      * <code>destPos+length-1</code>, respectively, of the destination
      * array.
      * <p>
-     * 复制数组，从指定的源数组复制到目标数组的指定位置。
-     * <p>
      * If the <code>src</code> and <code>dest</code> arguments refer to the
      * same array object, then the copying is performed as if the
      * components at positions <code>srcPos</code> through
@@ -477,10 +417,8 @@ public final class System {
      * <code>destPos</code> through <code>destPos+length-1</code> of the
      * destination array.
      * <p>
-     * 如果 src 和 dest 变量引用到同一个数组对象，复制也会被执行。
-     * <p>
      * If <code>dest</code> is <code>null</code>, then a
-     * <code>NullPointerException</code> is thrown. (空指针异常)
+     * <code>NullPointerException</code> is thrown.
      * <p>
      * If <code>src</code> is <code>null</code>, then a
      * <code>NullPointerException</code> is thrown and the destination
@@ -488,7 +426,7 @@ public final class System {
      * <p>
      * Otherwise, if any of the following is true, an
      * <code>ArrayStoreException</code> is thrown and the destination is
-     * not modified: (数组存储异常)
+     * not modified:
      * <ul>
      * <li>The <code>src</code> argument refers to an object that is not an
      *     array.
@@ -506,7 +444,7 @@ public final class System {
      * <p>
      * Otherwise, if any of the following is true, an
      * <code>IndexOutOfBoundsException</code> is
-     * thrown and the destination is not modified: (数组下标越界异常)
+     * thrown and the destination is not modified:
      * <ul>
      * <li>The <code>srcPos</code> argument is negative.
      * <li>The <code>destPos</code> argument is negative.
@@ -536,20 +474,19 @@ public final class System {
      * paragraph effectively applies only to the situation where both
      * arrays have component types that are reference types.)
      *
-     * @param      src      the source array. (源数组)
-     * @param      srcPos   starting position in the source array. (源数组中的起始位置)
-     * @param      dest     the destination array. (目标数组)
-     * @param      destPos  starting position in the destination array. (目标数组中的起始位置)
-     * @param      length   the number of array elements to be copied. (要复制数组元素的数量)
+     * @param      src      the source array.
+     * @param      srcPos   starting position in the source array.
+     * @param      dest     the destination array.
+     * @param      destPos  starting position in the destination data.
+     * @param      length   the number of array elements to be copied.
      * @exception  IndexOutOfBoundsException  if copying would cause
-     *               access of data outside array bounds. (数组下标越界异常)
+     *               access of data outside array bounds.
      * @exception  ArrayStoreException  if an element in the <code>src</code>
      *               array could not be stored into the <code>dest</code> array
-     *               because of a type mismatch. (数组存储异常)
+     *               because of a type mismatch.
      * @exception  NullPointerException if either <code>src</code> or
-     *               <code>dest</code> is <code>null</code>. (空指针异常)
+     *               <code>dest</code> is <code>null</code>.
      */
-    // 核心方法 复制数组，从指定的源数组复制到目标数组的指定位置
     public static native void arraycopy(Object src,  int  srcPos,
                                         Object dest, int destPos,
                                         int length);
@@ -560,8 +497,6 @@ public final class System {
      * whether or not the given object's class overrides
      * hashCode().
      * The hash code for the null reference is zero.
-     * <p></p>
-     * 返回给定对象的相同的哈希值
      *
      * @param x object for which the hashCode is to be calculated
      * @return  the hashCode
@@ -569,36 +504,32 @@ public final class System {
      */
     public static native int identityHashCode(Object x);
 
-
-    // 系统属性
     /**
      * System properties. The following properties are guaranteed to be defined:
-     * 系统属性。定义以下属性
      * <dl>
-     * <dt>java.version         <dd>Java version number (Java版本号)
-     * <dt>java.vendor          <dd>Java vendor specific string (Java供应商特定的字符串)
+     * <dt>java.version         <dd>Java version number
+     * <dt>java.vendor          <dd>Java vendor specific string
      * <dt>java.vendor.url      <dd>Java vendor URL
-     * <dt>java.home            <dd>Java installation directory (Java安装目录)
-     * <dt>java.class.version   <dd>Java class version number (Java类版本号)
-     * <dt>java.class.path      <dd>Java classpath (Java类路径)
-     * <dt>os.name              <dd>Operating System Name (操作系统名称)
-     * <dt>os.arch              <dd>Operating System Architecture (操作系统结构)
-     * <dt>os.version           <dd>Operating System Version (操作系统版本)
-     * <dt>file.separator       <dd>File separator ("/" on Unix) (文件分隔符)
-     * <dt>path.separator       <dd>Path separator (":" on Unix) (路径分隔符)
-     * <dt>line.separator       <dd>Line separator ("\n" on Unix) (行分隔符)
-     * <dt>user.name            <dd>User account name (用户帐户名称)
-     * <dt>user.home            <dd>User home directory (用户主目录)
-     * <dt>user.dir             <dd>User's current working directory (用户的当前工作目录)
+     * <dt>java.home            <dd>Java installation directory
+     * <dt>java.class.version   <dd>Java class version number
+     * <dt>java.class.path      <dd>Java classpath
+     * <dt>os.name              <dd>Operating System Name
+     * <dt>os.arch              <dd>Operating System Architecture
+     * <dt>os.version           <dd>Operating System Version
+     * <dt>file.separator       <dd>File separator ("/" on Unix)
+     * <dt>path.separator       <dd>Path separator (":" on Unix)
+     * <dt>line.separator       <dd>Line separator ("\n" on Unix)
+     * <dt>user.name            <dd>User account name
+     * <dt>user.home            <dd>User home directory
+     * <dt>user.dir             <dd>User's current working directory
      * </dl>
      */
+
     private static Properties props;
-    private static native Properties initProperties(Properties props); // 初始化系统属性值
+    private static native Properties initProperties(Properties props);
 
     /**
      * Determines the current system properties.
-     * <p>
-     * 确定当前的系统属性。
      * <p>
      * First, if there is a security manager, its
      * <code>checkPropertiesAccess</code> method is called with no
@@ -678,7 +609,7 @@ public final class System {
      * <code>getProperties</code> operation, it may choose to permit the
      * {@link #getProperty(String)} operation.
      *
-     * @return     the system properties (系统属性)
+     * @return     the system properties
      * @exception  SecurityException  if a security manager exists and its
      *             <code>checkPropertiesAccess</code> method doesn't allow access
      *              to the system properties.
@@ -687,7 +618,6 @@ public final class System {
      * @see        java.lang.SecurityManager#checkPropertiesAccess()
      * @see        java.util.Properties
      */
-    // 核心方法 确定当前的系统属性
     public static Properties getProperties() {
         SecurityManager sm = getSecurityManager();
         if (sm != null) {
@@ -701,8 +631,6 @@ public final class System {
      * Returns the system-dependent line separator string.  It always
      * returns the same value - the initial value of the {@linkplain
      * #getProperty(String) system property} {@code line.separator}.
-     * <p>
-     * 返回系统相关的行分隔符的字符串。
      *
      * <p>On UNIX systems, it returns {@code "\n"}; on Microsoft
      * Windows systems it returns {@code "\r\n"}.
@@ -717,8 +645,6 @@ public final class System {
      * Sets the system properties to the <code>Properties</code>
      * argument.
      * <p>
-     * 设置系统属性
-     * <p>
      * First, if there is a security manager, its
      * <code>checkPropertiesAccess</code> method is called with no
      * arguments. This may result in a security exception.
@@ -728,7 +654,7 @@ public final class System {
      * <code>null</code>, then the current set of system properties is
      * forgotten.
      *
-     * @param      props   the new system properties. (新的系统属性)
+     * @param      props   the new system properties.
      * @exception  SecurityException  if a security manager exists and its
      *             <code>checkPropertiesAccess</code> method doesn't allow access
      *              to the system properties.
@@ -752,8 +678,6 @@ public final class System {
     /**
      * Gets the system property indicated by the specified key.
      * <p>
-     * 获取由指定的键指示的系统属性。
-     * <p>
      * First, if there is a security manager, its
      * <code>checkPropertyAccess</code> method is called with the key as
      * its argument. This may result in a SecurityException.
@@ -762,8 +686,8 @@ public final class System {
      * properties is first created and initialized in the same manner as
      * for the <code>getProperties</code> method.
      *
-     * @param      key   the name of the system property. (系统属性的名称)
-     * @return     the string value of the system property, (该系统属性的字符串值)
+     * @param      key   the name of the system property.
+     * @return     the string value of the system property,
      *             or <code>null</code> if there is no property with that key.
      *
      * @exception  SecurityException  if a security manager exists and its
@@ -777,7 +701,6 @@ public final class System {
      * @see        java.lang.SecurityManager#checkPropertyAccess(java.lang.String)
      * @see        java.lang.System#getProperties()
      */
-    // 核心方法 获取由指定的键指示的系统属性
     public static String getProperty(String key) {
         checkKey(key);
         SecurityManager sm = getSecurityManager();
@@ -791,8 +714,6 @@ public final class System {
     /**
      * Gets the system property indicated by the specified key.
      * <p>
-     * 获取由指定的键指示的系统属性。
-     * <p>
      * First, if there is a security manager, its
      * <code>checkPropertyAccess</code> method is called with the
      * <code>key</code> as its argument.
@@ -801,9 +722,9 @@ public final class System {
      * properties is first created and initialized in the same manner as
      * for the <code>getProperties</code> method.
      *
-     * @param      key   the name of the system property. (系统属性的名称)
-     * @param      def   a default value. (默认值)
-     * @return     the string value of the system property, (该系统属性的字符串值)
+     * @param      key   the name of the system property.
+     * @param      def   a default value.
+     * @return     the string value of the system property,
      *             or the default value if there is no property with that key.
      *
      * @exception  SecurityException  if a security manager exists and its
@@ -816,7 +737,6 @@ public final class System {
      * @see        java.lang.SecurityManager#checkPropertyAccess(java.lang.String)
      * @see        java.lang.System#getProperties()
      */
-    // 核心方法 获取由指定的键指示的系统属性
     public static String getProperty(String key, String def) {
         checkKey(key);
         SecurityManager sm = getSecurityManager();
@@ -829,8 +749,6 @@ public final class System {
 
     /**
      * Sets the system property indicated by the specified key.
-     * <p>
-     * 设置由指定的键表示的系统属性。
      * <p>
      * First, if a security manager exists, its
      * <code>SecurityManager.checkPermission</code> method
@@ -872,8 +790,6 @@ public final class System {
     /**
      * Removes the system property indicated by the specified key.
      * <p>
-     * 移除由指定的键表示的系统属性。
-     * <p>
      * First, if a security manager exists, its
      * <code>SecurityManager.checkPermission</code> method
      * is called with a <code>PropertyPermission(key, "write")</code>
@@ -902,8 +818,7 @@ public final class System {
         checkKey(key);
         SecurityManager sm = getSecurityManager();
         if (sm != null) {
-            sm.checkPermission(new PropertyPermission(key,
-                    SecurityConstants.PROPERTY_WRITE_ACTION));
+            sm.checkPermission(new PropertyPermission(key, "write"));
         }
 
         return (String) props.remove(key);
@@ -918,15 +833,10 @@ public final class System {
         }
     }
 
-
-    // 环境变量
     /**
      * Gets the value of the specified environment variable. An
      * environment variable is a system-dependent external named
      * value.
-     * <p>
-     * 获取指定的环境变量的值。
-     * 环境变量是一个系统依赖外部的指名的值。
      *
      * <p>If a security manager exists, its
      * {@link SecurityManager#checkPermission checkPermission}
@@ -957,7 +867,7 @@ public final class System {
      * <code>System.getenv("FOO").equals(System.getenv("foo"))</code>
      * is likely to be true on Microsoft Windows.
      *
-     * @param  name the name of the environment variable (环境变量的名称)
+     * @param  name the name of the environment variable
      * @return the string value of the variable, or <code>null</code>
      *         if the variable is not defined in the system environment
      * @throws NullPointerException if <code>name</code> is <code>null</code>
@@ -969,7 +879,6 @@ public final class System {
      * @see    #getenv()
      * @see    ProcessBuilder#environment()
      */
-    // 核心方法 获取指定的环境变量的值
     public static String getenv(String name) {
         SecurityManager sm = getSecurityManager();
         if (sm != null) {
@@ -1020,7 +929,7 @@ public final class System {
      * @see    ProcessBuilder#environment()
      * @since  1.5
      */
-    public static Map<String, String> getenv() {
+    public static java.util.Map<String,String> getenv() {
         SecurityManager sm = getSecurityManager();
         if (sm != null) {
             sm.checkPermission(new RuntimePermission("getenv.*"));
@@ -1029,8 +938,6 @@ public final class System {
         return ProcessEnvironment.getenv();
     }
 
-
-    // 停止虚拟机
     /**
      * Terminates the currently running Java Virtual Machine. The
      * argument serves as a status code; by convention, a nonzero status
@@ -1051,17 +958,12 @@ public final class System {
      *        method doesn't allow exit with the specified status.
      * @see        java.lang.Runtime#exit(int)
      */
-    // 核心方法 终止当前正在运行的Java虚拟机
     public static void exit(int status) {
-        Runtime.getRuntime().exit(status); // 退出运行时实例
+        Runtime.getRuntime().exit(status);
     }
 
-
-    // 垃圾收集
     /**
      * Runs the garbage collector.
-     * <p>
-     * 运行垃圾收集器。
      * <p>
      * Calling the <code>gc</code> method suggests that the Java Virtual
      * Machine expend effort toward recycling unused objects in order to
@@ -1085,8 +987,6 @@ public final class System {
     /**
      * Runs the finalization methods of any objects pending finalization.
      * <p>
-     * 运行任何对象的终结方法。
-     * <p>
      * Calling this method suggests that the Java Virtual Machine expend
      * effort toward running the <code>finalize</code> methods of objects
      * that have been found to be discarded but whose <code>finalize</code>
@@ -1106,14 +1006,40 @@ public final class System {
         Runtime.getRuntime().runFinalization();
     }
 
+    /**
+     * Enable or disable finalization on exit; doing so specifies that the
+     * finalizers of all objects that have finalizers that have not yet been
+     * automatically invoked are to be run before the Java runtime exits.
+     * By default, finalization on exit is disabled.
+     *
+     * <p>If there is a security manager,
+     * its <code>checkExit</code> method is first called
+     * with 0 as its argument to ensure the exit is allowed.
+     * This could result in a SecurityException.
+     *
+     * @deprecated  This method is inherently unsafe.  It may result in
+     *      finalizers being called on live objects while other threads are
+     *      concurrently manipulating those objects, resulting in erratic
+     *      behavior or deadlock.
+     * @param value indicating enabling or disabling of finalization
+     * @throws  SecurityException
+     *        if a security manager exists and its <code>checkExit</code>
+     *        method doesn't allow the exit.
+     *
+     * @see     java.lang.Runtime#exit(int)
+     * @see     java.lang.Runtime#gc()
+     * @see     java.lang.SecurityManager#checkExit(int)
+     * @since   JDK1.1
+     */
+    @Deprecated
+    public static void runFinalizersOnExit(boolean value) {
+        Runtime.getRuntime().runFinalizersOnExit(value);
+    }
 
-    // 动态库
     /**
      * Loads a code file with the specified filename from the local file
      * system as a dynamic library. The filename
      * argument must be a complete path name.
-     * <p>
-     * 从本地文件系统加载指定文件名的代码文件作为一个动态库。
      * <p>
      * The call <code>System.load(name)</code> is effectively equivalent
      * to the call:
@@ -1179,10 +1105,8 @@ public final class System {
     /**
      * Initialize the system class.  Called after thread initialization.
      */
-    // 核心实现 初始化系统类，在线程初始化完成后调用
     private static void initializeSystemClass() {
 
-        // 由虚拟机来初始化系统属性
         // VM might invoke JNU_NewStringPlatform() to set those encoding
         // sensitive properties (user.home, user.name, boot.class.path, etc.)
         // during "props" initialization, in which it may need access, via
@@ -1208,45 +1132,39 @@ public final class System {
         // Save a private copy of the system properties object that
         // can only be accessed by the internal implementation.  Remove
         // certain system properties that are not intended for public access.
-        sun.misc.VM.saveAndRemoveProperties(props); // 系统配置
+        sun.misc.VM.saveAndRemoveProperties(props);
 
 
-        lineSeparator = props.getProperty("line.separator"); // 行分隔符
+        lineSeparator = props.getProperty("line.separator");
         sun.misc.Version.init();
 
-        // 初始化输入输出流
         FileInputStream fdIn = new FileInputStream(FileDescriptor.in);
         FileOutputStream fdOut = new FileOutputStream(FileDescriptor.out);
         FileOutputStream fdErr = new FileOutputStream(FileDescriptor.err);
-        setIn0(new BufferedInputStream(fdIn)); // 缓冲区输入流
-        setOut0(new PrintStream(new BufferedOutputStream(fdOut, 128), true)); // 输出打印流
+        setIn0(new BufferedInputStream(fdIn));
+        setOut0(new PrintStream(new BufferedOutputStream(fdOut, 128), true));
         setErr0(new PrintStream(new BufferedOutputStream(fdErr, 128), true));
         // Load the zip library now in order to keep java.util.zip.ZipFile
         // from trying to use itself to load this library later.
         loadLibrary("zip");
 
-        // 设置Java信号处理程序
         // Setup Java signal handlers for HUP, TERM, and INT (where available).
         Terminator.setup();
 
-        // 初始化操作系统设置
         // Initialize any miscellenous operating system settings that need to be
         // set for the class libraries. Currently this is no-op everywhere except
         // for Windows where the process-wide error mode is set before the java.io
         // classes are used.
         sun.misc.VM.initializeOSEnvironment();
 
-        // 将当前主线程添加到线程组中
         // The main thread is not added to its thread group in the same
         // way as other threads; we must do it ourselves here.
         Thread current = Thread.currentThread();
         current.getThreadGroup().add(current);
 
-        // 注册共享机制
         // register shared secrets
         setJavaLangAccess();
 
-        // 启动虚拟机，子系统在初始化期间调用
         // Subsystems that are invoked during initialization can invoke
         // sun.misc.VM.isBooted() in order to avoid doing things that should
         // wait until the application class loader has been set up.
@@ -1254,68 +1172,44 @@ public final class System {
         sun.misc.VM.booted();
     }
 
-    // 设置 Java 语言访问机制
     private static void setJavaLangAccess() {
         // Allow privileged classes outside of java.lang
         sun.misc.SharedSecrets.setJavaLangAccess(new sun.misc.JavaLangAccess(){
-            @Override
-            public sun.reflect.ConstantPool getConstantPool(Class klass) { // 常量池
+            public sun.reflect.ConstantPool getConstantPool(Class klass) {
                 return klass.getConstantPool();
             }
-
-            @Override
-            public boolean casAnnotationType(Class<?> klass, AnnotationType oldType, AnnotationType newType) { // 强转注解类型
+            public boolean casAnnotationType(Class<?> klass, AnnotationType oldType, AnnotationType newType) {
                 return klass.casAnnotationType(oldType, newType);
             }
-
-            @Override
-            public AnnotationType getAnnotationType(Class klass) { // 注解类型
+            public AnnotationType getAnnotationType(Class klass) {
                 return klass.getAnnotationType();
             }
-
-            @Override
-            public byte[] getRawClassAnnotations(Class<?> klass) { // 原生类注解
+            public byte[] getRawClassAnnotations(Class<?> klass) {
                 return klass.getRawAnnotations();
             }
-
-            @Override
             public <E extends Enum<E>>
-                    E[] getEnumConstantsShared(Class<E> klass) { // 共享的枚举常量
+                    E[] getEnumConstantsShared(Class<E> klass) {
                 return klass.getEnumConstantsShared();
             }
-
-            @Override
-            public void blockedOn(Thread t, Interruptible b) { // 线程阻塞
+            public void blockedOn(Thread t, Interruptible b) {
                 t.blockedOn(b);
             }
-
-            @Override
-            public void registerShutdownHook(int slot, boolean registerShutdownInProgress, Runnable hook) { // 注册关闭挂钩
+            public void registerShutdownHook(int slot, boolean registerShutdownInProgress, Runnable hook) {
                 Shutdown.add(slot, registerShutdownInProgress, hook);
             }
-
-            @Override
-            public int getStackTraceDepth(Throwable t) { // 获取堆栈跟踪深度
+            public int getStackTraceDepth(Throwable t) {
                 return t.getStackTraceDepth();
             }
-
-            @Override
-            public StackTraceElement getStackTraceElement(Throwable t, int i) { // 获取堆栈跟踪元素
+            public StackTraceElement getStackTraceElement(Throwable t, int i) {
                 return t.getStackTraceElement(i);
             }
-
-            @Override
             public int getStringHash32(String string) {
                 return string.hash32();
             }
-
-            @Override
-            public Thread newThreadWithAcc(Runnable target, AccessControlContext acc) { // 新建访问控制上下文线程
+            public Thread newThreadWithAcc(Runnable target, AccessControlContext acc) {
                 return new Thread(target, acc);
             }
-
-            @Override
-            public void invokeFinalize(Object o) throws Throwable { // 调用垃圾收集器
+            public void invokeFinalize(Object o) throws Throwable {
                 o.finalize();
             }
         });

@@ -36,8 +36,6 @@ import java.util.Locale;
  * {@code Character} contains a single field whose type is
  * {@code char}.
  * <p>
- * 将 char 基本类型的值包装到对象中。
- * <p>
  * In addition, this class provides several methods for determining
  * a character's category (lowercase letter, digit, etc.) and for converting
  * characters from uppercase to lowercase and vice versa.
@@ -121,9 +119,8 @@ import java.util.Locale;
  * @author  Ulf Zibis
  * @since   1.0
  */
-// [包装类] 字符类型
-// final 修饰符来保证类不会被扩展
-public final class Character implements java.io.Serializable, Comparable<Character> {
+public final
+class Character implements java.io.Serializable, Comparable<Character> {
     /**
      * The minimum radix available for conversion to and from strings.
      * The constant value of this field is the smallest value permitted
@@ -185,7 +182,6 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * General character types
      */
 
-    // Unicode编码规范
     /**
      * General category "Cn" in the Unicode specification.
      * @since   1.1
@@ -4338,13 +4334,14 @@ public final class Character implements java.io.Serializable, Comparable<Charact
     }
 
     /**
-     * The value of the {@code Character}. (字符值)
+     * The value of the {@code Character}.
      *
      * @serial
      */
-    // 使所有的域都成为私有的
-    // 使所有的域都是 final 的
-    private final char value; // 初始化后就不能改变
+    private final char value;
+
+    /** use serialVersionUID from JDK 1.0.2 for interoperability */
+    private static final long serialVersionUID = 3786198910865385080L;
 
     /**
      * Constructs a newly allocated {@code Character} object that
@@ -4353,26 +4350,21 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @param  value   the value to be represented by the
      *                  {@code Character} object.
      */
-    // 核心方法 构造一个新分配的表示指定字符值的字符对象
     public Character(char value) {
-        this.value = value; // 不要提供任何会修改对象状态的方法
+        this.value = value;
     }
 
-    // 内部数据结构 支持自动装箱的对象标识语义的缓存
     private static class CharacterCache {
         private CharacterCache(){}
 
-        static final Character cache[] = new Character[127 + 1]; // 把频繁被请求的实例缓存起来
+        static final Character cache[] = new Character[127 + 1];
 
-        // 静态类初始化
         static {
             for (int i = 0; i < cache.length; i++)
                 cache[i] = new Character((char)i);
         }
     }
 
-    // 工厂实例化
-    // 基本类型转换为包装类
     /**
      * Returns a <tt>Character</tt> instance representing the specified
      * <tt>char</tt> value.
@@ -4390,12 +4382,10 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @return a <tt>Character</tt> instance representing <tt>c</tt>.
      * @since  1.5
      */
-    // 核心方法 返回一个表示指定的字符值的字符实例(选择用静态工厂代替公有的构造器可以让你以后有添加缓存的灵活性，而不必影响客户端)
     public static Character valueOf(char c) {
         if (c <= 127) { // must cache
             return CharacterCache.cache[(int)c];
         }
-
         return new Character(c);
     }
 
@@ -4414,8 +4404,6 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      *
      * @return a hash code value for this {@code Character}
      */
-    // 核心方法 散列码即为表示的字符整数值
-    @Override
     public int hashCode() {
         return (int)value;
     }
@@ -4430,8 +4418,6 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @return  {@code true} if the objects are the same;
      *          {@code false} otherwise.
      */
-    // 核心方法 比较字符值的对象
-    @Override
     public boolean equals(Object obj) {
         if (obj instanceof Character) {
             return value == ((Character)obj).charValue();
@@ -4448,13 +4434,11 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      *
      * @return  a string representation of this object.
      */
-    @Override
     public String toString() {
         char buf[] = {value};
         return String.valueOf(buf);
     }
 
-    // 转换为字符串
     /**
      * Returns a {@code String} object representing the
      * specified {@code char}.  The result is a string of length
@@ -4464,13 +4448,10 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @return the string representation of the specified {@code char}
      * @since 1.4
      */
-    // 核心方法 返回表示指定字符值的字符串对象
     public static String toString(char c) {
         return String.valueOf(c);
     }
 
-
-    // 代码点确定
     /**
      * Determines whether the specified code point is a valid
      * <a href="http://www.unicode.org/glossary/#code_point">
@@ -5214,8 +5195,6 @@ public final class Character implements java.io.Serializable, Comparable<Charact
         return x;
     }
 
-
-    // 字符确定
     /**
      * Determines if the specified character is a lowercase character.
      * <p>
@@ -5247,9 +5226,8 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @see     Character#toLowerCase(char)
      * @see     Character#getType(char)
      */
-    // 核心方法 是否为小写字符
     public static boolean isLowerCase(char ch) {
-        return isLowerCase((int) ch);
+        return isLowerCase((int)ch);
     }
 
     /**
@@ -5280,7 +5258,6 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @see     Character#getType(int)
      * @since   1.5
      */
-    // 核心方法 Unicode代码点是否为小写字符
     public static boolean isLowerCase(int codePoint) {
         return getType(codePoint) == Character.LOWERCASE_LETTER ||
                CharacterData.of(codePoint).isOtherLowercase(codePoint);
@@ -5317,9 +5294,8 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @see     Character#getType(char)
      * @since   1.0
      */
-    // 核心方法 是否为大写字符
     public static boolean isUpperCase(char ch) {
-        return isUpperCase((int) ch);
+        return isUpperCase((int)ch);
     }
 
     /**
@@ -5348,7 +5324,6 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @see     Character#getType(int)
      * @since   1.5
      */
-    // 核心方法 Unicode代码点是否为大写字符
     public static boolean isUpperCase(int codePoint) {
         return getType(codePoint) == Character.UPPERCASE_LETTER ||
                CharacterData.of(codePoint).isOtherUppercase(codePoint);
@@ -5391,9 +5366,8 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @see     Character#getType(char)
      * @since   1.0.2
      */
-    // 核心方法 是否为词首字母大写字符
     public static boolean isTitleCase(char ch) {
-        return isTitleCase((int) ch);
+        return isTitleCase((int)ch);
     }
 
     /**
@@ -5467,9 +5441,8 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @see     Character#forDigit(int, int)
      * @see     Character#getType(char)
      */
-    // 核心方法 是否为数字字符
     public static boolean isDigit(char ch) {
-        return isDigit((int) ch);
+        return isDigit((int)ch);
     }
 
     /**
@@ -5502,7 +5475,6 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @see     Character#getType(int)
      * @since   1.5
      */
-    // 核心方法 Unicode代码点是否为数字字符
     public static boolean isDigit(int codePoint) {
         return getType(codePoint) == Character.DECIMAL_DIGIT_NUMBER;
     }
@@ -5533,7 +5505,7 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @since   1.0.2
      */
     public static boolean isDefined(char ch) {
-        return isDefined((int) ch);
+        return isDefined((int)ch);
     }
 
     /**
@@ -5595,9 +5567,8 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @see     Character#isUnicodeIdentifierStart(char)
      * @see     Character#isUpperCase(char)
      */
-    // 核心方法 是否为字母字符
     public static boolean isLetter(char ch) {
-        return isLetter((int) ch);
+        return isLetter((int)ch);
     }
 
     /**
@@ -5629,7 +5600,6 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @see     Character#isUpperCase(int)
      * @since   1.5
      */
-    // 核心方法 Unicode代码点是否为字母字符
     public static boolean isLetter(int codePoint) {
         return ((((1 << Character.UPPERCASE_LETTER) |
             (1 << Character.LOWERCASE_LETTER) |
@@ -5664,7 +5634,7 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @since   1.0.2
      */
     public static boolean isLetterOrDigit(char ch) {
-        return isLetterOrDigit((int) ch);
+        return isLetterOrDigit((int)ch);
     }
 
     /**
@@ -5695,6 +5665,72 @@ public final class Character implements java.io.Serializable, Comparable<Charact
     }
 
     /**
+     * Determines if the specified character is permissible as the first
+     * character in a Java identifier.
+     * <p>
+     * A character may start a Java identifier if and only if
+     * one of the following is true:
+     * <ul>
+     * <li> {@link #isLetter(char) isLetter(ch)} returns {@code true}
+     * <li> {@link #getType(char) getType(ch)} returns {@code LETTER_NUMBER}
+     * <li> {@code ch} is a currency symbol (such as {@code '$'})
+     * <li> {@code ch} is a connecting punctuation character (such as {@code '_'}).
+     * </ul>
+     *
+     * @param   ch the character to be tested.
+     * @return  {@code true} if the character may start a Java
+     *          identifier; {@code false} otherwise.
+     * @see     Character#isJavaLetterOrDigit(char)
+     * @see     Character#isJavaIdentifierStart(char)
+     * @see     Character#isJavaIdentifierPart(char)
+     * @see     Character#isLetter(char)
+     * @see     Character#isLetterOrDigit(char)
+     * @see     Character#isUnicodeIdentifierStart(char)
+     * @since   1.02
+     * @deprecated Replaced by isJavaIdentifierStart(char).
+     */
+    @Deprecated
+    public static boolean isJavaLetter(char ch) {
+        return isJavaIdentifierStart(ch);
+    }
+
+    /**
+     * Determines if the specified character may be part of a Java
+     * identifier as other than the first character.
+     * <p>
+     * A character may be part of a Java identifier if and only if any
+     * of the following are true:
+     * <ul>
+     * <li>  it is a letter
+     * <li>  it is a currency symbol (such as {@code '$'})
+     * <li>  it is a connecting punctuation character (such as {@code '_'})
+     * <li>  it is a digit
+     * <li>  it is a numeric letter (such as a Roman numeral character)
+     * <li>  it is a combining mark
+     * <li>  it is a non-spacing mark
+     * <li> {@code isIdentifierIgnorable} returns
+     * {@code true} for the character.
+     * </ul>
+     *
+     * @param   ch the character to be tested.
+     * @return  {@code true} if the character may be part of a
+     *          Java identifier; {@code false} otherwise.
+     * @see     Character#isJavaLetter(char)
+     * @see     Character#isJavaIdentifierStart(char)
+     * @see     Character#isJavaIdentifierPart(char)
+     * @see     Character#isLetter(char)
+     * @see     Character#isLetterOrDigit(char)
+     * @see     Character#isUnicodeIdentifierPart(char)
+     * @see     Character#isIdentifierIgnorable(char)
+     * @since   1.02
+     * @deprecated Replaced by isJavaIdentifierPart(char).
+     */
+    @Deprecated
+    public static boolean isJavaLetterOrDigit(char ch) {
+        return isJavaIdentifierPart(ch);
+    }
+
+    /**
      * Determines if the specified character (Unicode code point) is an alphabet.
      * <p>
      * A character is considered to be alphabetic if its general category type,
@@ -5716,7 +5752,6 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      *          character, <code>false</code> otherwise.
      * @since   1.7
      */
-    // 核心方法 Unicode代码点是否是字母字符
     public static boolean isAlphabetic(int codePoint) {
         return (((((1 << Character.UPPERCASE_LETTER) |
             (1 << Character.LOWERCASE_LETTER) |
@@ -5768,9 +5803,8 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @see     javax.lang.model.SourceVersion#isIdentifier(CharSequence)
      * @since   1.1
      */
-    // 核心方法 是否作为Java标识符的第一个字符
     public static boolean isJavaIdentifierStart(char ch) {
-        return isJavaIdentifierStart((int) ch);
+        return isJavaIdentifierStart((int)ch);
     }
 
     /**
@@ -5836,7 +5870,7 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @since   1.1
      */
     public static boolean isJavaIdentifierPart(char ch) {
-        return isJavaIdentifierPart((int) ch);
+        return isJavaIdentifierPart((int)ch);
     }
 
     /**
@@ -5897,9 +5931,8 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @see     Character#isUnicodeIdentifierPart(char)
      * @since   1.1
      */
-    // 核心方法 是否作为Unicode标识符的第一个字符
     public static boolean isUnicodeIdentifierStart(char ch) {
-        return isUnicodeIdentifierStart((int) ch);
+        return isUnicodeIdentifierStart((int)ch);
     }
 
     /**
@@ -5958,7 +5991,7 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @since   1.1
      */
     public static boolean isUnicodeIdentifierPart(char ch) {
-        return isUnicodeIdentifierPart((int) ch);
+        return isUnicodeIdentifierPart((int)ch);
     }
 
     /**
@@ -6022,7 +6055,7 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @since   1.1
      */
     public static boolean isIdentifierIgnorable(char ch) {
-        return isIdentifierIgnorable((int) ch);
+        return isIdentifierIgnorable((int)ch);
     }
 
     /**
@@ -6055,8 +6088,6 @@ public final class Character implements java.io.Serializable, Comparable<Charact
         return CharacterData.of(codePoint).isIdentifierIgnorable(codePoint);
     }
 
-
-    // 字符转换
     /**
      * Converts the character argument to lowercase using case
      * mapping information from the UnicodeData file.
@@ -6084,7 +6115,6 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @see     Character#isLowerCase(char)
      * @see     String#toLowerCase()
      */
-    // 核心方法 转换为小写字符
     public static char toLowerCase(char ch) {
         return (char)toLowerCase((int)ch);
     }
@@ -6114,7 +6144,6 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      *
      * @since   1.5
      */
-    // 核心方法 转换Unicode代码点为小写字符
     public static int toLowerCase(int codePoint) {
         return CharacterData.of(codePoint).toLowerCase(codePoint);
     }
@@ -6146,7 +6175,6 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @see     Character#isUpperCase(char)
      * @see     String#toUpperCase()
      */
-    // 核心方法 转换为大写字符
     public static char toUpperCase(char ch) {
         return (char)toUpperCase((int)ch);
     }
@@ -6208,7 +6236,6 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @see     Character#toUpperCase(char)
      * @since   1.0.2
      */
-    // 核心方法 转换为词首字母大写字符
     public static char toTitleCase(char ch) {
         return (char)toTitleCase((int)ch);
     }
@@ -6291,7 +6318,7 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @see     Character#isDigit(char)
      */
     public static int digit(char ch, int radix) {
-        return digit((int) ch, radix);
+        return digit((int)ch, radix);
     }
 
     /**
@@ -6381,7 +6408,7 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @since   1.1
      */
     public static int getNumericValue(char ch) {
-        return getNumericValue((int) ch);
+        return getNumericValue((int)ch);
     }
 
     /**
@@ -6417,8 +6444,41 @@ public final class Character implements java.io.Serializable, Comparable<Charact
         return CharacterData.of(codePoint).getNumericValue(codePoint);
     }
 
+    /**
+     * Determines if the specified character is ISO-LATIN-1 white space.
+     * This method returns {@code true} for the following five
+     * characters only:
+     * <table>
+     * <tr><td>{@code '\t'}</td>            <td>{@code U+0009}</td>
+     *     <td>{@code HORIZONTAL TABULATION}</td></tr>
+     * <tr><td>{@code '\n'}</td>            <td>{@code U+000A}</td>
+     *     <td>{@code NEW LINE}</td></tr>
+     * <tr><td>{@code '\f'}</td>            <td>{@code U+000C}</td>
+     *     <td>{@code FORM FEED}</td></tr>
+     * <tr><td>{@code '\r'}</td>            <td>{@code U+000D}</td>
+     *     <td>{@code CARRIAGE RETURN}</td></tr>
+     * <tr><td>{@code '&nbsp;'}</td>  <td>{@code U+0020}</td>
+     *     <td>{@code SPACE}</td></tr>
+     * </table>
+     *
+     * @param      ch   the character to be tested.
+     * @return     {@code true} if the character is ISO-LATIN-1 white
+     *             space; {@code false} otherwise.
+     * @see        Character#isSpaceChar(char)
+     * @see        Character#isWhitespace(char)
+     * @deprecated Replaced by isWhitespace(char).
+     */
+    @Deprecated
+    public static boolean isSpace(char ch) {
+        return (ch <= 0x0020) &&
+            (((((1L << 0x0009) |
+            (1L << 0x000A) |
+            (1L << 0x000C) |
+            (1L << 0x000D) |
+            (1L << 0x0020)) >> ch) & 1L) != 0);
+    }
 
-    // 空白字符
+
     /**
      * Determines if the specified character is a Unicode space character.
      * A character is considered to be a space character if and only if
@@ -6503,7 +6563,6 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @see     Character#isSpaceChar(char)
      * @since   1.1
      */
-    // 核心方法 是否为空白字符
     public static boolean isWhitespace(char ch) {
         return isWhitespace((int)ch);
     }
@@ -6536,7 +6595,6 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @see     Character#isSpaceChar(int)
      * @since   1.5
      */
-    // 核心方法 Unicode代码点是否为空白字符
     public static boolean isWhitespace(int codePoint) {
         return CharacterData.of(codePoint).isWhitespace(codePoint);
     }
@@ -6630,7 +6688,6 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @see     Character#UPPERCASE_LETTER
      * @since   1.1
      */
-    // 核心方法 返回表示一个字符的常规类别的值
     public static int getType(char ch) {
         return getType((int)ch);
     }
@@ -6673,7 +6730,6 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      * @see     Character#UPPERCASE_LETTER UPPERCASE_LETTER
      * @since   1.5
      */
-    // 核心方法 返回表示一个Unicode代码点的常规类别的值
     public static int getType(int codePoint) {
         return CharacterData.of(codePoint).getType(codePoint);
     }
@@ -6850,12 +6906,10 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      *          locale-dependent.
      * @since   1.2
      */
-    @Override
     public int compareTo(Character anotherCharacter) {
         return compare(this.value, anotherCharacter.value);
     }
 
-    // 排序
     /**
      * Compares two {@code char} values numerically.
      * The value returned is identical to what would be returned by:
@@ -6870,9 +6924,8 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      *         a value greater than {@code 0} if {@code x > y}
      * @since 1.7
      */
-    // 核心方法 比较两个字符值
     public static int compare(char x, char y) {
-        return x - y; // 相减防溢出
+        return x - y;
     }
 
     /**
@@ -6918,10 +6971,7 @@ public final class Character implements java.io.Serializable, Comparable<Charact
      *
      * @since 1.5
      */
-    public static final int SIZE = 16; // 16位比特数
-
-    /** use serialVersionUID from JDK 1.0.2 for interoperability */
-    private static final long serialVersionUID = 3786198910865385080L;
+    public static final int SIZE = 16;
 
     /**
      * Returns the value obtained by reversing the order of the bytes in the

@@ -29,23 +29,17 @@ package java.lang;
  * The {@code Short} class wraps a value of primitive type {@code
  * short} in an object.  An object of type {@code Short} contains a
  * single field whose type is {@code short}.
- * <p>
- * 将 short 基本类型的值包装到对象中。
  *
  * <p>In addition, this class provides several methods for converting
  * a {@code short} to a {@code String} and a {@code String} to a
  * {@code short}, as well as other constants and methods useful when
  * dealing with a {@code short}.
- * <p>
- * 提供与字符串的互相转换。
  *
  * @author  Nakul Saraiya
  * @author  Joseph D. Darcy
  * @see     java.lang.Number
  * @since   JDK1.1
  */
-// [包装类] 短整型类型
-// final 修饰符来保证类不会被扩展
 public final class Short extends Number implements Comparable<Short> {
 
     /**
@@ -66,7 +60,6 @@ public final class Short extends Number implements Comparable<Short> {
      */
     public static final Class<Short>    TYPE = (Class<Short>) Class.getPrimitiveClass("short");
 
-    // 转换为字符串
     /**
      * Returns a new {@code String} object representing the
      * specified {@code short}. The radix is assumed to be 10.
@@ -75,7 +68,6 @@ public final class Short extends Number implements Comparable<Short> {
      * @return the string representation of the specified {@code short}
      * @see java.lang.Integer#toString(int)
      */
-    // 核心方法 返回表示指定短整型值的字符串对象
     public static String toString(short s) {
         return Integer.toString((int)s, 10);
     }
@@ -129,7 +121,6 @@ public final class Short extends Number implements Comparable<Short> {
         return (short)i;
     }
 
-    // 解析字符串
     /**
      * Parses the string argument as a signed decimal {@code
      * short}. The characters in the string must all be decimal
@@ -148,7 +139,6 @@ public final class Short extends Number implements Comparable<Short> {
      * @throws  NumberFormatException If the string does not
      *          contain a parsable {@code short}.
      */
-    // 核心方法 解析字符串参数为有符号的十进制短整型值
     public static short parseShort(String s) throws NumberFormatException {
         return parseShort(s, 10);
     }
@@ -209,21 +199,17 @@ public final class Short extends Number implements Comparable<Short> {
         return valueOf(s, 10);
     }
 
-    // 内部数据结构 支持自动装箱的对象标识语义的缓存
     private static class ShortCache {
         private ShortCache(){}
 
-        static final Short cache[] = new Short[-(-128) + 127 + 1]; // 把频繁被请求的实例缓存起来
+        static final Short cache[] = new Short[-(-128) + 127 + 1];
 
-        // 静态类初始化
         static {
             for(int i = 0; i < cache.length; i++)
                 cache[i] = new Short((short)(i - 128));
         }
     }
 
-    // 工厂实例化
-    // 基本类型转换为包装类
     /**
      * Returns a {@code Short} instance representing the specified
      * {@code short} value.
@@ -240,7 +226,6 @@ public final class Short extends Number implements Comparable<Short> {
      * @return a {@code Short} instance representing {@code s}.
      * @since  1.5
      */
-    // 核心方法 返回一个表示指定的短整型值的短整型实例(选择用静态工厂代替公有的构造器可以让你以后有添加缓存的灵活性，而不必影响客户端)
     public static Short valueOf(short s) {
         final int offset = 128;
         int sAsInt = s;
@@ -301,13 +286,11 @@ public final class Short extends Number implements Comparable<Short> {
     }
 
     /**
-     * The value of the {@code Short}. (短整型值)
+     * The value of the {@code Short}.
      *
      * @serial
      */
-    // 使所有的域都成为私有的
-    // 使所有的域都是 final 的
-    private final short value; // 初始化后就不能改变
+    private final short value;
 
     /**
      * Constructs a newly allocated {@code Short} object that
@@ -316,7 +299,6 @@ public final class Short extends Number implements Comparable<Short> {
      * @param value     the value to be represented by the
      *                  {@code Short}.
      */
-    // 核心方法 构造一个新分配的表示指定短整型值的短整型对象
     public Short(short value) {
         this.value = value;
     }
@@ -338,12 +320,10 @@ public final class Short extends Number implements Comparable<Short> {
         this.value = parseShort(s, 10);
     }
 
-    // 数值转换
     /**
      * Returns the value of this {@code Short} as a
      * {@code byte}.
      */
-    @Override
     public byte byteValue() {
         return (byte)value;
     }
@@ -352,7 +332,6 @@ public final class Short extends Number implements Comparable<Short> {
      * Returns the value of this {@code Short} as a
      * {@code short}.
      */
-    @Override
     public short shortValue() {
         return value;
     }
@@ -361,7 +340,6 @@ public final class Short extends Number implements Comparable<Short> {
      * Returns the value of this {@code Short} as an
      * {@code int}.
      */
-    @Override
     public int intValue() {
         return (int)value;
     }
@@ -370,7 +348,6 @@ public final class Short extends Number implements Comparable<Short> {
      * Returns the value of this {@code Short} as a
      * {@code long}.
      */
-    @Override
     public long longValue() {
         return (long)value;
     }
@@ -379,7 +356,6 @@ public final class Short extends Number implements Comparable<Short> {
      * Returns the value of this {@code Short} as a
      * {@code float}.
      */
-    @Override
     public float floatValue() {
         return (float)value;
     }
@@ -388,7 +364,6 @@ public final class Short extends Number implements Comparable<Short> {
      * Returns the value of this {@code Short} as a
      * {@code double}.
      */
-    @Override
     public double doubleValue() {
         return (double)value;
     }
@@ -403,7 +378,6 @@ public final class Short extends Number implements Comparable<Short> {
      * @return  a string representation of the value of this object in
      *          base&nbsp;10.
      */
-    @Override
     public String toString() {
         return Integer.toString((int)value);
     }
@@ -414,8 +388,6 @@ public final class Short extends Number implements Comparable<Short> {
      *
      * @return a hash code value for this {@code Short}
      */
-    // 核心方法 散列码即为表示的短整数值
-    @Override
     public int hashCode() {
         return (int)value;
     }
@@ -430,8 +402,6 @@ public final class Short extends Number implements Comparable<Short> {
      * @return          {@code true} if the objects are the same;
      *                  {@code false} otherwise.
      */
-    // 核心方法 比较短整数值的对象
-    @Override
     public boolean equals(Object obj) {
         if (obj instanceof Short) {
             return value == ((Short)obj).shortValue();
@@ -439,7 +409,6 @@ public final class Short extends Number implements Comparable<Short> {
         return false;
     }
 
-    // 排序
     /**
      * Compares two {@code Short} objects numerically.
      *
@@ -453,7 +422,6 @@ public final class Short extends Number implements Comparable<Short> {
      *           comparison).
      * @since   1.2
      */
-    @Override
     public int compareTo(Short anotherShort) {
         return compare(this.value, anotherShort.value);
     }
@@ -472,9 +440,8 @@ public final class Short extends Number implements Comparable<Short> {
      *         a value greater than {@code 0} if {@code x > y}
      * @since 1.7
      */
-    // 核心方法 比较两个短整型值
     public static int compare(short x, short y) {
-        return x - y; // 相减防溢出
+        return x - y;
     }
 
     /**
@@ -482,10 +449,7 @@ public final class Short extends Number implements Comparable<Short> {
      * complement binary form.
      * @since 1.5
      */
-    public static final int SIZE = 16; // 16位比特数
-
-    /** use serialVersionUID from JDK 1.1. for interoperability */
-    private static final long serialVersionUID = 7515723908773894738L;
+    public static final int SIZE = 16;
 
     /**
      * Returns the value obtained by reversing the order of the bytes in the
@@ -498,4 +462,7 @@ public final class Short extends Number implements Comparable<Short> {
     public static short reverseBytes(short i) {
         return (short) (((i & 0xFF00) >> 8) | (i << 8));
     }
+
+    /** use serialVersionUID from JDK 1.1. for interoperability */
+    private static final long serialVersionUID = 7515723908773894738L;
 }

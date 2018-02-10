@@ -26,26 +26,21 @@
 package java.lang;
 
 /**
+ *
  * The {@code Byte} class wraps a value of primitive type {@code byte}
  * in an object.  An object of type {@code Byte} contains a single
  * field whose type is {@code byte}.
- * <p>
- * 将 byte 基本类型的值包装到对象中。
  *
  * <p>In addition, this class provides several methods for converting
  * a {@code byte} to a {@code String} and a {@code String} to a {@code
  * byte}, as well as other constants and methods useful when dealing
  * with a {@code byte}.
- * <p>
- * 提供与字符串的互相转换。
  *
  * @author  Nakul Saraiya
  * @author  Joseph D. Darcy
  * @see     java.lang.Number
  * @since   JDK1.1
  */
-// [包装类] 字节类型
-// final 修饰符来保证类不会被扩展
 public final class Byte extends Number implements Comparable<Byte> {
 
     /**
@@ -66,7 +61,6 @@ public final class Byte extends Number implements Comparable<Byte> {
      */
     public static final Class<Byte>     TYPE = (Class<Byte>) Class.getPrimitiveClass("byte");
 
-    // 转换为字符串
     /**
      * Returns a new {@code String} object representing the
      * specified {@code byte}. The radix is assumed to be 10.
@@ -75,26 +69,21 @@ public final class Byte extends Number implements Comparable<Byte> {
      * @return the string representation of the specified {@code byte}
      * @see java.lang.Integer#toString(int)
      */
-    // 核心方法 返回表示指定字节值的字符串对象
     public static String toString(byte b) {
         return Integer.toString((int)b, 10);
     }
 
-    // 内部数据结构 支持自动装箱的对象标识语义的缓存
     private static class ByteCache {
         private ByteCache(){}
 
-        static final Byte cache[] = new Byte[-(-128) + 127 + 1]; // 把频繁被请求的实例缓存起来
+        static final Byte cache[] = new Byte[-(-128) + 127 + 1];
 
-        // 静态类初始化
         static {
             for(int i = 0; i < cache.length; i++)
                 cache[i] = new Byte((byte)(i - 128));
         }
     }
 
-    // 工厂实例化
-    // 基本类型转换为包装类
     /**
      * Returns a {@code Byte} instance representing the specified
      * {@code byte} value.
@@ -108,7 +97,6 @@ public final class Byte extends Number implements Comparable<Byte> {
      * @return a {@code Byte} instance representing {@code b}.
      * @since  1.5
      */
-    // 核心方法 返回一个表示指定的字节值的字节实例(选择用静态工厂代替公有的构造器可以让你以后有添加缓存的灵活性，而不必影响客户端)
     public static Byte valueOf(byte b) {
         final int offset = 128;
         return ByteCache.cache[(int)b + offset];
@@ -164,7 +152,6 @@ public final class Byte extends Number implements Comparable<Byte> {
         return (byte)i;
     }
 
-    // 解析字符串
     /**
      * Parses the string argument as a signed decimal {@code
      * byte}. The characters in the string must all be decimal digits,
@@ -183,7 +170,6 @@ public final class Byte extends Number implements Comparable<Byte> {
      * @throws          NumberFormatException if the string does not
      *                  contain a parsable {@code byte}.
      */
-    // 核心方法 解析字符串参数为有符号的十进制字节值
     public static byte parseByte(String s) throws NumberFormatException {
         return parseByte(s, 10);
     }
@@ -295,13 +281,11 @@ public final class Byte extends Number implements Comparable<Byte> {
     }
 
     /**
-     * The value of the {@code Byte}. (字节值)
+     * The value of the {@code Byte}.
      *
      * @serial
      */
-    // 使所有的域都成为私有的
-    // 使所有的域都是 final 的
-    private final byte value; // 初始化后就不能改变
+    private final byte value;
 
     /**
      * Constructs a newly allocated {@code Byte} object that
@@ -310,9 +294,8 @@ public final class Byte extends Number implements Comparable<Byte> {
      * @param value     the value to be represented by the
      *                  {@code Byte}.
      */
-    // 核心方法 构造一个新分配的表示指定字节值的字节对象
     public Byte(byte value) {
-        this.value = value; // 不要提供任何会修改对象状态的方法
+        this.value = value;
     }
 
     /**
@@ -332,12 +315,10 @@ public final class Byte extends Number implements Comparable<Byte> {
         this.value = parseByte(s, 10);
     }
 
-    // 数值转换
     /**
      * Returns the value of this {@code Byte} as a
      * {@code byte}.
      */
-    @Override
     public byte byteValue() {
         return value;
     }
@@ -346,7 +327,6 @@ public final class Byte extends Number implements Comparable<Byte> {
      * Returns the value of this {@code Byte} as a
      * {@code short}.
      */
-    @Override
     public short shortValue() {
         return (short)value;
     }
@@ -355,7 +335,6 @@ public final class Byte extends Number implements Comparable<Byte> {
      * Returns the value of this {@code Byte} as an
      * {@code int}.
      */
-    @Override
     public int intValue() {
         return (int)value;
     }
@@ -364,7 +343,6 @@ public final class Byte extends Number implements Comparable<Byte> {
      * Returns the value of this {@code Byte} as a
      * {@code long}.
      */
-    @Override
     public long longValue() {
         return (long)value;
     }
@@ -373,7 +351,6 @@ public final class Byte extends Number implements Comparable<Byte> {
      * Returns the value of this {@code Byte} as a
      * {@code float}.
      */
-    @Override
     public float floatValue() {
         return (float)value;
     }
@@ -382,7 +359,6 @@ public final class Byte extends Number implements Comparable<Byte> {
      * Returns the value of this {@code Byte} as a
      * {@code double}.
      */
-    @Override
     public double doubleValue() {
         return (double)value;
     }
@@ -397,7 +373,6 @@ public final class Byte extends Number implements Comparable<Byte> {
      * @return  a string representation of the value of this object in
      *          base&nbsp;10.
      */
-    @Override
     public String toString() {
         return Integer.toString((int)value);
     }
@@ -408,8 +383,6 @@ public final class Byte extends Number implements Comparable<Byte> {
      *
      * @return a hash code value for this {@code Byte}
      */
-    // 核心方法 散列码即为表示的字节整数值
-    @Override
     public int hashCode() {
         return (int)value;
     }
@@ -424,8 +397,6 @@ public final class Byte extends Number implements Comparable<Byte> {
      * @return          {@code true} if the objects are the same;
      *                  {@code false} otherwise.
      */
-    // 核心方法 比较字节值的对象
-    @Override
     public boolean equals(Object obj) {
         if (obj instanceof Byte) {
             return value == ((Byte)obj).byteValue();
@@ -433,7 +404,6 @@ public final class Byte extends Number implements Comparable<Byte> {
         return false;
     }
 
-    // 排序
     /**
      * Compares two {@code Byte} objects numerically.
      *
@@ -447,7 +417,6 @@ public final class Byte extends Number implements Comparable<Byte> {
      *           comparison).
      * @since   1.2
      */
-    @Override
     public int compareTo(Byte anotherByte) {
         return compare(this.value, anotherByte.value);
     }
@@ -466,9 +435,8 @@ public final class Byte extends Number implements Comparable<Byte> {
      *         a value greater than {@code 0} if {@code x > y}
      * @since 1.7
      */
-    // 核心方法 比较两个字节值
     public static int compare(byte x, byte y) {
-        return x - y; // 相减防溢出
+        return x - y;
     }
 
     /**
@@ -477,7 +445,7 @@ public final class Byte extends Number implements Comparable<Byte> {
      *
      * @since 1.5
      */
-    public static final int SIZE = 8; // 8位比特数
+    public static final int SIZE = 8;
 
     /** use serialVersionUID from JDK 1.1. for interoperability */
     private static final long serialVersionUID = -7183698231559129828L;

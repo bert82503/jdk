@@ -31,8 +31,6 @@ package java.lang;
  * <code>Byte</code>, <code>Double</code>, <code>Float</code>,
  * <code>Integer</code>, <code>Long</code>, and <code>Short</code>.
  * <p>
- * 数字抽象类，所有数字类的超类。
- * <p>
  * Subclasses of <code>Number</code> must provide methods to convert
  * the represented numeric value to <code>byte</code>, <code>double</code>,
  * <code>float</code>, <code>int</code>, <code>long</code>, and
@@ -48,13 +46,10 @@ package java.lang;
  * @see     java.lang.Short
  * @since   JDK1.0
  */
-// [数字] 数字抽象类，所有数字类的超类
 public abstract class Number implements java.io.Serializable {
     /**
      * Returns the value of the specified number as an <code>int</code>.
      * This may involve rounding or truncation.
-     * <p>
-     * 返回指定数字的整型值。
      *
      * @return  the numeric value represented by this object after conversion
      *          to type <code>int</code>.
@@ -64,8 +59,6 @@ public abstract class Number implements java.io.Serializable {
     /**
      * Returns the value of the specified number as a <code>long</code>.
      * This may involve rounding or truncation.
-     * <p>
-     * 返回指定数字的长整型值。
      *
      * @return  the numeric value represented by this object after conversion
      *          to type <code>long</code>.
@@ -99,7 +92,7 @@ public abstract class Number implements java.io.Serializable {
      * @since   JDK1.1
      */
     public byte byteValue() {
-        return (byte)intValue(); // 基于整型值
+        return (byte)intValue();
     }
 
     /**
