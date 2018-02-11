@@ -29,14 +29,16 @@ package java.lang;
  * Thrown when an application attempts to use {@code null} in a
  * case where an object is required. These include:
  * <ul>
- * <li>Calling the instance method of a {@code null} object.
- * <li>Accessing or modifying the field of a {@code null} object.
- * <li>Taking the length of {@code null} as if it were an array.
+ * <li>Calling the instance method of a {@code null} object/调用null对象的实例方法.
+ * <li>Accessing or modifying the field of a {@code null} object/访问或修改null对象的字段.
+ * <li>Taking the length of {@code null} as if it were an array/获取null数组的长度.
  * <li>Accessing or modifying the slots of {@code null} as if it
- *     were an array.
+ *     were an array/访问或修改数组的null值槽.
  * <li>Throwing {@code null} as if it were a {@code Throwable}
  *     value.
  * </ul>
+ * <p>
+ * 空指针异常(NPE)
  * <p>
  * Applications should throw instances of this class to indicate
  * other illegal uses of the {@code null} object.
@@ -49,6 +51,7 @@ package java.lang;
  * @author  unascribed
  * @since   JDK1.0
  */
+// 空指针异常(NPE)
 public
 class NullPointerException extends RuntimeException {
     private static final long serialVersionUID = 5162710183389028792L;

@@ -29,6 +29,8 @@ package java.lang;
  * Thrown to indicate that the code has attempted to cast an object
  * to a subclass of which it is not an instance. For example, the
  * following code generates a <code>ClassCastException</code>:
+ * <p>
+ * 指示代码试图将对象强制转换为不是其实例的子类。
  * <p><blockquote><pre>
  *     Object x = new Integer(0);
  *     System.out.println((String)x);
@@ -37,6 +39,7 @@ package java.lang;
  * @author  unascribed
  * @since   JDK1.0
  */
+// 类型转换异常
 public
 class ClassCastException extends RuntimeException {
     private static final long serialVersionUID = -9223365651070458532L;

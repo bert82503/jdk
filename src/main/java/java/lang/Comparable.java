@@ -24,6 +24,7 @@
  */
 
 package java.lang;
+
 import java.util.*;
 
 /**
@@ -38,6 +39,10 @@ import java.util.*;
  * interface can be used as keys in a {@linkplain SortedMap sorted map} or as
  * elements in a {@linkplain SortedSet sorted set}, without the need to
  * specify a {@linkplain Comparator comparator}.<p>
+ * 实现这个接口的对象列表或数组可以通过 {@link Collections#sort(List)}、
+ * {@link Arrays#sort(Object[])} 被自动地排序。
+ * 使用实现这个接口的对象作为 {@linkplain SortedMap}、{@linkplain SortedSet} 的键，
+ * 不需要指定一个 {@linkplain Comparator comparator}。<p>
  *
  * The natural ordering for a class <tt>C</tt> is said to be <i>consistent
  * with equals</i> if and only if <tt>e1.compareTo(e2) == 0</tt> has
@@ -46,6 +51,7 @@ import java.util.*;
  * is not an instance of any class, and <tt>e.compareTo(null)</tt> should
  * throw a <tt>NullPointerException</tt> even though <tt>e.equals(null)</tt>
  * returns <tt>false</tt>.<p>
+ * 类实现了这个接口，就表明它的实例具有内在的排序关系(natural ordering)。<p>
  *
  * It is strongly recommended (though not required) that natural orderings be
  * consistent with equals.  This is so because sorted sets (and sorted maps)
@@ -54,6 +60,8 @@ import java.util.*;
  * particular, such a sorted set (or sorted map) violates the general contract
  * for set (or map), which is defined in terms of the <tt>equals</tt>
  * method.<p>
+ * 强烈建议(但不要求)，自然顺序关系与({@link Object#equals(Object)})方法保持一致。
+ * 即在通常情况下应该返回与equals方法同样的结果。<p>
  *
  * For example, if one adds two keys <tt>a</tt> and <tt>b</tt> such that
  * <tt>(!a.equals(b) && a.compareTo(b) == 0)</tt> to a sorted
@@ -85,7 +93,7 @@ import java.util.*;
  *
  * This interface is a member of the
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
- * Java Collections Framework</a>.
+ * Java Collections Framework/Java集合框架</a>.
  *
  * @param <T> the type of objects that this object may be compared to
  *
@@ -93,12 +101,16 @@ import java.util.*;
  * @see java.util.Comparator
  * @since 1.2
  */
-
+// 可比较的类型
 public interface Comparable<T> {
+    //// 第12条：考虑实现Comparable接口
     /**
      * Compares this object with the specified object for order.  Returns a
      * negative integer, zero, or a positive integer as this object is less
      * than, equal to, or greater than the specified object.
+     * <p>
+     * 将这个对象与指定的对象进行比较。当该对象小于、等于或大于指定对象的时候，
+     * 分别返回一个负整数、零或正整数。
      *
      * <p>The implementor must ensure <tt>sgn(x.compareTo(y)) ==
      * -sgn(y.compareTo(x))</tt> for all <tt>x</tt> and <tt>y</tt>.  (This
@@ -108,6 +120,8 @@ public interface Comparable<T> {
      * <p>The implementor must also ensure that the relation is transitive:
      * <tt>(x.compareTo(y)&gt;0 &amp;&amp; y.compareTo(z)&gt;0)</tt> implies
      * <tt>x.compareTo(z)&gt;0</tt>.
+     * <p>
+     * 比较关系是可传递的。
      *
      * <p>Finally, the implementor must ensure that <tt>x.compareTo(y)==0</tt>
      * implies that <tt>sgn(x.compareTo(z)) == sgn(y.compareTo(z))</tt>, for
@@ -119,6 +133,8 @@ public interface Comparable<T> {
      * this condition should clearly indicate this fact.  The recommended
      * language is "Note: this class has a natural ordering that is
      * inconsistent with equals."
+     * <p>
+     * 强烈建议 <tt>(x.compareTo(y) == 0) == (x.equals(y))</tt>，但这并非绝对必要。
      *
      * <p>In the foregoing description, the notation
      * <tt>sgn(</tt><i>expression</i><tt>)</tt> designates the mathematical
@@ -134,5 +150,6 @@ public interface Comparable<T> {
      * @throws ClassCastException if the specified object's type prevents it
      *         from being compared to this object.
      */
-    public int compareTo(T o);
+    // 将这个对象与指定的对象进行比较
+    int compareTo(T o);
 }
