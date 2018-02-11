@@ -31,6 +31,8 @@ package java.lang;
  * {@code Boolean} contains a single field whose type is
  * {@code boolean}.
  * <p>
+ * Boolean类将布尔值包装到对象中。
+ * <p>
  * In addition, this class provides many methods for
  * converting a {@code boolean} to a {@code String} and a
  * {@code String} to a {@code boolean}, as well as other
@@ -67,7 +69,7 @@ public final class Boolean implements java.io.Serializable,
      *
      * @serial
      */
-    private final boolean value;
+    private final boolean value; // 布尔值
 
     /** use serialVersionUID from JDK 1.0.2 for interoperability */
     private static final long serialVersionUID = -3665804199014368530L;
@@ -121,6 +123,7 @@ public final class Boolean implements java.io.Serializable,
         return toBoolean(s);
     }
 
+    /// 基本类型 <-> 包装类
     /**
      * Returns the value of this {@code Boolean} object as a boolean
      * primitive.
@@ -149,6 +152,7 @@ public final class Boolean implements java.io.Serializable,
         return (b ? TRUE : FALSE);
     }
 
+    /// 字符串 <-> 包装类
     /**
      * Returns a {@code Boolean} with a value represented by the
      * specified string.  The {@code Boolean} returned represents a
@@ -184,8 +188,9 @@ public final class Boolean implements java.io.Serializable,
      *
      * @return  a string representation of this object.
      */
+    @Override
     public String toString() {
-        return value ? "true" : "false";
+        return value ? "true" : "false"; // 字符串表示
     }
 
     /**
@@ -195,8 +200,9 @@ public final class Boolean implements java.io.Serializable,
      * {@code true}; returns the integer {@code 1237} if this
      * object represents {@code false}.
      */
+    @Override
     public int hashCode() {
-        return value ? 1231 : 1237;
+        return value ? 1231 : 1237; // 散列码
     }
 
     /**
@@ -208,9 +214,10 @@ public final class Boolean implements java.io.Serializable,
      * @return  {@code true} if the Boolean objects represent the
      *          same value; {@code false} otherwise.
      */
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof Boolean) {
-            return value == ((Boolean)obj).booleanValue();
+            return value == ((Boolean)obj).booleanValue(); // 布尔值相等
         }
         return false;
     }
@@ -235,13 +242,14 @@ public final class Boolean implements java.io.Serializable,
     public static boolean getBoolean(String name) {
         boolean result = false;
         try {
-            result = toBoolean(System.getProperty(name));
+            result = toBoolean(System.getProperty(name)); // 系统属性
         } catch (IllegalArgumentException e) {
         } catch (NullPointerException e) {
         }
         return result;
     }
 
+    /// 对象值比较
     /**
      * Compares this {@code Boolean} instance with another.
      *
@@ -254,10 +262,12 @@ public final class Boolean implements java.io.Serializable,
      * @see     Comparable
      * @since  1.5
      */
+    @Override
     public int compareTo(Boolean b) {
         return compare(this.value, b.value);
     }
 
+    /// JDK 7
     /**
      * Compares two {@code boolean} values.
      * The value returned is identical to what would be returned by:

@@ -42,6 +42,7 @@ package java.lang;
  */
 public final class Short extends Number implements Comparable<Short> {
 
+    /// 短整型数值范围：[-32768, 32767]
     /**
      * A constant holding the minimum value a {@code short} can
      * have, -2<sup>15</sup>.

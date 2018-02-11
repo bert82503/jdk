@@ -43,6 +43,7 @@ package java.lang;
  */
 public final class Byte extends Number implements Comparable<Byte> {
 
+    /// 字节数值范围：[-128, 127]
     /**
      * A constant holding the minimum value a {@code byte} can
      * have, -2<sup>7</sup>.

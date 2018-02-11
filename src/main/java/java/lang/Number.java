@@ -31,10 +31,14 @@ package java.lang;
  * <code>Byte</code>, <code>Double</code>, <code>Float</code>,
  * <code>Integer</code>, <code>Long</code>, and <code>Short</code>.
  * <p>
+ * {@code Number} 抽象类是 {@code Integer}、{@code Long} 的超类。
+ * <p>
  * Subclasses of <code>Number</code> must provide methods to convert
  * the represented numeric value to <code>byte</code>, <code>double</code>,
  * <code>float</code>, <code>int</code>, <code>long</code>, and
  * <code>short</code>.
+ * <p>
+ * {@code Number} 子类必须提供数字值到基本类型的转换方法。
  *
  * @author      Lee Boynton
  * @author      Arthur van Hoff
@@ -46,7 +50,9 @@ package java.lang;
  * @see     java.lang.Short
  * @since   JDK1.0
  */
+// 数值抽象超类
 public abstract class Number implements java.io.Serializable {
+    /// 基本类型值
     /**
      * Returns the value of the specified number as an <code>int</code>.
      * This may involve rounding or truncation.

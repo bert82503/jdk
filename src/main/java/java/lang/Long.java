@@ -29,11 +29,14 @@ package java.lang;
  * The {@code Long} class wraps a value of the primitive type {@code
  * long} in an object. An object of type {@code Long} contains a
  * single field whose type is {@code long}.
+ * <p>
+ * Long类将长整型值包装到对象中。
  *
  * <p> In addition, this class provides several methods for converting
  * a {@code long} to a {@code String} and a {@code String} to a {@code
  * long}, as well as other constants and methods useful when dealing
  * with a {@code long}.
+ * 提供长整型值与字符串的互转方法。
  *
  * <p>Implementation note: The implementations of the "bit twiddling"
  * methods (such as {@link #highestOneBit(long) highestOneBit} and
@@ -48,6 +51,8 @@ package java.lang;
  * @since   JDK1.0
  */
 public final class Long extends Number implements Comparable<Long> {
+
+    /// 长整型数值范围：[-9223372036854775808, 9223372036854775807]
     /**
      * A constant holding the minimum value a {@code long} can
      * have, -2<sup>63</sup>.
@@ -68,6 +73,7 @@ public final class Long extends Number implements Comparable<Long> {
      */
     public static final Class<Long>     TYPE = (Class<Long>) Class.getPrimitiveClass("long");
 
+    /// 长整数值 <-> 字符串
     /**
      * Returns a string representation of the first argument in the
      * radix specified by the second argument.
@@ -117,7 +123,7 @@ public final class Long extends Number implements Comparable<Long> {
             radix = 10;
         if (radix == 10)
             return toString(i);
-        char[] buf = new char[65];
+        char[] buf = new char[65]; // 字符串最长65位
         int charPos = 64;
         boolean negative = (i < 0);
 
@@ -336,6 +342,7 @@ public final class Long extends Number implements Comparable<Long> {
         return 19;
     }
 
+    /// 字符串 <-> 长整数值
     /**
      * Parses the string argument as a signed {@code long} in the
      * radix specified by the second argument. The characters in the
@@ -397,9 +404,8 @@ public final class Long extends Number implements Comparable<Long> {
      * @throws     NumberFormatException  if the string does not contain a
      *             parsable {@code long}.
      */
-    public static long parseLong(String s, int radix)
-              throws NumberFormatException
-    {
+    public static long parseLong(String s, int radix) throws NumberFormatException {
+        // 检查参数的有效性
         if (s == null) {
             throw new NumberFormatException("null");
         }
@@ -535,15 +541,15 @@ public final class Long extends Number implements Comparable<Long> {
      * @throws     NumberFormatException  If the string cannot be parsed
      *             as a {@code long}.
      */
-    public static Long valueOf(String s) throws NumberFormatException
-    {
+    public static Long valueOf(String s) throws NumberFormatException {
         return Long.valueOf(parseLong(s, 10));
     }
 
+    /// 性能优化，避免重复创建常用的对象
     private static class LongCache {
-        private LongCache(){}
+        private LongCache() {}
 
-        static final Long cache[] = new Long[-(-128) + 127 + 1];
+        static final Long cache[] = new Long[-(-128) + 127 + 1]; // 对象缓存([-128, 127])
 
         static {
             for(int i = 0; i < cache.length; i++)
@@ -551,6 +557,7 @@ public final class Long extends Number implements Comparable<Long> {
         }
     }
 
+    /// 长整数值 <-> 包装类
     /**
      * Returns a {@code Long} instance representing the specified
      * {@code long} value.
@@ -672,7 +679,7 @@ public final class Long extends Number implements Comparable<Long> {
      *
      * @serial
      */
-    private final long value;
+    private final long value; // 长整数值
 
     /**
      * Constructs a newly allocated {@code Long} object that
@@ -702,10 +709,12 @@ public final class Long extends Number implements Comparable<Long> {
         this.value = parseLong(s, 10);
     }
 
+    /// 覆盖Number超类方法
     /**
      * Returns the value of this {@code Long} as a
      * {@code byte}.
      */
+    @Override
     public byte byteValue() {
         return (byte)value;
     }
@@ -714,6 +723,7 @@ public final class Long extends Number implements Comparable<Long> {
      * Returns the value of this {@code Long} as a
      * {@code short}.
      */
+    @Override
     public short shortValue() {
         return (short)value;
     }
@@ -722,6 +732,7 @@ public final class Long extends Number implements Comparable<Long> {
      * Returns the value of this {@code Long} as an
      * {@code int}.
      */
+    @Override
     public int intValue() {
         return (int)value;
     }
@@ -730,14 +741,16 @@ public final class Long extends Number implements Comparable<Long> {
      * Returns the value of this {@code Long} as a
      * {@code long} value.
      */
+    @Override
     public long longValue() {
-        return (long)value;
+        return value;
     }
 
     /**
      * Returns the value of this {@code Long} as a
      * {@code float}.
      */
+    @Override
     public float floatValue() {
         return (float)value;
     }
@@ -746,10 +759,13 @@ public final class Long extends Number implements Comparable<Long> {
      * Returns the value of this {@code Long} as a
      * {@code double}.
      */
+    @Override
     public double doubleValue() {
         return (double)value;
     }
 
+    /// 覆盖Object方法
+    //// 第10条：始终要覆盖toString
     /**
      * Returns a {@code String} object representing this
      * {@code Long}'s value.  The value is converted to signed
@@ -760,10 +776,13 @@ public final class Long extends Number implements Comparable<Long> {
      * @return  a string representation of the value of this object in
      *          base&nbsp;10.
      */
+    @Override
     public String toString() {
         return toString(value);
     }
 
+    //// 第9条：覆盖equals时总要覆盖hashCode
+    //// 一个好的散列函数通常倾向于"为不相等的对象产生不相等的散列码"。
     /**
      * Returns a hash code for this {@code Long}. The result is
      * the exclusive OR of the two halves of the primitive
@@ -776,10 +795,13 @@ public final class Long extends Number implements Comparable<Long> {
      *
      * @return  a hash code value for this object.
      */
+    @Override
     public int hashCode() {
         return (int)(value ^ (value >>> 32));
     }
 
+    //// 第8条：覆盖equals时请遵守通用约定
+    //// 实现高质量equals方法的诀窍
     /**
      * Compares this object to the specified object.  The result is
      * {@code true} if and only if the argument is not
@@ -790,6 +812,7 @@ public final class Long extends Number implements Comparable<Long> {
      * @return  {@code true} if the objects are the same;
      *          {@code false} otherwise.
      */
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof Long) {
             return value == ((Long)obj).longValue();
@@ -797,6 +820,7 @@ public final class Long extends Number implements Comparable<Long> {
         return false;
     }
 
+    /// 系统属性值
     /**
      * Determines the {@code long} value of the system property
      * with the specified name.
@@ -923,7 +947,7 @@ public final class Long extends Number implements Comparable<Long> {
     public static Long getLong(String nm, Long val) {
         String v = null;
         try {
-            v = System.getProperty(nm);
+            v = System.getProperty(nm); // 系统属性值
         } catch (IllegalArgumentException e) {
         } catch (NullPointerException e) {
         }
@@ -936,6 +960,7 @@ public final class Long extends Number implements Comparable<Long> {
         return val;
     }
 
+    /// 对象值比较
     /**
      * Compares two {@code Long} objects numerically.
      *
@@ -949,10 +974,12 @@ public final class Long extends Number implements Comparable<Long> {
      *           comparison).
      * @since   1.2
      */
+    @Override
     public int compareTo(Long anotherLong) {
         return compare(this.value, anotherLong.value);
     }
 
+    /// JDK 7
     /**
      * Compares two {@code long} values numerically.
      * The value returned is identical to what would be returned by:
@@ -972,7 +999,7 @@ public final class Long extends Number implements Comparable<Long> {
     }
 
 
-    // Bit Twiddling
+    // Bit Twiddling/位翻转
 
     /**
      * The number of bits used to represent a {@code long} value in two's
@@ -982,6 +1009,7 @@ public final class Long extends Number implements Comparable<Long> {
      */
     public static final int SIZE = 64;
 
+    /// 位操作(位移、与或非)
     /**
      * Returns a {@code long} value with at most a single one-bit, in the
      * position of the highest-order ("leftmost") one-bit in the specified

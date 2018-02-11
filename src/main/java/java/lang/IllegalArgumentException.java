@@ -35,8 +35,11 @@ package java.lang;
  * @see     java.lang.Thread#setPriority(int)
  * @since   JDK1.0
  */
+// 非法参数异常，表示方法被传入了非法或不合适的参数
 public
 class IllegalArgumentException extends RuntimeException {
+    private static final long serialVersionUID = -5365630128856068164L;
+
     /**
      * Constructs an <code>IllegalArgumentException</code> with no
      * detail message.
@@ -55,6 +58,7 @@ class IllegalArgumentException extends RuntimeException {
         super(s);
     }
 
+    /// 异常消息和原因 - JDK 1.5
     /**
      * Constructs a new exception with the specified detail message and
      * cause.
@@ -92,6 +96,4 @@ class IllegalArgumentException extends RuntimeException {
     public IllegalArgumentException(Throwable cause) {
         super(cause);
     }
-
-    private static final long serialVersionUID = -5365630128856068164L;
 }

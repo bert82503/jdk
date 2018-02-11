@@ -34,9 +34,10 @@ package java.lang;
  * @see     java.lang.Integer#toString()
  * @since   JDK1.0
  */
+// 数字格式异常
 public
 class NumberFormatException extends IllegalArgumentException {
-    static final long serialVersionUID = -2848938806368998894L;
+    private static final long serialVersionUID = -2848938806368998894L;
 
     /**
      * Constructs a <code>NumberFormatException</code> with no detail message.
@@ -52,7 +53,7 @@ class NumberFormatException extends IllegalArgumentException {
      * @param   s   the detail message.
      */
     public NumberFormatException (String s) {
-        super (s);
+        super(s);
     }
 
     /**
