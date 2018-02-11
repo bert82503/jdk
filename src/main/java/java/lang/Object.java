@@ -46,6 +46,8 @@ public class Object {
         registerNatives();
     }
 
+    /// 对于所有对象都通用的方法
+
     /// 类型体系 - Class
     /**
      * Returns the runtime class of this {@code Object}. The returned
@@ -70,7 +72,9 @@ public class Object {
     // 核心方法 返回对象的运行时类型实例(Class<?>)
     public final native Class<?> getClass();
 
-    /// 散列映射 - 散列表/哈希表(HashMap)
+    /// 散列映射 - 映射表(Map)
+    //// 第9条：覆盖equals时总要覆盖hashCode
+    //// 一个好的散列函数通常倾向于"为不相等的对象产生不相等的散列码"。
     /**
      * Returns a hash code value for the object. This method is
      * supported for the benefit of hash tables such as those provided by
@@ -84,19 +88,19 @@ public class Object {
      *     used in {@code equals} comparisons on the object is modified.
      *     This integer need not remain consistent from one execution of an
      *     application to another execution of the same application.
-     *     同一对象多次执行，必须始终返回相同的整数。
+     *     对同一个对象调用多次，都必须始终如一地返回同一个整数。(程序可重现性)
      * <li>If two objects are equal according to the {@code equals(Object)}
      *     method, then calling the {@code hashCode} method on each of
      *     the two objects must produce the same integer result.
-     *     如果两个对象相等，则分别调用这两个对象的 {@code hashCode} 方法必须产生相同的整数结果。
+     *     如果两个对象是相等的，则分别调用这两个对象的 {@code hashCode} 方法都必须产生同样的整数结果。
      * <li>It is <em>not</em> required that if two objects are unequal
      *     according to the {@link java.lang.Object#equals(java.lang.Object)}
      *     method, then calling the {@code hashCode} method on each of the
      *     two objects must produce distinct integer results.  However, the
      *     programmer should be aware that producing distinct integer results
      *     for unequal objects may improve the performance of hash tables.
-     *     如果两个对象不相等，则分别调用这两个对象的 {@code hashCode} 方法必须产生不同的整数结果。
-     *     应该知道，为不相等的对象产生不同的整数结果可以提高哈希表的性能。
+     *     如果两个对象是不相等的，则分别调用这两个对象的 {@code hashCode} 方法不一定要产生不同的整数结果。
+     *     应该知道，给不相等的对象产生截然不同的整数结果，有可能提高散列表的性能。
      * </ul>
      * <p>
      * As much as is reasonably practical, the hashCode method defined by
@@ -110,9 +114,12 @@ public class Object {
      * @see     java.lang.Object#equals(java.lang.Object)
      * @see     java.lang.System#identityHashCode
      */
-    // 核心方法 返回对象的哈希码值
+    // 核心方法 返回对象的散列码
     public native int hashCode();
 
+    /// 集合框架 - 集合类
+    //// 第8条：覆盖equals时请遵守通用约定
+    //// 实现高质量equals方法的诀窍
     /**
      * Indicates whether some other object is "equal to/相等" this one.
      * <p>
@@ -137,7 +144,7 @@ public class Object {
      *     or consistently return {@code false}, provided no
      *     information used in {@code equals} comparisons on the
      *     objects is modified.
-     *     多次调用一致地返回相同的结果
+     *     多次调用会一致地返回相同的结果。
      * <li>For any non-null reference value {@code x},
      *     {@code x.equals(null)} should return {@code false}.
      * </ul>
@@ -154,8 +161,8 @@ public class Object {
      * general contract for the {@code hashCode} method, which states
      * that equal objects must have equal hash codes.
      * <p>
-     * 注意，通常需要重写 {@code hashCode} 方法，并与 {@code hashCode} 方法保持相同约定，
-     * 相等的对象必须具有相同的哈希码值。
+     * 注意，通常需要覆盖 {@code hashCode} 方法，并与 {@code hashCode} 方法遵守相同的通用约定，
+     * 相等的对象必须具有相同的散列码。
      *
      * @param   obj   the reference object with which to compare.
      * @return  {@code true} if this object is the same as the obj
@@ -163,11 +170,13 @@ public class Object {
      * @see     #hashCode()
      * @see     java.util.HashMap
      */
-    // 核心方法 指示其他一些对象是否与此对象"相等"
+    // 核心方法 指示其他一些对象是否与这个对象"相等"
     public boolean equals(Object obj) {
-        return (this == obj); // 同一个对象
+        return (this == obj); // 同一个对象引用
     }
 
+    //// 第11条：谨慎地覆盖clone
+    //// 实现对象拷贝的好办法是提供一个拷贝构造器或拷贝工厂(基于接口的转换构造器或转换工厂)
     /**
      * Creates and returns a copy of this object.  The precise meaning
      * of "copy" may depend on the class of the object. The general
@@ -231,6 +240,7 @@ public class Object {
     protected native Object clone() throws CloneNotSupportedException;
 
     /// 字符串
+    //// 第10条：始终要覆盖toString
     /**
      * Returns a string representation of the object. In general, the
      * {@code toString} method returns a string that
@@ -239,8 +249,8 @@ public class Object {
      * person to read.
      * It is recommended that all subclasses override this method.
      * <p>
-     * 其结果应该是一个简洁而翔实的表示，给人易读的。
-     * 建议，所有子类都重写此方法。
+     * 被返回的字符串应该是一个"简洁的，但信息丰富，并且易于阅读的表达形式"。
+     * 建议，所有子类都覆盖这个方法。
      * <p>
      * The {@code toString} method for class {@code Object}
      * returns a string consisting of the name of the class of which the
@@ -257,7 +267,7 @@ public class Object {
      */
     // 核心方法 返回对象的字符串表示
     public String toString() {
-        return getClass().getName() + "@" + Integer.toHexString(hashCode()); // 类全路径名称@哈希码值十六进制
+        return getClass().getName() + "@" + Integer.toHexString(hashCode()); // 类全路径名称@散列码的无符号十六进制
     }
 
     /// 同步机制 - 线程等待/通知(Thread)
@@ -293,7 +303,7 @@ public class Object {
      * @see        java.lang.Object#notifyAll()
      * @see        java.lang.Object#wait()
      */
-    // 核心方法 唤醒正在等待此对象监视器的单个线程
+    // 核心方法 唤醒正在等待这个对象监视器的单个线程
     public final native void notify();
 
     /**
@@ -318,7 +328,7 @@ public class Object {
      * @see        java.lang.Object#notify()
      * @see        java.lang.Object#wait()
      */
-    // 核心方法 唤醒正在等待此对象监视器的所有线程
+    // 核心方法 唤醒正在等待这个对象监视器的所有线程
     public final native void notifyAll();
 
     /**
@@ -472,7 +482,7 @@ public class Object {
      *             this exception is thrown.
      */
     public final void wait(long timeout, int nanos) throws InterruptedException {
-        // 入参有效性检测
+        //// 第38条：检查参数的有效性
         if (timeout < 0) {
             throw new IllegalArgumentException("timeout value is negative");
         }
@@ -531,15 +541,17 @@ public class Object {
         wait(0); // 可能会一直等待(饥饿现象)
     }
 
-    /// 垃圾收集
+    /// 垃圾回收
+    //// 第7条：避免使用终结方法
+    //// 显式的终止方法通常与try-finally结构结合起来使用，以确保及时终止。
     /**
      * Called by the garbage collector on an object when garbage collection
      * determines that there are no more references to the object.
      * A subclass overrides the {@code finalize} method to dispose of
      * system resources or to perform other cleanup.
      * <p>
-     * 由垃圾收集器在收集垃圾对象时调用，确定没有对此对象的引用。
-     * 子类重写 {@code finalize} 方法是为了处置系统资源或执行其它清理动作。
+     * 当垃圾回收机制确定没有对这个对象的引用时，由垃圾回收器调用。
+     * 子类覆盖 {@code finalize} 方法是为了处置系统资源或执行其它清理动作。
      * <p>
      * The general contract of {@code finalize} is that it is invoked
      * if and when the Java<font size="-2"><sup>TM</sup></font> virtual
