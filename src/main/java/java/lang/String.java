@@ -110,7 +110,7 @@ import java.util.regex.PatternSyntaxException;
  * @see     java.nio.charset.Charset
  * @since   JDK1.0
  */
-// String类表示字符的字符串，是不可变的类型
+// String类表示字符的字符串，是不可变的类型/线程安全
 public final class String implements java.io.Serializable, Comparable<String>, CharSequence {
     /** The value is used for character storage/字符存储. */
     private final char value[]; // 字符数组

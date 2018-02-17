@@ -80,6 +80,7 @@ package java.lang;
  * @see     java.lang.String
  * @since   JDK1.0
  */
+// 线程安全且可变的字符序列
  public final class StringBuffer
     extends AbstractStringBuilder
     implements java.io.Serializable, CharSequence
@@ -93,7 +94,7 @@ package java.lang;
      * initial capacity of 16 characters.
      */
     public StringBuffer() {
-        super(16);
+        super(16); // 初始容量为16个字符
     }
 
     /**
@@ -108,6 +109,7 @@ package java.lang;
         super(capacity);
     }
 
+    /// 转换构造器
     /**
      * Constructs a string buffer initialized to the contents of the
      * specified string. The initial capacity of the string buffer is
@@ -117,7 +119,7 @@ package java.lang;
      * @exception NullPointerException if <code>str</code> is <code>null</code>
      */
     public StringBuffer(String str) {
-        super(str.length() + 16);
+        super(str.length() + 16); // 追加16个字符的初始容量
         append(str);
     }
 
@@ -140,15 +142,20 @@ package java.lang;
         append(seq);
     }
 
+    /// 同步方法(synchronized)
+
+    @Override
     public synchronized int length() {
         return count;
     }
 
+    @Override
     public synchronized int capacity() {
         return value.length;
     }
 
 
+    @Override
     public synchronized void ensureCapacity(int minimumCapacity) {
         if (minimumCapacity > value.length) {
             expandCapacity(minimumCapacity);
@@ -158,6 +165,7 @@ package java.lang;
     /**
      * @since      1.5
      */
+    @Override
     public synchronized void trimToSize() {
         super.trimToSize();
     }
@@ -166,6 +174,7 @@ package java.lang;
      * @throws IndexOutOfBoundsException {@inheritDoc}
      * @see        #length()
      */
+    @Override
     public synchronized void setLength(int newLength) {
         super.setLength(newLength);
     }
@@ -174,6 +183,7 @@ package java.lang;
      * @throws IndexOutOfBoundsException {@inheritDoc}
      * @see        #length()
      */
+    @Override
     public synchronized char charAt(int index) {
         if ((index < 0) || (index >= count))
             throw new StringIndexOutOfBoundsException(index);
@@ -212,6 +222,7 @@ package java.lang;
      * @throws NullPointerException {@inheritDoc}
      * @throws IndexOutOfBoundsException {@inheritDoc}
      */
+    @Override
     public synchronized void getChars(int srcBegin, int srcEnd, char[] dst,
                                       int dstBegin)
     {
@@ -228,11 +239,13 @@ package java.lang;
         value[index] = ch;
     }
 
+    @Override
     public synchronized StringBuffer append(Object obj) {
         super.append(String.valueOf(obj));
         return this;
     }
 
+    @Override
     public synchronized StringBuffer append(String str) {
         super.append(str);
         return this;
@@ -262,6 +275,7 @@ package java.lang;
      * @return  a reference to this object.
      * @since 1.4
      */
+    @Override
     public synchronized StringBuffer append(StringBuffer sb) {
         super.append(sb);
         return this;
@@ -289,6 +303,7 @@ package java.lang;
      * @return  a reference to this object.
      * @since 1.5
      */
+    @Override
     public StringBuffer append(CharSequence s) {
         // Note, synchronization achieved via other invocations
         if (s == null)
@@ -304,12 +319,14 @@ package java.lang;
      * @throws IndexOutOfBoundsException {@inheritDoc}
      * @since      1.5
      */
+    @Override
     public synchronized StringBuffer append(CharSequence s, int start, int end)
     {
         super.append(s, start, end);
         return this;
     }
 
+    @Override
     public synchronized StringBuffer append(char[] str) {
         super.append(str);
         return this;
@@ -318,21 +335,25 @@ package java.lang;
     /**
      * @throws IndexOutOfBoundsException {@inheritDoc}
      */
+    @Override
     public synchronized StringBuffer append(char[] str, int offset, int len) {
         super.append(str, offset, len);
         return this;
     }
 
+    @Override
     public synchronized StringBuffer append(boolean b) {
         super.append(b);
         return this;
     }
 
+    @Override
     public synchronized StringBuffer append(char c) {
         super.append(c);
         return this;
     }
 
+    @Override
     public synchronized StringBuffer append(int i) {
         super.append(i);
         return this;
@@ -346,16 +367,19 @@ package java.lang;
         return this;
     }
 
+    @Override
     public synchronized StringBuffer append(long lng) {
         super.append(lng);
         return this;
     }
 
+    @Override
     public synchronized StringBuffer append(float f) {
         super.append(f);
         return this;
     }
 
+    @Override
     public synchronized StringBuffer append(double d) {
         super.append(d);
         return this;
@@ -383,6 +407,7 @@ package java.lang;
      * @throws StringIndexOutOfBoundsException {@inheritDoc}
      * @since      1.2
      */
+    @Override
     public synchronized StringBuffer replace(int start, int end, String str) {
         super.replace(start, end, str);
         return this;
@@ -392,6 +417,7 @@ package java.lang;
      * @throws StringIndexOutOfBoundsException {@inheritDoc}
      * @since      1.2
      */
+    @Override
     public synchronized String substring(int start) {
         return substring(start, count);
     }
@@ -400,6 +426,7 @@ package java.lang;
      * @throws IndexOutOfBoundsException {@inheritDoc}
      * @since      1.4
      */
+    @Override
     public synchronized CharSequence subSequence(int start, int end) {
         return super.substring(start, end);
     }
@@ -408,6 +435,7 @@ package java.lang;
      * @throws StringIndexOutOfBoundsException {@inheritDoc}
      * @since      1.2
      */
+    @Override
     public synchronized String substring(int start, int end) {
         return super.substring(start, end);
     }
@@ -518,6 +546,7 @@ package java.lang;
      * @throws NullPointerException {@inheritDoc}
      * @since      1.4
      */
+    @Override
     public int indexOf(String str) {
         return indexOf(str, 0);
     }
@@ -526,6 +555,7 @@ package java.lang;
      * @throws NullPointerException {@inheritDoc}
      * @since      1.4
      */
+    @Override
     public synchronized int indexOf(String str, int fromIndex) {
         return String.indexOf(value, 0, count,
                               str.toCharArray(), 0, str.length(), fromIndex);
@@ -535,6 +565,7 @@ package java.lang;
      * @throws NullPointerException {@inheritDoc}
      * @since      1.4
      */
+    @Override
     public int lastIndexOf(String str) {
         // Note, synchronization achieved via other invocations
         return lastIndexOf(str, count);
@@ -544,6 +575,7 @@ package java.lang;
      * @throws NullPointerException {@inheritDoc}
      * @since      1.4
      */
+    @Override
     public synchronized int lastIndexOf(String str, int fromIndex) {
         return String.lastIndexOf(value, 0, count,
                               str.toCharArray(), 0, str.length(), fromIndex);
@@ -552,15 +584,18 @@ package java.lang;
     /**
      * @since   JDK1.0.2
      */
+    @Override
     public synchronized StringBuffer reverse() {
         super.reverse();
         return this;
     }
 
+    @Override
     public synchronized String toString() {
         return new String(value, 0, count);
     }
 
+    /// 对象序列化
     /**
      * Serializable fields for StringBuffer.
      *

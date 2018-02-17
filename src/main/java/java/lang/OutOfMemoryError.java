@@ -29,6 +29,8 @@ package java.lang;
  * Thrown when the Java Virtual Machine cannot allocate an object
  * because it is out of memory, and no more memory could be made
  * available by the garbage collector.
+ * <p></p>
+ * 当JVM无法分配对象时抛出，因为这是内存不足，和没有更多的内存可以被垃圾回收器回收。
  *
  * {@code OutOfMemoryError} objects may be constructed by the virtual
  * machine as if {@linkplain Throwable#Throwable(String, Throwable,
@@ -38,6 +40,7 @@ package java.lang;
  * @author  unascribed
  * @since   JDK1.0
  */
+// 内存不足/溢出的错误(OOM)
 public class OutOfMemoryError extends VirtualMachineError {
     private static final long serialVersionUID = 8228564086184010517L;
 

@@ -25,8 +25,8 @@
 
 package java.lang;
 
-import sun.misc.FloatingDecimal;
 import java.util.Arrays;
+import sun.misc.FloatingDecimal;
 
 /**
  * A mutable sequence of characters.
@@ -34,22 +34,25 @@ import java.util.Arrays;
  * Implements a modifiable string. At any point in time it contains some
  * particular sequence of characters, but the length and content of the
  * sequence can be changed through certain method calls.
+ * <p>
+ * 实现一个可修改的字符串。
  *
  * @author      Michael McCloskey
  * @author      Martin Buchholz
  * @author      Ulf Zibis
  * @since       1.5
  */
+// 可变的字符序列的抽象实现
 abstract class AbstractStringBuilder implements Appendable, CharSequence {
     /**
      * The value is used for character storage.
      */
-    char[] value;
+    char[] value; // 存储字符的数组
 
     /**
      * The count is the number of characters used.
      */
-    int count;
+    int count; // 字符数量
 
     /**
      * This no-arg constructor is necessary for serialization of subclasses.
@@ -57,8 +60,9 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
     AbstractStringBuilder() {
     }
 
+    /// 容量
     /**
-     * Creates an AbstractStringBuilder of the specified capacity.
+     * Creates an AbstractStringBuilder of the specified capacity/指定的容量.
      */
     AbstractStringBuilder(int capacity) {
         value = new char[capacity];
@@ -70,6 +74,8 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
      * @return  the length of the sequence of characters currently
      *          represented by this object
      */
+    // 返回字符序列的长度(字符数量)
+    @Override
     public int length() {
         return count;
     }
@@ -81,6 +87,7 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
      *
      * @return  the current capacity
      */
+    // 返回当前的容量
     public int capacity() {
         return value.length;
     }
@@ -117,17 +124,18 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
     /**
      * This implements the expansion semantics of ensureCapacity with no
      * size check or synchronization.
+     * 实现没有大小检查或同步的确保容量的扩展语义
      */
     void expandCapacity(int minimumCapacity) {
         int newCapacity = value.length * 2 + 2;
         if (newCapacity - minimumCapacity < 0)
             newCapacity = minimumCapacity;
         if (newCapacity < 0) {
-            if (minimumCapacity < 0) // overflow
+            if (minimumCapacity < 0) // overflow/溢出
                 throw new OutOfMemoryError();
             newCapacity = Integer.MAX_VALUE;
         }
-        value = Arrays.copyOf(value, newCapacity);
+        value = Arrays.copyOf(value, newCapacity); // 扩展内存并拷贝数据
     }
 
     /**
@@ -139,7 +147,7 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
      */
     public void trimToSize() {
         if (count < value.length) {
-            value = Arrays.copyOf(value, count);
+            value = Arrays.copyOf(value, count); // 收缩容量
         }
     }
 
@@ -168,6 +176,7 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
      * @throws     IndexOutOfBoundsException  if the
      *               <code>newLength</code> argument is negative.
      */
+    // 设置字符序列的长度
     public void setLength(int newLength) {
         if (newLength < 0)
             throw new StringIndexOutOfBoundsException(newLength);
@@ -175,7 +184,7 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
 
         if (count < newLength) {
             for (; count < newLength; count++)
-                value[count] = '\0';
+                value[count] = '\0'; // 字符串结束符('\u0000')
         } else {
             count = newLength;
         }
@@ -198,7 +207,9 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
      * @throws     IndexOutOfBoundsException  if <code>index</code> is
      *             negative or greater than or equal to <code>length()</code>.
      */
+    @Override
     public char charAt(int index) {
+        //// 第38条：检查参数的有效性
         if ((index < 0) || (index >= count))
             throw new StringIndexOutOfBoundsException(index);
         return value[index];
@@ -345,8 +356,7 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
      *             <code>dst.length</code>
      *             </ul>
      */
-    public void getChars(int srcBegin, int srcEnd, char[] dst, int dstBegin)
-    {
+    public void getChars(int srcBegin, int srcEnd, char[] dst, int dstBegin) {
         if (srcBegin < 0)
             throw new StringIndexOutOfBoundsException(srcBegin);
         if ((srcEnd < 0) || (srcEnd > count))
@@ -376,6 +386,7 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
         value[index] = ch;
     }
 
+    /// 追加(append)
     /**
      * Appends the string representation of the {@code Object} argument.
      * <p>
@@ -410,10 +421,10 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
      * @return  a reference to this object.
      */
     public AbstractStringBuilder append(String str) {
-        if (str == null) str = "null";
+        if (str == null) str = "null"; // null保护
         int len = str.length();
         ensureCapacityInternal(count + len);
-        str.getChars(0, len, value, count);
+        str.getChars(0, len, value, count); // 系统数组拷贝
         count += len;
         return this;
     }
@@ -430,6 +441,7 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
     }
 
     // Documentation in subclasses because of synchro difference
+    @Override
     public AbstractStringBuilder append(CharSequence s) {
         if (s == null)
             s = "null";
@@ -469,6 +481,7 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
      *             {@code start} is greater than {@code end} or
      *             {@code end} is greater than {@code s.length()}
      */
+    @Override
     public AbstractStringBuilder append(CharSequence s, int start, int end) {
         if (s == null)
             s = "null";
@@ -503,7 +516,7 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
     public AbstractStringBuilder append(char[] str) {
         int len = str.length;
         ensureCapacityInternal(count + len);
-        System.arraycopy(str, 0, value, count, len);
+        System.arraycopy(str, 0, value, count, len); // 系统数组拷贝
         count += len;
         return this;
     }
@@ -583,6 +596,7 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
      * @param   c   a {@code char}.
      * @return  a reference to this object.
      */
+    @Override
     public AbstractStringBuilder append(char c) {
         ensureCapacityInternal(count + 1);
         value[count++] = c;
@@ -804,6 +818,7 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
         return this;
     }
 
+    /// 子字符串
     /**
      * Returns a new <code>String</code> that contains a subsequence of
      * characters currently contained in this character sequence. The
@@ -845,6 +860,7 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
      *          or if <tt>start</tt> is greater than <tt>end</tt>
      * @spec JSR-51
      */
+    @Override
     public CharSequence subSequence(int start, int end) {
         return substring(start, end);
     }
@@ -895,8 +911,7 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
      *             {@code str.length}.
      */
     public AbstractStringBuilder insert(int index, char[] str, int offset,
-                                        int len)
-    {
+                                        int len) {
         if ((index < 0) || (index > length()))
             throw new StringIndexOutOfBoundsException(index);
         if ((offset < 0) || (len < 0) || (offset > str.length - len))
@@ -1247,6 +1262,8 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
         return insert(offset, String.valueOf(d));
     }
 
+    /// indexOf/lastIndexOf
+    /// 字符串索引查找
     /**
      * Returns the index within this string of the first occurrence of the
      * specified substring. The integer returned is the smallest value
@@ -1334,6 +1351,7 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
                               str.toCharArray(), 0, str.length(), fromIndex);
     }
 
+    /// 字符串反转
     /**
      * Causes this character sequence to be replaced by the reverse of
      * the sequence. If there are any surrogate pairs included in the

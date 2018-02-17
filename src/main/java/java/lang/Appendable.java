@@ -32,6 +32,8 @@ import java.io.IOException;
  * <tt>Appendable</tt> interface must be implemented by any class whose
  * instances are intended to receive formatted output from a {@link
  * java.util.Formatter}.
+ * <p>
+ * 用来接收格式化的输出。
  *
  * <p> The characters to be appended should be valid Unicode characters as
  * described in <a href="Character.html#unicode">Unicode Character
@@ -41,6 +43,8 @@ import java.io.IOException;
  * <p> Appendables are not necessarily safe for multithreaded access.  Thread
  * safety is the responsibility of classes that extend and implement this
  * interface.
+ * <p></p>
+ * 对多线程访问不一定是安全的，线程安全是扩展和实现此接口的类的责任。
  *
  * <p> Since this interface may be implemented by existing classes
  * with different styles of error handling there is no guarantee that
@@ -48,6 +52,7 @@ import java.io.IOException;
  *
  * @since 1.5
  */
+// 可追加字符序列和值的对象，用来接收格式化的输出
 public interface Appendable {
 
     /**
@@ -68,6 +73,7 @@ public interface Appendable {
      * @throws  IOException
      *          If an I/O error occurs
      */
+    // 追加指定的字符序列
     Appendable append(CharSequence csq) throws IOException;
 
     /**
@@ -104,6 +110,7 @@ public interface Appendable {
      * @throws  IOException
      *          If an I/O error occurs
      */
+    // 追加指定字符序列的子序列
     Appendable append(CharSequence csq, int start, int end) throws IOException;
 
     /**

@@ -28,12 +28,12 @@ package java.lang;
 
 /**
  * A mutable sequence of characters.  This class provides an API compatible
- * with <code>StringBuffer</code>, but with no guarantee of synchronization.
+ * with <code>StringBuffer</code>, but with no guarantee of synchronization/不保证同步.
  * This class is designed for use as a drop-in replacement for
  * <code>StringBuffer</code> in places where the string buffer was being
  * used by a single thread (as is generally the case).   Where possible,
  * it is recommended that this class be used in preference to
- * <code>StringBuffer</code> as it will be faster under most implementations.
+ * <code>StringBuffer</code> as it will be faster under most implementations/更快.
  *
  * <p>The principal operations on a <code>StringBuilder</code> are the
  * <code>append</code> and <code>insert</code> methods, which are
@@ -55,7 +55,7 @@ package java.lang;
  * then <code>sb.append(x)</code> has the same effect as
  * <code>sb.insert(sb.length(),&nbsp;x)</code>.
  *
- * Every string builder has a capacity. As long as the length of the
+ * Every string builder has a capacity/容量. As long as the length of the
  * character sequence contained in the string builder does not exceed
  * the capacity, it is not necessary to allocate a new internal
  * buffer. If the internal buffer overflows, it is automatically made larger.
@@ -63,12 +63,15 @@ package java.lang;
  * <p>Instances of <code>StringBuilder</code> are not safe for
  * use by multiple threads. If such synchronization is required then it is
  * recommended that {@link java.lang.StringBuffer} be used.
+ * <p>
+ * 在多个线程中使用是不安全的。
  *
  * @author      Michael McCloskey
  * @see         java.lang.StringBuffer
  * @see         java.lang.String
  * @since       1.5
  */
+// 可变的字符序列，但不能保证同步/非线程安全
 public final class StringBuilder
     extends AbstractStringBuilder
     implements java.io.Serializable, CharSequence
@@ -82,7 +85,7 @@ public final class StringBuilder
      * initial capacity of 16 characters.
      */
     public StringBuilder() {
-        super(16);
+        super(16); // 初始容量为16个字符
     }
 
     /**
@@ -97,6 +100,7 @@ public final class StringBuilder
         super(capacity);
     }
 
+    /// 转换构造器
     /**
      * Constructs a string builder initialized to the contents of the
      * specified string. The initial capacity of the string builder is
@@ -106,7 +110,7 @@ public final class StringBuilder
      * @throws    NullPointerException if <code>str</code> is <code>null</code>
      */
     public StringBuilder(String str) {
-        super(str.length() + 16);
+        super(str.length() + 16); // 追加16个字符的初始容量
         append(str);
     }
 
@@ -124,10 +128,13 @@ public final class StringBuilder
         append(seq);
     }
 
+    /// 追加内容(append)
+    @Override
     public StringBuilder append(Object obj) {
         return append(String.valueOf(obj));
     }
 
+    @Override
     public StringBuilder append(String str) {
         super.append(str);
         return this;
@@ -138,11 +145,11 @@ public final class StringBuilder
         if (sb == null)
             return append("null");
         int len = sb.length();
-        int newcount = count + len;
-        if (newcount > value.length)
-            expandCapacity(newcount);
+        int newCount = count + len;
+        if (newCount > value.length)
+            expandCapacity(newCount);
         sb.getChars(0, len, value, count);
-        count = newcount;
+        count = newCount;
         return this;
     }
 
@@ -165,13 +172,13 @@ public final class StringBuilder
      * @param   sb   the <tt>StringBuffer</tt> to append.
      * @return  a reference to this object.
      */
+    @Override
     public StringBuilder append(StringBuffer sb) {
         super.append(sb);
         return this;
     }
 
-    /**
-     */
+    @Override
     public StringBuilder append(CharSequence s) {
         if (s == null)
             s = "null";
@@ -187,11 +194,13 @@ public final class StringBuilder
     /**
      * @throws     IndexOutOfBoundsException {@inheritDoc}
      */
+    @Override
     public StringBuilder append(CharSequence s, int start, int end) {
         super.append(s, start, end);
         return this;
     }
 
+    @Override
     public StringBuilder append(char[] str) {
         super.append(str);
         return this;
@@ -200,36 +209,44 @@ public final class StringBuilder
     /**
      * @throws IndexOutOfBoundsException {@inheritDoc}
      */
+    @Override
     public StringBuilder append(char[] str, int offset, int len) {
         super.append(str, offset, len);
         return this;
     }
 
+    /// 基本类型
+    @Override
     public StringBuilder append(boolean b) {
         super.append(b);
         return this;
     }
 
+    @Override
     public StringBuilder append(char c) {
         super.append(c);
         return this;
     }
 
+    @Override
     public StringBuilder append(int i) {
         super.append(i);
         return this;
     }
 
+    @Override
     public StringBuilder append(long lng) {
         super.append(lng);
         return this;
     }
 
+    @Override
     public StringBuilder append(float f) {
         super.append(f);
         return this;
     }
 
+    @Override
     public StringBuilder append(double d) {
         super.append(d);
         return this;
@@ -262,6 +279,7 @@ public final class StringBuilder
     /**
      * @throws StringIndexOutOfBoundsException {@inheritDoc}
      */
+    @Override
     public StringBuilder replace(int start, int end, String str) {
         super.replace(start, end, str);
         return this;
@@ -271,8 +289,7 @@ public final class StringBuilder
      * @throws StringIndexOutOfBoundsException {@inheritDoc}
      */
     public StringBuilder insert(int index, char[] str, int offset,
-                                int len)
-    {
+                                int len) {
         super.insert(index, str, offset, len);
         return this;
     }
@@ -315,8 +332,7 @@ public final class StringBuilder
      * @throws IndexOutOfBoundsException {@inheritDoc}
      */
     public StringBuilder insert(int dstOffset, CharSequence s,
-                                int start, int end)
-    {
+                                int start, int end) {
         super.insert(dstOffset, s, start, end);
         return this;
     }
@@ -365,9 +381,11 @@ public final class StringBuilder
         return insert(offset, String.valueOf(d));
     }
 
+    /// 索引查找
     /**
      * @throws NullPointerException {@inheritDoc}
      */
+    @Override
     public int indexOf(String str) {
         return indexOf(str, 0);
     }
@@ -375,6 +393,7 @@ public final class StringBuilder
     /**
      * @throws NullPointerException {@inheritDoc}
      */
+    @Override
     public int indexOf(String str, int fromIndex) {
         return String.indexOf(value, 0, count,
                               str.toCharArray(), 0, str.length(), fromIndex);
@@ -383,6 +402,7 @@ public final class StringBuilder
     /**
      * @throws NullPointerException {@inheritDoc}
      */
+    @Override
     public int lastIndexOf(String str) {
         return lastIndexOf(str, count);
     }
@@ -390,21 +410,25 @@ public final class StringBuilder
     /**
      * @throws NullPointerException {@inheritDoc}
      */
+    @Override
     public int lastIndexOf(String str, int fromIndex) {
         return String.lastIndexOf(value, 0, count,
                               str.toCharArray(), 0, str.length(), fromIndex);
     }
 
+    @Override
     public StringBuilder reverse() {
         super.reverse();
         return this;
     }
 
+    @Override
     public String toString() {
-        // Create a copy, don't share the array
+        // Create a copy, don't share the array/不共享底层的数组
         return new String(value, 0, count);
     }
 
+    /// 对象序列化
     /**
      * Save the state of the <tt>StringBuilder</tt> instance to a stream
      * (that is, serialize it).

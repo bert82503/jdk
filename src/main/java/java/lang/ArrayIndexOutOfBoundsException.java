@@ -33,6 +33,7 @@ package java.lang;
  * @author  unascribed
  * @since   JDK1.0
  */
+// 数组索引越界异常
 public
 class ArrayIndexOutOfBoundsException extends IndexOutOfBoundsException {
     private static final long serialVersionUID = -5116101128118950844L;

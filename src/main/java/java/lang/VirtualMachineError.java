@@ -28,12 +28,14 @@ package java.lang;
 /**
  * Thrown to indicate that the Java Virtual Machine is broken or has
  * run out of resources necessary for it to continue operating.
- *
+ * <p></p>
+ * 表示JVM终止或耗尽了继续操作必需的资源时抛出。
  *
  * @author  Frank Yellin
  * @since   JDK1.0
  */
-abstract public
+// 虚拟机错误
+public abstract
 class VirtualMachineError extends Error {
     /**
      * Constructs a <code>VirtualMachineError</code> with no detail message.
