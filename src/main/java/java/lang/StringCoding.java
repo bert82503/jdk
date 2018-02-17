@@ -29,28 +29,29 @@ import java.io.UnsupportedEncodingException;
 import java.lang.ref.SoftReference;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
+import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
-import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CoderResult;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.Arrays;
 import sun.misc.MessageUtils;
-import sun.nio.cs.HistoricallyNamedCharset;
 import sun.nio.cs.ArrayDecoder;
 import sun.nio.cs.ArrayEncoder;
+import sun.nio.cs.HistoricallyNamedCharset;
 
 /**
  * Utility class for string encoding and decoding.
+ * 字符串编码和解码的工具类。
  */
-
 class StringCoding {
 
     private StringCoding() { }
 
+    /// 线程本地变量<软引用>
     /** The cached coders for each thread */
     private final static ThreadLocal<SoftReference<StringDecoder>> decoder =
         new ThreadLocal<>();
@@ -59,6 +60,7 @@ class StringCoding {
 
     private static boolean warnUnsupportedCharset = true;
 
+    /// ThreadLocal
     private static <T> T deref(ThreadLocal<SoftReference<T>> tl) {
         SoftReference<T> sr = tl.get();
         if (sr == null)
@@ -95,6 +97,7 @@ class StringCoding {
         return (int)(len * (double)expansionFactor);
     }
 
+    // 查找字符编码
     private static Charset lookupCharset(String csn) {
         if (Charset.isSupported(csn)) {
             try {
@@ -118,11 +121,11 @@ class StringCoding {
     }
 
 
-    // -- Decoding --
+    // -- Decoding/字符串解码 --
     private static class StringDecoder {
         private final String requestedCharsetName;
-        private final Charset cs;
-        private final CharsetDecoder cd;
+        private final Charset cs; // 字符集
+        private final CharsetDecoder cd; // 字符集解码
         private final boolean isTrusted;
 
         private StringDecoder(Charset cs, String rcn) {
@@ -248,7 +251,7 @@ class StringCoding {
     }
 
     static char[] decode(byte[] ba, int off, int len) {
-        String csn = Charset.defaultCharset().name();
+        String csn = Charset.defaultCharset().name(); // 默认的字符集
         try {
             // use charset name decode() variant which provides caching.
             return decode(csn, ba, off, len);
@@ -269,7 +272,7 @@ class StringCoding {
         }
     }
 
-    // -- Encoding --
+    // -- Encoding/字符串编码 --
     private static class StringEncoder {
         private Charset cs;
         private CharsetEncoder ce;
@@ -381,7 +384,7 @@ class StringCoding {
     }
 
     static byte[] encode(char[] ca, int off, int len) {
-        String csn = Charset.defaultCharset().name();
+        String csn = Charset.defaultCharset().name(); // 默认的字符集
         try {
             // use charset name encode() variant which provides caching.
             return encode(csn, ca, off, len);

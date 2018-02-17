@@ -32,7 +32,7 @@ package java.lang;
  * <code>char</code> sequences.
  * A <code>char</code> value represents a character in the <i>Basic
  * Multilingual Plane (BMP)</i> or a surrogate. Refer to <a
- * href="Character.html#unicode">Unicode Character Representation</a> for details.
+ * href="Character.html#unicode">Unicode Character Representation/Unicode字符表示法</a> for details.
  *
  * <p> This interface does not refine the general contracts of the {@link
  * java.lang.Object#equals(java.lang.Object) equals} and {@link
@@ -48,7 +48,7 @@ package java.lang;
  * @since 1.4
  * @spec JSR-51
  */
-
+// 字符序列是可读的字符值的序列，提供对字符序列的统一且只读的访问
 public interface CharSequence {
 
     /**
@@ -57,6 +57,7 @@ public interface CharSequence {
      *
      * @return  the number of <code>char</code>s in this sequence
      */
+    // 返回这个字符序列的长度
     int length();
 
     /**
@@ -79,6 +80,7 @@ public interface CharSequence {
      */
     char charAt(int index);
 
+    /// 子序列
     /**
      * Returns a new <code>CharSequence</code> that is a subsequence of this sequence.
      * The subsequence starts with the <code>char</code> value at the specified index and
@@ -106,6 +108,7 @@ public interface CharSequence {
      *
      * @return  a string consisting of exactly this sequence of characters
      */
-    public String toString();
+    // 返回这个字符序列的字符串表示
+    String toString();
 
 }

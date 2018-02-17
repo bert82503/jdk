@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Formatter;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,6 +45,8 @@ import java.util.regex.PatternSyntaxException;
  * Strings are constant; their values cannot be changed after they
  * are created. String buffers support mutable strings.
  * Because String objects are immutable they can be shared. For example:
+ * <p>
+ * 字符串是不可变的对象，他们可以被共享。
  * <p><blockquote><pre>
  *     String str = "abc";
  * </pre></blockquote><p>
@@ -77,7 +80,10 @@ import java.util.regex.PatternSyntaxException;
  * <code>toString</code>, defined by <code>Object</code> and
  * inherited by all classes in Java. For additional information on
  * string concatenation and conversion, see Gosling, Joy, and Steele,
- * <i>The Java Language Specification</i>.
+ * <i>The Java Language Specification/Java语言规范</i>.
+ * <p></p>
+ * 字符串连接通过 {@link StringBuilder} 的 {@code append} 方法实现；
+ * 字符串转换通过 {@link Object} 的 {@code toString} 方法实现。
  *
  * <p> Unless otherwise noted, passing a <tt>null</tt> argument to a constructor
  * or method in this class will cause a {@link NullPointerException} to be
@@ -104,20 +110,20 @@ import java.util.regex.PatternSyntaxException;
  * @see     java.nio.charset.Charset
  * @since   JDK1.0
  */
+// String类表示字符的字符串，是不可变的类型
+public final class String implements java.io.Serializable, Comparable<String>, CharSequence {
+    /** The value is used for character storage/字符存储. */
+    private final char value[]; // 字符数组
 
-public final class String
-    implements java.io.Serializable, Comparable<String>, CharSequence {
-    /** The value is used for character storage. */
-    private final char value[];
-
-    /** Cache the hash code for the string */
+    /** Cache the hash code for the string/缓存字符串的散列码 */
     private int hash; // Default to 0
 
     /** use serialVersionUID from JDK 1.0.2 for interoperability */
     private static final long serialVersionUID = -6849794470754667710L;
 
     /**
-     * Class String is special cased within the Serialization Stream Protocol.
+     * Class String is special cased within the Serialization Stream Protocol/序列化流协议.
+     * 字符串类是序列化流协议的特殊案例。
      *
      * A String instance is written initially into an ObjectOutputStream in the
      * following format:
@@ -125,12 +131,13 @@ public final class String
      *      <code>TC_STRING</code> (utf String)
      * </pre>
      * The String is written by method <code>DataOutput.writeUTF</code>.
-     * A new handle is generated to  refer to all future references to the
+     * A new handle is generated to refer to all future references to the
      * string instance within the stream.
      */
     private static final ObjectStreamField[] serialPersistentFields =
             new ObjectStreamField[0];
 
+    /// 构造器
     /**
      * Initializes a newly created {@code String} object so that it represents
      * an empty character sequence.  Note that use of this constructor is
@@ -140,6 +147,7 @@ public final class String
         this.value = new char[0];
     }
 
+    /// 拷贝构造器
     /**
      * Initializes a newly created {@code String} object so that it represents
      * the same sequence of characters as the argument; in other words, the
@@ -165,7 +173,7 @@ public final class String
      *         The initial value of the string
      */
     public String(char value[]) {
-        this.value = Arrays.copyOf(value, value.length);
+        this.value = Arrays.copyOf(value, value.length); // 系统数组拷贝
     }
 
     /**
@@ -362,6 +370,7 @@ public final class String
         this(ascii, hibyte, 0, ascii.length);
     }
 
+    /// 检查边界值
     /* Common private utility method used to bounds check the byte array
      * and requested offset & length values used by the String(byte[],..)
      * constructors.
@@ -375,6 +384,7 @@ public final class String
             throw new StringIndexOutOfBoundsException(offset + length);
     }
 
+    /// 字节数组 -> 字符串(二进制协议)
     /**
      * Constructs a new {@code String} by decoding the specified subarray of
      * bytes using the specified charset.  The length of the new {@code String}
@@ -450,7 +460,7 @@ public final class String
         if (charset == null)
             throw new NullPointerException("charset");
         checkBounds(bytes, offset, length);
-        this.value =  StringCoding.decode(charset, bytes, offset, length);
+        this.value =  StringCoding.decode(charset, bytes, offset, length); // 解码字符串
     }
 
     /**
@@ -556,6 +566,7 @@ public final class String
         this(bytes, 0, bytes.length);
     }
 
+    /// 转换构造器
     /**
      * Allocates a new string that contains the sequence of characters
      * currently contained in the string buffer argument. The contents of the
@@ -587,7 +598,7 @@ public final class String
      * @since  1.5
      */
     public String(StringBuilder builder) {
-        this.value = Arrays.copyOf(builder.getValue(), builder.length());
+        this.value = Arrays.copyOf(builder.getValue(), builder.length()); // 系统数组拷贝
     }
 
     /*
@@ -611,6 +622,7 @@ public final class String
         this(value, offset, count);
     }
 
+    /// 长度
     /**
      * Returns the length of this string.
      * The length is equal to the number of <a href="Character.html#unicode">Unicode
@@ -619,6 +631,8 @@ public final class String
      * @return  the length of the sequence of characters represented by this
      *          object.
      */
+    // 返回这个字符串的长度
+    @Override
     public int length() {
         return value.length;
     }
@@ -631,10 +645,12 @@ public final class String
      *
      * @since 1.6
      */
+    // 判断空串
     public boolean isEmpty() {
         return value.length == 0;
     }
 
+    /// 索引
     /**
      * Returns the <code>char</code> value at the
      * specified index. An index ranges from <code>0</code> to
@@ -653,6 +669,7 @@ public final class String
      *             argument is negative or not less than the length of this
      *             string.
      */
+    @Override
     public char charAt(int index) {
         if ((index < 0) || (index >= value.length)) {
             throw new StringIndexOutOfBoundsException(index);
@@ -890,6 +907,7 @@ public final class String
         }
     }
 
+    /// 字符串 -> 字节数组
     /**
      * Encodes this {@code String} into a sequence of bytes using the named
      * charset, storing the result into a new byte array.
@@ -912,7 +930,7 @@ public final class String
      */
     public byte[] getBytes(String charsetName)
             throws UnsupportedEncodingException {
-        if (charsetName == null) throw new NullPointerException();
+        if (charsetName == null) throw new NullPointerException("charsetName");
         return StringCoding.encode(charsetName, value, 0, value.length);
     }
 
@@ -935,8 +953,8 @@ public final class String
      * @since  1.6
      */
     public byte[] getBytes(Charset charset) {
-        if (charset == null) throw new NullPointerException();
-        return StringCoding.encode(charset, value, 0, value.length);
+        if (charset == null) throw new NullPointerException("charset");
+        return StringCoding.encode(charset, value, 0, value.length); // 编码字符串
     }
 
     /**
@@ -956,6 +974,10 @@ public final class String
         return StringCoding.encode(value, 0, value.length);
     }
 
+    /// 覆盖Object方法
+
+    //// 第8条：覆盖equals时请遵守通用约定
+    //// 实现高质量equals方法的诀窍
     /**
      * Compares this string to the specified object.  The result is {@code
      * true} if and only if the argument is not {@code null} and is a {@code
@@ -971,19 +993,20 @@ public final class String
      * @see  #compareTo(String)
      * @see  #equalsIgnoreCase(String)
      */
+    @Override
     public boolean equals(Object anObject) {
-        if (this == anObject) {
+        if (this == anObject) { // 同一个对象引用
             return true;
         }
-        if (anObject instanceof String) {
+        if (anObject instanceof String) { // 类型判断
             String anotherString = (String) anObject;
             int n = value.length;
-            if (n == anotherString.value.length) {
+            if (n == anotherString.value.length) { // 长度相等
                 char v1[] = value;
                 char v2[] = anotherString.value;
                 int i = 0;
                 while (n-- != 0) {
-                    if (v1[i] != v2[i])
+                    if (v1[i] != v2[i]) // 字符比较
                             return false;
                     i++;
                 }
@@ -1028,7 +1051,7 @@ public final class String
      * @since  1.5
      */
     public boolean contentEquals(CharSequence cs) {
-        if (value.length != cs.length())
+        if (value.length != cs.length()) // 长度比较
             return false;
         // Argument is a StringBuffer, StringBuilder
         if (cs instanceof AbstractStringBuilder) {
@@ -1037,7 +1060,7 @@ public final class String
             int i = 0;
             int n = value.length;
             while (n-- != 0) {
-                if (v1[i] != v2[i])
+                if (v1[i] != v2[i]) // 字符比较
                     return false;
                 i++;
             }
@@ -1051,13 +1074,14 @@ public final class String
         int i = 0;
         int n = value.length;
         while (n-- != 0) {
-            if (v1[i] != cs.charAt(i))
+            if (v1[i] != cs.charAt(i)) // 字符比较
                 return false;
             i++;
         }
         return true;
     }
 
+    /// 不区分大小写字符
     /**
      * Compares this {@code String} to another {@code String}, ignoring case
      * considerations.  Two strings are considered equal ignoring case if they
@@ -1093,6 +1117,7 @@ public final class String
                 && regionMatches(true, 0, anotherString, 0, value.length);
     }
 
+    /// 字符串比较
     /**
      * Compares two strings lexicographically.
      * The comparison is based on the Unicode value of each character in
@@ -1134,6 +1159,7 @@ public final class String
      *          value greater than <code>0</code> if this string is
      *          lexicographically greater than the string argument.
      */
+    @Override
     public int compareTo(String anotherString) {
         int len1 = value.length;
         int len2 = anotherString.value.length;
@@ -1145,14 +1171,15 @@ public final class String
         while (k < lim) {
             char c1 = v1[k];
             char c2 = v2[k];
-            if (c1 != c2) {
+            if (c1 != c2) { // 字符比较
                 return c1 - c2;
             }
             k++;
         }
-        return len1 - len2;
+        return len1 - len2; // 长度比较
     }
 
+    /// 不区分大小写的字符串比较器
     /**
      * A Comparator that orders <code>String</code> objects as by
      * <code>compareToIgnoreCase</code>. This comparator is serializable.
@@ -1172,6 +1199,7 @@ public final class String
         // use serialVersionUID from JDK 1.2.2 for interoperability
         private static final long serialVersionUID = 8575799808933029326L;
 
+        @Override
         public int compare(String s1, String s2) {
             int n1 = s1.length();
             int n2 = s2.length();
@@ -1179,13 +1207,13 @@ public final class String
             for (int i = 0; i < min; i++) {
                 char c1 = s1.charAt(i);
                 char c2 = s2.charAt(i);
-                if (c1 != c2) {
+                if (c1 != c2) { // 原生字符比较
                     c1 = Character.toUpperCase(c1);
                     c2 = Character.toUpperCase(c2);
-                    if (c1 != c2) {
+                    if (c1 != c2) { // 大写字符比较
                         c1 = Character.toLowerCase(c1);
                         c2 = Character.toLowerCase(c2);
-                        if (c1 != c2) {
+                        if (c1 != c2) { // 小写字符比较
                             // No overflow because of numeric promotion
                             return c1 - c2;
                         }
@@ -1362,6 +1390,7 @@ public final class String
         return true;
     }
 
+    /// 字符串前缀完全匹配
     /**
      * Tests if the substring of this string beginning at the
      * specified index starts with the specified prefix.
@@ -1408,12 +1437,13 @@ public final class String
      *          argument is an empty string or is equal to this
      *          <code>String</code> object as determined by the
      *          {@link #equals(Object)} method.
-     * @since   1. 0
+     * @since   1.0
      */
     public boolean startsWith(String prefix) {
         return startsWith(prefix, 0);
     }
 
+    /// 字符串后缀完全匹配
     /**
      * Tests if this string ends with the specified suffix.
      *
@@ -1429,6 +1459,8 @@ public final class String
         return startsWith(suffix, value.length - suffix.value.length);
     }
 
+    //// 第9条：覆盖equals时总要覆盖hashCode
+    //// 一个好的散列函数通常倾向于"为不相等的对象产生不相等的散列码"。
     /**
      * Returns a hash code for this string. The hash code for a
      * <code>String</code> object is computed as
@@ -1442,19 +1474,22 @@ public final class String
      *
      * @return  a hash code value for this object.
      */
+    @Override
     public int hashCode() {
         int h = hash;
         if (h == 0 && value.length > 0) {
-            char val[] = value;
+            char[] val = value;
 
             for (int i = 0; i < value.length; i++) {
                 h = 31 * h + val[i];
             }
-            hash = h;
+            hash = h; // 缓存散列码
         }
         return h;
     }
 
+    /// indexOf/lastIndexOf
+    /// 字符索引查找
     /**
      * Returns the index within this string of the first occurrence of
      * the specified character. If a character with value
@@ -1536,7 +1571,7 @@ public final class String
             // negative value (invalid code point))
             final char[] value = this.value;
             for (int i = fromIndex; i < max; i++) {
-                if (value[i] == ch) {
+                if (value[i] == ch) { // 发现第一个目标
                     return i;
                 }
             }
@@ -1660,6 +1695,7 @@ public final class String
         return -1;
     }
 
+    /// 子串查找索引
     /**
      * Returns the index within this string of the first occurrence of the
      * specified substring.
@@ -1849,6 +1885,7 @@ public final class String
         }
     }
 
+    /// 子串(自身/新的字符串)
     /**
      * Returns a new string that is a substring of this string. The
      * substring begins with the character at the specified index and
@@ -1942,10 +1979,12 @@ public final class String
      * @since 1.4
      * @spec JSR-51
      */
+    @Override
     public CharSequence subSequence(int beginIndex, int endIndex) {
-        return this.substring(beginIndex, endIndex);
+        return this.substring(beginIndex, endIndex); // 子串
     }
 
+    /// 连接(+)
     /**
      * Concatenates the specified string to the end of this string.
      * <p>
@@ -1977,6 +2016,7 @@ public final class String
         return new String(buf, true);
     }
 
+    /// 字符替换
     /**
      * Returns a new string resulting from replacing all occurrences of
      * <code>oldChar</code> in this string with <code>newChar</code>.
@@ -2013,7 +2053,7 @@ public final class String
             char[] val = value; /* avoid getfield opcode */
 
             while (++i < len) {
-                if (val[i] == oldChar) {
+                if (val[i] == oldChar) { // 定位到第一个目标
                     break;
                 }
             }
@@ -2024,7 +2064,7 @@ public final class String
                 }
                 while (i < len) {
                     char c = val[i];
-                    buf[i] = (c == oldChar) ? newChar : c;
+                    buf[i] = (c == oldChar) ? newChar : c; // 替换
                     i++;
                 }
                 return new String(buf, true);
@@ -2033,6 +2073,7 @@ public final class String
         return this;
     }
 
+    /// 正则表达式模式匹配
     /**
      * Tells whether or not this string matches the given <a
      * href="../util/regex/Pattern.html#sum">regular expression</a>.
@@ -2063,6 +2104,7 @@ public final class String
         return Pattern.matches(regex, this);
     }
 
+    /// 查找
     /**
      * Returns true if and only if this string contains the specified
      * sequence of char values.
@@ -2076,6 +2118,7 @@ public final class String
         return indexOf(s.toString()) > -1;
     }
 
+    /// 字符串替换
     /**
      * Replaces the first substring of this string that matches the given <a
      * href="../util/regex/Pattern.html#sum">regular expression</a> with the
@@ -2181,6 +2224,7 @@ public final class String
                 this).replaceAll(Matcher.quoteReplacement(replacement.toString()));
     }
 
+    /// 字符串拆分
     /**
      * Splits this string around matches of the given
      * <a href="../util/regex/Pattern.html#sum">regular expression</a>.
@@ -2282,10 +2326,10 @@ public final class String
             int off = 0;
             int next = 0;
             boolean limited = limit > 0;
-            ArrayList<String> list = new ArrayList<>();
-            while ((next = indexOf(ch, off)) != -1) {
+            List<String> list = new ArrayList<>();
+            while ((next = indexOf(ch, off)) != -1) { // 字符索引查找
                 if (!limited || list.size() < limit - 1) {
-                    list.add(substring(off, next));
+                    list.add(substring(off, next)); // 子串
                     off = next + 1;
                 } else {    // last one
                     //assert (list.size() == limit - 1);
@@ -2355,6 +2399,7 @@ public final class String
         return split(regex, 0);
     }
 
+    /// 所有字符大小写转换
     /**
      * Converts all of the characters in this <code>String</code> to lower
      * case using the rules of the given <code>Locale</code>.  Case mapping is based
@@ -2682,6 +2727,7 @@ public final class String
         return toUpperCase(Locale.getDefault());
     }
 
+    /// 修剪空格字符
     /**
      * Returns a copy of the string, with leading and trailing whitespace
      * omitted.
@@ -2718,20 +2764,23 @@ public final class String
         int st = 0;
         char[] val = value;    /* avoid getfield opcode */
 
-        while ((st < len) && (val[st] <= ' ')) {
+        while ((st < len) && (val[st] <= ' ')) { // 前缀空格
             st++;
         }
-        while ((st < len) && (val[len - 1] <= ' ')) {
+        while ((st < len) && (val[len - 1] <= ' ')) { // 后缀空格
             len--;
         }
-        return ((st > 0) || (len < value.length)) ? substring(st, len) : this;
+        return ((st > 0) || (len < value.length)) ? substring(st, len) : this; // 子串
     }
 
+    /// 覆盖Object方法
+    //// 第10条：始终要覆盖toString
     /**
      * This object (which is already a string!) is itself returned.
      *
      * @return  the string itself.
      */
+    @Override
     public String toString() {
         return this;
     }
@@ -2746,10 +2795,11 @@ public final class String
     public char[] toCharArray() {
         // Cannot use Arrays.copyOf because of class initialization order issues
         char result[] = new char[value.length];
-        System.arraycopy(value, 0, result, 0, value.length);
+        System.arraycopy(value, 0, result, 0, value.length); // 系统数组拷贝
         return result;
     }
 
+    /// 格式化字符串
     /**
      * Returns a formatted string using the specified format string and
      * arguments.
@@ -2836,6 +2886,7 @@ public final class String
         return new Formatter(l).format(format, args).toString();
     }
 
+    /// 对象 -> 字符串
     /**
      * Returns the string representation of the <code>Object</code> argument.
      *
@@ -2915,6 +2966,7 @@ public final class String
         return new String(data);
     }
 
+    /// 基本类型 -> 字符串
     /**
      * Returns the string representation of the <code>boolean</code> argument.
      *
@@ -2996,6 +3048,7 @@ public final class String
         return Double.toString(d);
     }
 
+    /// 字符串池
     /**
      * Returns a canonical representation for the string object.
      * <p>
@@ -3071,7 +3124,7 @@ public final class String
     }
 
     /**
-     * Cached value of the alternative hashing algorithm result
+     * Cached value of the alternative hashing algorithm result/缓存散列算法的结果值
      */
     private transient int hash32 = 0;
 

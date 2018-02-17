@@ -35,6 +35,7 @@ package java.lang;
  * @see     java.lang.String#charAt(int)
  * @since   JDK1.0
  */
+// 字符串索引越界异常
 public
 class StringIndexOutOfBoundsException extends IndexOutOfBoundsException {
     private static final long serialVersionUID = -6762910422159637258L;

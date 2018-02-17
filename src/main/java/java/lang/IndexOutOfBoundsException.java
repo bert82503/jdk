@@ -34,6 +34,7 @@ package java.lang;
  * @author  Frank Yellin
  * @since   JDK1.0
  */
+// 索引越界异常
 public
 class IndexOutOfBoundsException extends RuntimeException {
     private static final long serialVersionUID = 234122996006267687L;

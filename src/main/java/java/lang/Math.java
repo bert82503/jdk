@@ -24,8 +24,8 @@
  */
 
 package java.lang;
-import java.util.Random;
 
+import java.util.Random;
 
 /**
  * The class {@code Math} contains methods for performing basic
@@ -83,7 +83,7 @@ import java.util.Random;
  * @author  Joseph D. Darcy
  * @since   JDK1.0
  */
-
+// 提供常用的数学函数
 public final class Math {
 
     /**
@@ -104,6 +104,7 @@ public final class Math {
      */
     public static final double PI = 3.14159265358979323846;
 
+    /// 三角函数(sin、cos、tan)
     /**
      * Returns the trigonometric sine of an angle.  Special cases:
      * <ul><li>If the argument is NaN or an infinity, then the
@@ -153,6 +154,7 @@ public final class Math {
         return StrictMath.tan(a); // default impl. delegates to StrictMath
     }
 
+    /// 反三角函数
     /**
      * Returns the arc sine of a value; the returned angle is in the
      * range -<i>pi</i>/2 through <i>pi</i>/2.  Special cases:
@@ -234,6 +236,7 @@ public final class Math {
         return angrad * 180.0 / PI;
     }
 
+    /// 指数函数
     /**
      * Returns Euler's number <i>e</i> raised to the power of a
      * {@code double} value.  Special cases:
@@ -254,6 +257,7 @@ public final class Math {
         return StrictMath.exp(a); // default impl. delegates to StrictMath
     }
 
+    /// 对数函数
     /**
      * Returns the natural logarithm (base <i>e</i>) of a {@code double}
      * value.  Special cases:
@@ -300,6 +304,7 @@ public final class Math {
         return StrictMath.log10(a); // default impl. delegates to StrictMath
     }
 
+    /// 平方根
     /**
      * Returns the correctly rounded positive square root of a
      * {@code double} value.
@@ -382,6 +387,7 @@ public final class Math {
         return StrictMath.IEEEremainder(f1, f2); // delegate to StrictMath
     }
 
+    /// 取整函数
     /**
      * Returns the smallest (closest to negative infinity)
      * {@code double} value that is greater than or equal to the
@@ -680,6 +686,7 @@ public final class Math {
             return 0;
     }
 
+    /// 随机数生成器
     private static Random randomNumberGenerator;
 
     private static synchronized Random initRNG() {
@@ -716,6 +723,7 @@ public final class Math {
         return rnd.nextDouble();
     }
 
+    /// 绝对值函数
     /**
      * Returns the absolute value of an {@code int} value.
      * If the argument is not negative, the argument is returned.
@@ -788,6 +796,7 @@ public final class Math {
         return (a <= 0.0D) ? 0.0D - a : a;
     }
 
+    /// 最大值
     /**
      * Returns the greater of two {@code int} values. That is, the
      * result is the argument closer to the value of
@@ -865,6 +874,7 @@ public final class Math {
         return (a >= b) ? a : b;
     }
 
+    /// 最小值
     /**
      * Returns the smaller of two {@code int} values. That is,
      * the result the argument closer to the value of
@@ -993,6 +1003,7 @@ public final class Math {
         return sun.misc.FpUtils.ulp(f);
     }
 
+    /// 符号函数
     /**
      * Returns the signum function of the argument; zero if the argument
      * is zero, 1.0 if the argument is greater than zero, -1.0 if the
@@ -1035,6 +1046,7 @@ public final class Math {
         return sun.misc.FpUtils.signum(f);
     }
 
+    /// 双曲线三角函数
     /**
      * Returns the hyperbolic sine of a {@code double} value.
      * The hyperbolic sine of <i>x</i> is defined to be
