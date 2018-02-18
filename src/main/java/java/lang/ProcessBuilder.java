@@ -44,11 +44,11 @@ import java.util.Map;
  * #start()} method can be invoked repeatedly from the same instance
  * to create new subprocesses with identical or related attributes.
  *
- * <p>Each process builder manages these process attributes:
+ * <p>Each process builder manages these process attributes/进程属性:
  *
  * <ul>
  *
- * <li>a <i>command</i>, a list of strings which signifies the
+ * <li>a <i>command/命令</i>, a list of strings which signifies the
  * external program file to be invoked and its arguments, if any.
  * Which string lists represent a valid operating system command is
  * system-dependent.  For example, it is common for each conceptual
@@ -57,16 +57,16 @@ import java.util.Map;
  * strings themselves - on such a system a Java implementation might
  * require commands to contain exactly two elements.
  *
- * <li>an <i>environment</i>, which is a system-dependent mapping from
+ * <li>an <i>environment/环境变量</i>, which is a system-dependent mapping from
  * <i>variables</i> to <i>values</i>.  The initial value is a copy of
  * the environment of the current process (see {@link System#getenv()}).
  *
- * <li>a <i>working directory</i>.  The default value is the current
+ * <li>a <i>working directory/工作目录</i>.  The default value is the current
  * working directory of the current process, usually the directory
  * named by the system property {@code user.dir}.
  *
- * <li><a name="redirect-input">a source of <i>standard input</i>.
- * By default, the subprocess reads input from a pipe.  Java code
+ * <li><a name="redirect-input">a source of <i>standard input/标准输入</i>.
+ * By default, the subprocess reads input from a pipe/管道.  Java code
  * can access this pipe via the output stream returned by
  * {@link Process#getOutputStream()}.  However, standard input may
  * be redirected to another source using
@@ -80,7 +80,7 @@ import java.util.Map;
  * <li>the {@link OutputStream#close() close} method does nothing
  * </ul>
  *
- * <li><a name="redirect-output">a destination for <i>standard output</i>
+ * <li><a name="redirect-output">a destination for <i>standard output/标准输出</i>
  * and <i>standard error</i>.  By default, the subprocess writes standard
  * output and standard error to pipes.  Java code can access these pipes
  * via the input streams returned by {@link Process#getInputStream()} and
@@ -119,7 +119,7 @@ import java.util.Map;
  * {@link #redirectError(Redirect) redirectError}
  * method is ignored when creating a subprocess
  * <li>the stream returned from {@link Process#getErrorStream()} will
- * always be a <a href="#redirect-output">null input stream</a>
+ * always be a <a href="#redirect-output">null input stream/空输入流</a>
  * </ul>
  *
  * </ul>
@@ -135,7 +135,7 @@ import java.util.Map;
  * an empty list will not throw an exception unless {@link #start()}
  * is invoked.
  *
- * <p><strong>Note that this class is not synchronized.</strong>
+ * <p><strong>Note that this class is not synchronized/不同步.</strong>
  * If multiple threads access a {@code ProcessBuilder} instance
  * concurrently, and at least one of the threads modifies one of the
  * attributes structurally, it <i>must</i> be synchronized externally.
@@ -175,14 +175,14 @@ import java.util.Map;
  * @author Martin Buchholz
  * @since 1.5
  */
-
+// 进程生成器，用于创建操作系统进程
 public final class ProcessBuilder
 {
-    private List<String> command;
-    private File directory;
-    private Map<String,String> environment;
-    private boolean redirectErrorStream;
-    private Redirect[] redirects;
+    private List<String> command; // 命令列表
+    private File directory; // 工作目录
+    private Map<String,String> environment; // 环境变量
+    private boolean redirectErrorStream; // 是否可重定向的错误流
+    private Redirect[] redirects; // 重定向列表
 
     /**
      * Constructs a process builder with the specified operating
@@ -343,9 +343,9 @@ public final class ProcessBuilder
             security.checkPermission(new RuntimePermission("getenv.*"));
 
         if (environment == null)
-            environment = ProcessEnvironment.environment();
+            environment = ProcessEnvironment.environment(); // 进程的环境变量
 
-        assert environment != null;
+//        assert environment != null;
 
         return environment;
     }
@@ -355,7 +355,7 @@ public final class ProcessBuilder
         assert environment == null;
         if (envp != null) {
             environment = ProcessEnvironment.emptyEnvironment(envp.length);
-            assert environment != null;
+//            assert environment != null;
 
             for (String envstring : envp) {
                 // Before 1.5, we blindly passed invalid envstrings
@@ -412,7 +412,7 @@ public final class ProcessBuilder
         return this;
     }
 
-    // ---------------- I/O Redirection ----------------
+    // ---------------- I/O Redirection/I/O重定向 ----------------
 
     /**
      * Implements a <a href="#redirect-output">null input stream</a>.
@@ -420,7 +420,9 @@ public final class ProcessBuilder
     static class NullInputStream extends InputStream {
         static final NullInputStream INSTANCE = new NullInputStream();
         private NullInputStream() {}
+        @Override
         public int read()      { return -1; }
+        @Override
         public int available() { return 0; }
     }
 
@@ -430,6 +432,7 @@ public final class ProcessBuilder
     static class NullOutputStream extends OutputStream {
         static final NullOutputStream INSTANCE = new NullOutputStream();
         private NullOutputStream() {}
+        @Override
         public void write(int b) throws IOException {
             throw new IOException("Stream closed");
         }
@@ -457,13 +460,14 @@ public final class ProcessBuilder
      *
      * @since 1.7
      */
+    // 资源重定向
     public static abstract class Redirect {
         /**
          * The type of a {@link Redirect}.
          */
         public enum Type {
             /**
-             * The type of {@link Redirect#PIPE Redirect.PIPE}.
+             * The type of {@link Redirect#PIPE Redirect.PIPE}/管道.
              */
             PIPE,
 
@@ -474,22 +478,22 @@ public final class ProcessBuilder
 
             /**
              * The type of redirects returned from
-             * {@link Redirect#from Redirect.from(File)}.
+             * {@link Redirect#from Redirect.from(File)}/读取文件.
              */
             READ,
 
             /**
              * The type of redirects returned from
-             * {@link Redirect#to Redirect.to(File)}.
+             * {@link Redirect#to Redirect.to(File)}/写入文件.
              */
             WRITE,
 
             /**
              * The type of redirects returned from
-             * {@link Redirect#appendTo Redirect.appendTo(File)}.
+             * {@link Redirect#appendTo Redirect.appendTo(File)}/追加到文件.
              */
             APPEND
-        };
+        }
 
         /**
          * Returns the type of this {@code Redirect}.
@@ -510,6 +514,7 @@ public final class ProcessBuilder
          * }</pre>
          */
         public static final Redirect PIPE = new Redirect() {
+                @Override
                 public Type type() { return Type.PIPE; }
                 public String toString() { return type().toString(); }};
 
@@ -557,11 +562,14 @@ public final class ProcessBuilder
          * @throws NullPointerException if the specified file is null
          * @return a redirect to read from the specified file
          */
+        // 从指定文件读取的重定向
         public static Redirect from(final File file) {
             if (file == null)
                 throw new NullPointerException();
             return new Redirect() {
+                    @Override
                     public Type type() { return Type.READ; }
+                    @Override
                     public File file() { return file; }
                     public String toString() {
                         return "redirect to read from file \"" + file + "\"";
@@ -583,15 +591,19 @@ public final class ProcessBuilder
          * @throws NullPointerException if the specified file is null
          * @return a redirect to write to the specified file
          */
+        // 写入到指定文件的重定向
         public static Redirect to(final File file) {
             if (file == null)
                 throw new NullPointerException();
             return new Redirect() {
+                    @Override
                     public Type type() { return Type.WRITE; }
+                    @Override
                     public File file() { return file; }
                     public String toString() {
                         return "redirect to write to file \"" + file + "\"";
                     }
+                    @Override
                     boolean append() { return false; }
                 };
         }
@@ -617,15 +629,22 @@ public final class ProcessBuilder
             if (file == null)
                 throw new NullPointerException();
             return new Redirect() {
+                    @Override
                     public Type type() { return Type.APPEND; }
+                    @Override
                     public File file() { return file; }
                     public String toString() {
                         return "redirect to append to file \"" + file + "\"";
                     }
+                    @Override
                     boolean append() { return true; }
                 };
         }
 
+        /// 覆盖Object方法
+
+        //// 第8条：覆盖equals时请遵守通用约定
+        //// 实现高质量equals方法的诀窍
         /**
          * Compares the specified object with this {@code Redirect} for
          * equality.  Returns {@code true} if and only if the two
@@ -633,22 +652,24 @@ public final class ProcessBuilder
          * instances of the same type associated with non-null equal
          * {@code File} instances.
          */
+        @Override
         public boolean equals(Object obj) {
             if (obj == this)
                 return true;
-            if (! (obj instanceof Redirect))
+            if (! (obj instanceof Redirect)) // 类型比较
                 return false;
             Redirect r = (Redirect) obj;
-            if (r.type() != this.type())
+            if (r.type() != this.type()) // 重定向类型比较
                 return false;
             assert this.file() != null;
-            return this.file().equals(r.file());
+            return this.file().equals(r.file()); // 重定向文件比较
         }
 
         /**
          * Returns a hash code value for this {@code Redirect}.
          * @return a hash code value for this {@code Redirect}
          */
+        @Override
         public int hashCode() {
             File file = file();
             if (file == null)
@@ -672,6 +693,9 @@ public final class ProcessBuilder
         return redirects;
     }
 
+    /// JDK 7
+
+    /// 重定向
     /**
      * Sets this process builder's standard input source.
      *
@@ -999,17 +1023,18 @@ public final class ProcessBuilder
      *
      * @see Runtime#exec(String[], String[], java.io.File)
      */
+    // 启动一个新进程
     public Process start() throws IOException {
         // Must convert to array first -- a malicious user-supplied
         // list might try to circumvent the security check.
-        String[] cmdarray = command.toArray(new String[command.size()]);
+        String[] cmdarray = command.toArray(new String[command.size()]); // 命令数组
         cmdarray = cmdarray.clone();
 
         for (String arg : cmdarray)
             if (arg == null)
                 throw new NullPointerException();
         // Throws IndexOutOfBoundsException if command is empty
-        String prog = cmdarray[0];
+        String prog = cmdarray[0]; // 进程
 
         SecurityManager security = System.getSecurityManager();
         if (security != null) {

@@ -35,6 +35,7 @@ package java.lang;
  * @author  Josh Bloch
  * @since   1.2
  */
+// 不支持的操作异常，表示请求的操作不支持
 public class UnsupportedOperationException extends RuntimeException {
     /**
      * Constructs an UnsupportedOperationException with no detail message.
@@ -52,6 +53,7 @@ public class UnsupportedOperationException extends RuntimeException {
         super(message);
     }
 
+    /// JDK 1.5
     /**
      * Constructs a new exception with the specified detail message and
      * cause.

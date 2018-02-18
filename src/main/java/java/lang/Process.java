@@ -73,7 +73,9 @@ import java.io.*;
  *
  * @since   JDK1.0
  */
+// 本地进程的抽象实现
 public abstract class Process {
+    /// 子进程
     /**
      * Returns the output stream connected to the normal input of the
      * subprocess.  Output to the stream is piped into the standard
@@ -91,6 +93,7 @@ public abstract class Process {
      * @return the output stream connected to the normal input of the
      *         subprocess
      */
+    // 返回连接到子进程的正常输入的输出流
     abstract public OutputStream getOutputStream();
 
     /**
@@ -117,6 +120,7 @@ public abstract class Process {
      * @return the input stream connected to the normal output of the
      *         subprocess
      */
+    // 返回连接到子进程的正常输出的输入流
     abstract public InputStream getInputStream();
 
     /**
@@ -138,6 +142,7 @@ public abstract class Process {
      * @return the input stream connected to the error output of
      *         the subprocess
      */
+    // 返回连接到子进程的错误输出的输入流
     abstract public InputStream getErrorStream();
 
     /**
@@ -156,6 +161,7 @@ public abstract class Process {
      *         thread while it is waiting, then the wait is ended and
      *         an {@link InterruptedException} is thrown.
      */
+    // 使当前线程一直等待
     abstract public int waitFor() throws InterruptedException;
 
     /**
@@ -167,11 +173,13 @@ public abstract class Process {
      * @throws IllegalThreadStateException if the subprocess represented
      *         by this {@code Process} object has not yet terminated
      */
+    // 返回子进程的退出值
     abstract public int exitValue();
 
     /**
      * Kills the subprocess. The subprocess represented by this
      * {@code Process} object is forcibly terminated.
      */
+    // 杀死子进程
     abstract public void destroy();
 }

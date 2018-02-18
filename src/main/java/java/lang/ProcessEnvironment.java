@@ -54,10 +54,9 @@
 
 package java.lang;
 
-import java.io.*;
 import java.util.*;
 
-
+// 进程环境变量
 final class ProcessEnvironment
 {
     private static final HashMap<Variable,Value> theEnvironment;
@@ -76,13 +75,12 @@ final class ProcessEnvironment
                                Value.valueOf(environ[i]));
 
         theUnmodifiableEnvironment
-            = Collections.unmodifiableMap
-            (new StringEnvironment(theEnvironment));
+            = Collections.unmodifiableMap(new StringEnvironment(theEnvironment));
     }
 
     /* Only for use by System.getenv(String) */
     static String getenv(String name) {
-        return theUnmodifiableEnvironment.get(name);
+        return theUnmodifiableEnvironment.get(name); // 系统环境变量
     }
 
     /* Only for use by System.getenv() */
@@ -123,7 +121,7 @@ final class ProcessEnvironment
 
     // A class hiding the byteArray-String duality of
     // text data on Unixoid operating systems.
-    private static abstract class ExternalData {
+    private static abstract class ExternalData { // 外部数据
         protected final String str;
         protected final byte[] bytes;
 
@@ -150,6 +148,7 @@ final class ProcessEnvironment
         }
     }
 
+    // 变量
     private static class Variable
         extends ExternalData implements Comparable<Variable>
     {
@@ -183,6 +182,7 @@ final class ProcessEnvironment
         }
     }
 
+    // 值
     private static class Value
         extends ExternalData implements Comparable<Value>
     {
@@ -216,40 +216,49 @@ final class ProcessEnvironment
         }
     }
 
-    // This implements the String map view the user sees.
-    private static class StringEnvironment
-        extends AbstractMap<String,String>
-    {
-        private Map<Variable,Value> m;
+    // This implements the String map view the user sees. (装饰/包装器)
+    private static class StringEnvironment extends AbstractMap<String,String> {
+        private Map<Variable,Value> m; // 环境变量-值散列表
         private static String toString(Value v) {
             return v == null ? null : v.toString();
         }
         public StringEnvironment(Map<Variable,Value> m) {this.m = m;}
+        @Override
         public int size()        {return m.size();}
+        @Override
         public boolean isEmpty() {return m.isEmpty();}
+        @Override
         public void clear()      {       m.clear();}
+        @Override
         public boolean containsKey(Object key) {
             return m.containsKey(Variable.valueOfQueryOnly(key));
         }
+        @Override
         public boolean containsValue(Object value) {
             return m.containsValue(Value.valueOfQueryOnly(value));
         }
+        @Override
         public String get(Object key) {
             return toString(m.get(Variable.valueOfQueryOnly(key)));
         }
+        @Override
         public String put(String key, String value) {
             return toString(m.put(Variable.valueOf(key),
                                   Value.valueOf(value)));
         }
+        @Override
         public String remove(Object key) {
             return toString(m.remove(Variable.valueOfQueryOnly(key)));
         }
+        @Override
         public Set<String> keySet() {
             return new StringKeySet(m.keySet());
         }
+        @Override
         public Set<Map.Entry<String,String>> entrySet() {
             return new StringEntrySet(m.entrySet());
         }
+        @Override
         public Collection<String> values() {
             return new StringValues(m.values());
         }
@@ -298,39 +307,48 @@ final class ProcessEnvironment
     }
 
 
-    private static class StringEntry
-        implements Map.Entry<String,String>
-    {
+    private static class StringEntry implements Map.Entry<String,String> {
         private final Map.Entry<Variable,Value> e;
         public StringEntry(Map.Entry<Variable,Value> e) {this.e = e;}
+        @Override
         public String getKey()   {return e.getKey().toString();}
+        @Override
         public String getValue() {return e.getValue().toString();}
+        @Override
         public String setValue(String newValue) {
             return e.setValue(Value.valueOf(newValue)).toString();
         }
+        @Override
         public String toString() {return getKey() + "=" + getValue();}
+        @Override
         public boolean equals(Object o) {
             return o instanceof StringEntry
                 && e.equals(((StringEntry)o).e);
         }
+        @Override
         public int hashCode()    {return e.hashCode();}
     }
 
-    private static class StringEntrySet
-        extends AbstractSet<Map.Entry<String,String>>
-    {
+    private static class StringEntrySet extends AbstractSet<Map.Entry<String,String>> {
         private final Set<Map.Entry<Variable,Value>> s;
         public StringEntrySet(Set<Map.Entry<Variable,Value>> s) {this.s = s;}
+        @Override
         public int size()        {return s.size();}
+        @Override
         public boolean isEmpty() {return s.isEmpty();}
+        @Override
         public void clear()      {       s.clear();}
+        @Override
         public Iterator<Map.Entry<String,String>> iterator() {
             return new Iterator<Map.Entry<String,String>>() {
                 Iterator<Map.Entry<Variable,Value>> i = s.iterator();
+                @Override
                 public boolean hasNext() {return i.hasNext();}
+                @Override
                 public Map.Entry<String,String> next() {
                     return new StringEntry(i.next());
                 }
+                @Override
                 public void remove() {i.remove();}
             };
         }
@@ -338,72 +356,97 @@ final class ProcessEnvironment
             if (o instanceof StringEntry)
                 return ((StringEntry)o).e;
             return new Map.Entry<Variable,Value>() {
+                @Override
                 public Variable getKey() {
                     return Variable.valueOfQueryOnly(((Map.Entry)o).getKey());
                 }
+                @Override
                 public Value getValue() {
                     return Value.valueOfQueryOnly(((Map.Entry)o).getValue());
                 }
+                @Override
                 public Value setValue(Value value) {
                     throw new UnsupportedOperationException();
                 }
             };
         }
+        @Override
         public boolean contains(Object o) { return s.contains(vvEntry(o)); }
+        @Override
         public boolean remove(Object o)   { return s.remove(vvEntry(o)); }
+        @Override
         public boolean equals(Object o) {
             return o instanceof StringEntrySet
                 && s.equals(((StringEntrySet) o).s);
         }
+        @Override
         public int hashCode() {return s.hashCode();}
     }
 
-    private static class StringValues
-          extends AbstractCollection<String>
-    {
+    private static class StringValues extends AbstractCollection<String> {
         private final Collection<Value> c;
         public StringValues(Collection<Value> c) {this.c = c;}
+        @Override
         public int size()        {return c.size();}
+        @Override
         public boolean isEmpty() {return c.isEmpty();}
+        @Override
         public void clear()      {       c.clear();}
+        @Override
         public Iterator<String> iterator() {
             return new Iterator<String>() {
                 Iterator<Value> i = c.iterator();
+                @Override
                 public boolean hasNext() {return i.hasNext();}
+                @Override
                 public String next()     {return i.next().toString();}
+                @Override
                 public void remove()     {i.remove();}
             };
         }
+        @Override
         public boolean contains(Object o) {
             return c.contains(Value.valueOfQueryOnly(o));
         }
+        @Override
         public boolean remove(Object o) {
             return c.remove(Value.valueOfQueryOnly(o));
         }
+        @Override
         public boolean equals(Object o) {
             return o instanceof StringValues
                 && c.equals(((StringValues)o).c);
         }
+        @Override
         public int hashCode() {return c.hashCode();}
     }
 
     private static class StringKeySet extends AbstractSet<String> {
         private final Set<Variable> s;
         public StringKeySet(Set<Variable> s) {this.s = s;}
+        @Override
         public int size()        {return s.size();}
+        @Override
         public boolean isEmpty() {return s.isEmpty();}
+        @Override
         public void clear()      {       s.clear();}
+        @Override
         public Iterator<String> iterator() {
             return new Iterator<String>() {
                 Iterator<Variable> i = s.iterator();
+                @Override
                 public boolean hasNext() {return i.hasNext();}
+                @Override
                 public String next()     {return i.next().toString();}
+                @Override
                 public void remove()     {       i.remove();}
             };
         }
+        @Override
         public boolean contains(Object o) {
             return s.contains(Variable.valueOfQueryOnly(o));
         }
+        @Override
         public boolean remove(Object o) {
             return s.remove(Variable.valueOfQueryOnly(o));
         }
@@ -420,10 +463,10 @@ final class ProcessEnvironment
 
     // Replace with general purpose method someday
     private static boolean arrayEquals(byte[] x, byte[] y) {
-        if (x.length != y.length)
+        if (x.length != y.length) // 长度比较
             return false;
         for (int i = 0; i < x.length; i++)
-            if (x[i] != y[i])
+            if (x[i] != y[i]) // 值比较
                 return false;
         return true;
     }

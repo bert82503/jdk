@@ -25,10 +25,9 @@
 
 package java.lang;
 
-import java.io.IOException;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.lang.ProcessBuilder.Redirect;
+import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
 
 /**
@@ -85,8 +84,9 @@ final class ProcessImpl {
         int[] envc = new int[1];
         byte[] envBlock = ProcessEnvironment.toEnvironmentBlock(environment, envc);
 
-        int[] std_fds;
+        int[] std_fds; // 标准的文件描述符
 
+        // 文件流
         FileInputStream  f0 = null;
         FileOutputStream f1 = null;
         FileOutputStream f2 = null;
@@ -126,7 +126,7 @@ final class ProcessImpl {
                     std_fds[2] = fdAccess.get(f2.getFD());
                 }
             }
-
+        // Unix进程
         return new UNIXProcess
             (toCString(cmdarray[0]),
              argBlock, args.length,
