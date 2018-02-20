@@ -29,16 +29,10 @@ import java.security.*;
 import java.io.FileDescriptor;
 import java.io.File;
 import java.io.FilePermission;
-import java.awt.AWTPermission;
 import java.util.PropertyPermission;
-import java.lang.RuntimePermission;
 import java.net.SocketPermission;
-import java.net.NetPermission;
-import java.util.Hashtable;
 import java.net.InetAddress;
 import java.lang.reflect.Member;
-import java.lang.reflect.*;
-import java.net.URL;
 
 import sun.security.util.SecurityConstants;
 
@@ -223,6 +217,7 @@ import sun.security.util.SecurityConstants;
  *
  * @since   JDK1.0
  */
+// 安全管理器，实施安全策略
 public
 class SecurityManager {
 
@@ -246,8 +241,7 @@ class SecurityManager {
     /**
      * returns true if the current context has been granted AllPermission
      */
-    private boolean hasAllPermission()
-    {
+    private boolean hasAllPermission() {
         try {
             checkPermission(SecurityConstants.ALL_PERMISSION);
             return true;
@@ -291,7 +285,7 @@ class SecurityManager {
      * @see java.lang.RuntimePermission
      */
     public SecurityManager() {
-        synchronized(SecurityManager.class) {
+        synchronized (SecurityManager.class) {
             SecurityManager sm = System.getSecurityManager();
             if (sm != null) {
                 // ask the currently installed security manager if we
@@ -313,6 +307,7 @@ class SecurityManager {
      *
      * @return  the execution stack.
      */
+    // 返回当前执行堆栈
     protected native Class[] getClassContext();
 
     /**
@@ -352,14 +347,14 @@ class SecurityManager {
      * @see  #checkPermission(java.security.Permission) checkPermission
      */
     @Deprecated
-    protected ClassLoader currentClassLoader()
-    {
+    protected ClassLoader currentClassLoader() {
         ClassLoader cl = currentClassLoader0();
         if ((cl != null) && hasAllPermission())
             cl = null;
         return cl;
     }
 
+    // 返回当前的类加载器
     private native ClassLoader currentClassLoader0();
 
     /**
@@ -457,8 +452,7 @@ class SecurityManager {
      * @see   #checkPermission(java.security.Permission) checkPermission
      */
     @Deprecated
-    protected int classLoaderDepth()
-    {
+    protected int classLoaderDepth() {
         int depth = classLoaderDepth0();
         if (depth != -1) {
             if (hasAllPermission())
@@ -526,6 +520,7 @@ class SecurityManager {
      *   java.lang.Object) checkRead
      * @see     java.security.AccessControlContext AccessControlContext
      */
+    // 返回封装当前执行环境的安全上下文
     public Object getSecurityContext() {
         return AccessController.getContext();
     }
@@ -545,6 +540,7 @@ class SecurityManager {
      *            <code>null</code>.
      * @since     1.2
      */
+    // 检查给定的权限
     public void checkPermission(Permission perm) {
         java.security.AccessController.checkPermission(perm);
     }
@@ -611,16 +607,17 @@ class SecurityManager {
         checkPermission(SecurityConstants.CREATE_CLASSLOADER_PERMISSION);
     }
 
+    /// 根线程组
     /**
      * reference to the root thread group, used for the checkAccess
      * methods.
      */
-
+    // 引用根线程组
     private static ThreadGroup rootGroup = getRootGroup();
 
     private static ThreadGroup getRootGroup() {
         ThreadGroup root =  Thread.currentThread().getThreadGroup();
-        while (root.getParent() != null) {
+        while (root.getParent() != null) { // 回溯
             root = root.getParent();
         }
         return root;
@@ -678,6 +675,7 @@ class SecurityManager {
             // just return
         }
     }
+
     /**
      * Throws a <code>SecurityException</code> if the
      * calling thread is not allowed to modify the thread group argument.
@@ -835,6 +833,7 @@ class SecurityManager {
         checkPermission(new RuntimePermission("loadLibrary."+lib));
     }
 
+    /// 文件权限
     /**
      * Throws a <code>SecurityException</code> if the
      * calling thread is not allowed to read from the specified file
@@ -1008,6 +1007,7 @@ class SecurityManager {
             SecurityConstants.FILE_DELETE_ACTION));
     }
 
+    /// 连接监听权限
     /**
      * Throws a <code>SecurityException</code> if the
      * calling thread is not allowed to open a socket connection to the
@@ -1427,10 +1427,12 @@ class SecurityManager {
      * when a thread updates the property and when other threads updates
      * the cache.
      */
+    // 包访问权限
     private static boolean packageAccessValid = false;
     private static String[] packageAccess;
     private static final Object packageAccessLock = new Object();
 
+    // 包定义
     private static boolean packageDefinitionValid = false;
     private static String[] packageDefinition;
     private static final Object packageDefinitionLock = new Object();
@@ -1502,6 +1504,7 @@ class SecurityManager {
                 String tmpPropertyStr =
                     AccessController.doPrivileged(
                         new PrivilegedAction<String>() {
+                            @Override
                             public String run() {
                                 return java.security.Security.getProperty(
                                     "package.access");
@@ -1571,6 +1574,7 @@ class SecurityManager {
                 String tmpPropertyStr =
                     AccessController.doPrivileged(
                         new PrivilegedAction<String>() {
+                            @Override
                             public String run() {
                                 return java.security.Security.getProperty(
                                     "package.definition");
@@ -1625,6 +1629,7 @@ class SecurityManager {
         checkPermission(new RuntimePermission("setFactory"));
     }
 
+    // 访问成员
     /**
      * Throws a <code>SecurityException</code> if the
      * calling thread is not allowed to access members.
