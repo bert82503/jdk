@@ -34,16 +34,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ThreadFactory;
 import java.security.AccessController;
-import static java.security.AccessController.doPrivileged;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+
+import static java.security.AccessController.doPrivileged;
 
 /**
  * java.lang.Process subclass in the UNIX environment.
@@ -52,25 +53,27 @@ import java.security.PrivilegedExceptionAction;
  * @author Konstantin Kladko (ported to Bsd)
  * @author Martin Buchholz
  */
+// Unix进程
 final class UNIXProcess extends Process {
     private static final sun.misc.JavaIOFileDescriptorAccess fdAccess
         = sun.misc.SharedSecrets.getJavaIOFileDescriptorAccess();
 
-    private final int pid;
-    private int exitcode;
-    private boolean hasExited;
+    private final int pid; // 进程ID
+    private int exitCode; // 退出码
+    private boolean hasExited; // 是否已退出标识
 
     private /* final */ OutputStream stdin;
     private /* final */ InputStream  stdout;
     private /* final */ InputStream  stderr;
 
-    private static enum LaunchMechanism {
+    // 启动机制
+    private enum LaunchMechanism {
         FORK(1),
         POSIX_SPAWN(2);
 
-        private int value;
+        private final int value;
         LaunchMechanism(int x) {value = x;}
-    };
+    }
 
     /* On BSD, the default is to spawn */
     private static final LaunchMechanism launchMechanism;
@@ -90,12 +93,12 @@ final class UNIXProcess extends Process {
 
     static {
         launchMechanism = AccessController.doPrivileged(
-                new PrivilegedAction<LaunchMechanism>()
-        {
+                new PrivilegedAction<LaunchMechanism>() {
+            @Override
             public LaunchMechanism run() {
-                String javahome = System.getProperty("java.home");
+                String javaHome = System.getProperty("java.home");
 
-                helperpath = toCString(javahome + "/lib/jspawnhelper");
+                helperpath = toCString(javaHome + "/lib/jspawnhelper");
                 String s = System.getProperty(
                     "jdk.lang.Process.launchMechanism", "posix_spawn");
 
@@ -109,7 +112,7 @@ final class UNIXProcess extends Process {
         });
     }
 
-    /* this is for the reaping thread */
+    /* this is for the reaping thread/收割进程 */
     private native int waitForProcessExit(int pid);
 
     /**
@@ -129,6 +132,7 @@ final class UNIXProcess extends Process {
      *        output.
      * @return the pid of the subprocess
      */
+    // 创建一个进程
     private native int forkAndExec(int mode, byte[] helperpath,
                                    byte[] prog,
                                    byte[] argBlock, int argc,
@@ -140,12 +144,14 @@ final class UNIXProcess extends Process {
 
     /**
      * The thread factory used to create "process reaper" daemon threads.
+     * 用于创建进程收割守护线程的线程工厂
      */
     private static class ProcessReaperThreadFactory implements ThreadFactory {
-        private final static ThreadGroup group = getRootThreadGroup();
+        private static final ThreadGroup group = getRootThreadGroup(); // 根线程组
 
         private static ThreadGroup getRootThreadGroup() {
             return doPrivileged(new PrivilegedAction<ThreadGroup> () {
+                @Override
                 public ThreadGroup run() {
                     ThreadGroup root = Thread.currentThread().getThreadGroup();
                     while (root.getParent() != null)
@@ -154,6 +160,7 @@ final class UNIXProcess extends Process {
                 }});
         }
 
+        @Override
         public Thread newThread(Runnable grimReaper) {
             // Our thread stack requirement is quite modest.
             Thread t = new Thread(group, grimReaper, "process reaper", 32768);
@@ -166,9 +173,11 @@ final class UNIXProcess extends Process {
 
     /**
      * The thread pool of "process reaper" daemon threads.
+     * 进程收割守护线程的线程池
      */
     private static final Executor processReaperExecutor =
         doPrivileged(new PrivilegedAction<Executor>() {
+            @Override
             public Executor run() {
                 return Executors.newCachedThreadPool
                     (new ProcessReaperThreadFactory());
@@ -183,7 +192,7 @@ final class UNIXProcess extends Process {
             throws IOException {
 
         pid = forkAndExec(launchMechanism.value,
-                          helperpath,
+                helperpath,
                           prog,
                           argBlock, argc,
                           envBlock, envc,
@@ -193,6 +202,7 @@ final class UNIXProcess extends Process {
 
         try {
             doPrivileged(new PrivilegedExceptionAction<Void>() {
+                @Override
                 public Void run() throws IOException {
                     initStreams(fds);
                     return null;
@@ -202,12 +212,14 @@ final class UNIXProcess extends Process {
         }
     }
 
+    // 文件描述符
     static FileDescriptor newFileDescriptor(int fd) {
         FileDescriptor fileDescriptor = new FileDescriptor();
         fdAccess.set(fileDescriptor, fd);
         return fileDescriptor;
     }
 
+    // 初始化输入、输出、错误输出流
     void initStreams(int[] fds) throws IOException {
         stdin = (fds[0] == -1) ?
             ProcessBuilder.NullOutputStream.INSTANCE :
@@ -222,19 +234,22 @@ final class UNIXProcess extends Process {
             new ProcessPipeInputStream(fds[2]);
 
         processReaperExecutor.execute(new Runnable() {
+            @Override
             public void run() {
-                int exitcode = waitForProcessExit(pid);
-                UNIXProcess.this.processExited(exitcode);
+                int exitCode = waitForProcessExit(pid);
+                UNIXProcess.this.processExited(exitCode);
             }});
     }
 
-    void processExited(int exitcode) {
+    // 进程退出
+    void processExited(int exitCode) {
         synchronized (this) {
-            this.exitcode = exitcode;
+            this.exitCode = exitCode;
             hasExited = true;
             notifyAll();
         }
 
+        // 流进程退出
         if (stdout instanceof ProcessPipeInputStream)
             ((ProcessPipeInputStream) stdout).processExited();
 
@@ -245,33 +260,41 @@ final class UNIXProcess extends Process {
             ((ProcessPipeOutputStream) stdin).processExited();
     }
 
+    @Override
     public OutputStream getOutputStream() {
         return stdin;
     }
 
+    @Override
     public InputStream getInputStream() {
         return stdout;
     }
 
+    @Override
     public InputStream getErrorStream() {
         return stderr;
     }
 
+    @Override
     public synchronized int waitFor() throws InterruptedException {
         while (!hasExited) {
             wait();
         }
-        return exitcode;
+        return exitCode;
     }
 
+    @Override
     public synchronized int exitValue() {
         if (!hasExited) {
             throw new IllegalThreadStateException("process hasn't exited");
         }
-        return exitcode;
+        return exitCode;
     }
 
+    // 销毁进程
     private static native void destroyProcess(int pid);
+    // 杀死子进程
+    @Override
     public void destroy() {
         // There is a risk that pid will be recycled, causing us to
         // kill the wrong process!  So we only terminate processes
@@ -288,6 +311,7 @@ final class UNIXProcess extends Process {
         try { stderr.close(); } catch (IOException ignored) {}
     }
 
+    // 初始化
     private static native void init();
 
     static {
@@ -303,6 +327,7 @@ final class UNIXProcess extends Process {
      * closed until the user invokes close(), and we need to continue to be
      * able to read any buffered data lingering in the OS pipe buffer.
      */
+    // 进程管道缓冲的输入流
     static class ProcessPipeInputStream extends BufferedInputStream {
         private final Object closeLock = new Object();
 
@@ -348,6 +373,7 @@ final class UNIXProcess extends Process {
         }
     }
 
+    // 进程管道缓冲的输出流
     /**
      * A buffered output stream for a subprocess pipe file descriptor
      * that allows the underlying file descriptor to be reclaimed when
