@@ -45,6 +45,8 @@ import sun.security.util.SecurityConstants;
  * operation to be performed. The
  * application can allow or disallow the operation.
  * <p>
+ * 执行一个可能不安全或敏感的操作。
+ * <p>
  * The <code>SecurityManager</code> class contains many methods with
  * names that begin with the word <code>check</code>. These methods
  * are called by various methods in the Java libraries before those
@@ -113,6 +115,8 @@ import sun.security.util.SecurityConstants;
  *   if (sm != null) context = sm.getSecurityContext();
  * </pre>
  *
+ * <p>
+ * 访问控制上下文会检查权限。
  * <p>
  * The <code>checkPermission</code> method
  * that takes a context object in addition to a permission
@@ -217,7 +221,7 @@ import sun.security.util.SecurityConstants;
  *
  * @since   JDK1.0
  */
-// 安全管理器，实施安全策略
+// 安全管理器，实现安全策略
 public
 class SecurityManager {
 
