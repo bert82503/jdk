@@ -1182,7 +1182,7 @@ public final class System {
         loadLibrary("zip");
 
         // Setup Java signal handlers for HUP, TERM, and INT (where available).
-        // 设置HUP、TERM、INT的Java信号处理程序
+        // 设置HUP、TERM、INT的Java中断信号处理程序
         Terminator.setup();
 
         // Initialize any miscellenous operating system settings that need to be
