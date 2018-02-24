@@ -176,8 +176,7 @@ import java.util.Map;
  * @since 1.5
  */
 // 进程生成器，用于创建操作系统进程
-public final class ProcessBuilder
-{
+public final class ProcessBuilder {
     private List<String> command; // 命令列表
     private File directory; // 工作目录
     private Map<String,String> environment; // 环境变量

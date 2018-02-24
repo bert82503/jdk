@@ -36,15 +36,18 @@ import sun.reflect.Reflection;
  * the environment in which the application is running. The current
  * runtime can be obtained from the <code>getRuntime</code> method.
  * <p>
+ * 从 {@link #getRuntime()} 可以获得当前的运行时实例。
+ * <p>
  * An application cannot create its own instance of this class.
  *
  * @author  unascribed
  * @see     java.lang.Runtime#getRuntime()
  * @since   JDK1.0
  */
-
+// 核心类 运行时实例，每个Java应用程序都有一个单独的运行时实例，允许应用程序与运行的环境交互
 public class Runtime {
-    private static Runtime currentRuntime = new Runtime();
+    // 当前的运行时实例(JVM实例范围的单例)
+    private static final Runtime currentRuntime = new Runtime();
 
     /**
      * Returns the runtime object associated with the current Java application.
@@ -54,6 +57,7 @@ public class Runtime {
      * @return  the <code>Runtime</code> object associated with the current
      *          Java application.
      */
+    // 核心方法 返回与当前的Java应用程序相关的运行时对象
     public static Runtime getRuntime() {
         return currentRuntime;
     }
@@ -61,6 +65,7 @@ public class Runtime {
     /** Don't let anyone else instantiate this class */
     private Runtime() {}
 
+    /// Shutdown/ApplicationShutdownHooks
     /**
      * Terminates the currently running Java virtual machine by initiating its
      * shutdown sequence.  This method never returns normally.  The argument
@@ -83,7 +88,9 @@ public class Runtime {
      * blocks indefinitely.
      *
      * <p> The <tt>{@link System#exit(int) System.exit}</tt> method is the
-     * conventional and convenient means of invoking this method. <p>
+     * conventional and convenient means of invoking this method.
+     * <p>
+     * {@link System#exit(int)} 是调用这个方法的常规手段。
      *
      * @param  status
      *         Termination status.  By convention, a nonzero status code
@@ -101,18 +108,20 @@ public class Runtime {
      * @see #runFinalizersOnExit
      * @see #halt(int)
      */
+    // 核心方法 通过启动关闭序列终止当前正在运行的Java虚拟机
     public void exit(int status) {
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
             security.checkExit(status);
         }
-        Shutdown.exit(status);
+        Shutdown.exit(status); // 退出关闭序列
     }
 
+    /// 关闭挂钩
     /**
      * Registers a new virtual-machine shutdown hook.
      *
-     * <p> The Java virtual machine <i>shuts down</i> in response to two kinds
+     * <p> The Java virtual machine <i>shuts down/停止运作</i> in response to two kinds
      * of events:
      *
      *   <ul>
@@ -120,10 +129,13 @@ public class Runtime {
      *   <p> <li> The program <i>exits</i> normally, when the last non-daemon
      *   thread exits or when the <tt>{@link #exit exit}</tt> (equivalently,
      *   <tt>{@link System#exit(int) System.exit}</tt>) method is invoked, or
+     *   当最后非守护线程退出或 {@link #exit(int)}/{@link System#exit(int)} 被调用时，
+     *   程序正常退出。
      *
      *   <p> <li> The virtual machine is <i>terminated</i> in response to a
      *   user interrupt, such as typing <tt>^C</tt>, or a system-wide event,
      *   such as user logoff or system shutdown.
+     *   虚拟机被终止来响应用户中断或系统范围的事件。
      *
      *   </ul>
      *
@@ -136,10 +148,14 @@ public class Runtime {
      * continue to run during the shutdown sequence, as will non-daemon threads
      * if shutdown was initiated by invoking the <tt>{@link #exit exit}</tt>
      * method.
+     * <p>
+     * 关闭挂钩是一个已初始化但未开始运行的线程。
      *
      * <p> Once the shutdown sequence has begun it can be stopped only by
      * invoking the <tt>{@link #halt halt}</tt> method, which forcibly
      * terminates the virtual machine.
+     * <p>
+     * 一旦关闭序列已经开始运行，只能通过调用 {@link #halt(int)} 才停下来。
      *
      * <p> Once the shutdown sequence has begun it is impossible to register a
      * new shutdown hook or de-register a previously-registered hook.
@@ -154,6 +170,8 @@ public class Runtime {
      * the process of shutting down.  Attempts to use other thread-based
      * services such as the AWT event-dispatch thread, for example, may lead to
      * deadlocks.
+     * <p>
+     * 关闭挂钩运行在虚拟机的生命周期里的一个微妙时间，所以应该是防御式地编码。
      *
      * <p> Shutdown hooks should also finish their work quickly.  When a
      * program invokes <tt>{@link #exit exit}</tt> the expectation is
@@ -163,6 +181,8 @@ public class Runtime {
      * which to shut down and exit.  It is therefore inadvisable to attempt any
      * user interaction or to perform a long-running computation in a shutdown
      * hook.
+     * <p>
+     * 关闭挂钩应能迅速地完成其工作。
      *
      * <p> Uncaught exceptions are handled in shutdown hooks just as in any
      * other thread, by invoking the <tt>{@link ThreadGroup#uncaughtException
@@ -171,6 +191,8 @@ public class Runtime {
      * prints the exception's stack trace to <tt>{@link System#err}</tt> and
      * terminates the thread; it does not cause the virtual machine to exit or
      * halt.
+     * <p>
+     * 未捕获异常是在关闭挂钩中被处理，通过调用线程的 {@link ThreadGroup#uncaughtException(Thread, Throwable)}。
      *
      * <p> In rare circumstances the virtual machine may <i>abort</i>, that is,
      * stop running without shutting down cleanly.  This occurs when the
@@ -180,7 +202,9 @@ public class Runtime {
      * method goes awry by, for example, corrupting internal data structures or
      * attempting to access nonexistent memory.  If the virtual machine aborts
      * then no guarantee can be made about whether or not any shutdown hooks
-     * will be run. <p>
+     * will be run.
+     * <p>
+     * 在极端情况下，虚拟机可能被中止，即停止运行没有正常终止。
      *
      * @param   hook
      *          An initialized but unstarted <tt>{@link Thread}</tt> object
@@ -203,12 +227,13 @@ public class Runtime {
      * @see #exit(int)
      * @since 1.3
      */
+    // 核心方法 注册一个新的虚拟机关闭挂钩
     public void addShutdownHook(Thread hook) {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
             sm.checkPermission(new RuntimePermission("shutdownHooks"));
         }
-        ApplicationShutdownHooks.add(hook);
+        ApplicationShutdownHooks.add(hook); // 添加一个新的关闭挂钩
     }
 
     /**
@@ -231,12 +256,13 @@ public class Runtime {
      * @see #exit(int)
      * @since 1.3
      */
+    // 核心方法 取消注册一个先前注册的虚拟机关闭挂钩
     public boolean removeShutdownHook(Thread hook) {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
             sm.checkPermission(new RuntimePermission("shutdownHooks"));
         }
-        return ApplicationShutdownHooks.remove(hook);
+        return ApplicationShutdownHooks.remove(hook); // 删除先前注册的关闭挂钩
     }
 
     /**
@@ -267,6 +293,7 @@ public class Runtime {
      * @see #removeShutdownHook
      * @since 1.3
      */
+    // 强行地终止当前正在运行的Java虚拟机
     public void halt(int status) {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
@@ -275,47 +302,11 @@ public class Runtime {
         Shutdown.halt(status);
     }
 
-    /**
-     * Enable or disable finalization on exit; doing so specifies that the
-     * finalizers of all objects that have finalizers that have not yet been
-     * automatically invoked are to be run before the Java runtime exits.
-     * By default, finalization on exit is disabled.
-     *
-     * <p>If there is a security manager,
-     * its <code>checkExit</code> method is first called
-     * with 0 as its argument to ensure the exit is allowed.
-     * This could result in a SecurityException.
-     *
-     * @param value true to enable finalization on exit, false to disable
-     * @deprecated  This method is inherently unsafe.  It may result in
-     *      finalizers being called on live objects while other threads are
-     *      concurrently manipulating those objects, resulting in erratic
-     *      behavior or deadlock.
-     *
-     * @throws  SecurityException
-     *        if a security manager exists and its <code>checkExit</code>
-     *        method doesn't allow the exit.
-     *
-     * @see     java.lang.Runtime#exit(int)
-     * @see     java.lang.Runtime#gc()
-     * @see     java.lang.SecurityManager#checkExit(int)
-     * @since   JDK1.1
-     */
-    @Deprecated
-    public static void runFinalizersOnExit(boolean value) {
-        SecurityManager security = System.getSecurityManager();
-        if (security != null) {
-            try {
-                security.checkExit(0);
-            } catch (SecurityException e) {
-                throw new SecurityException("runFinalizersOnExit");
-            }
-        }
-        Shutdown.setRunFinalizersOnExit(value);
-    }
 
     /**
      * Executes the specified string command in a separate process.
+     * <p>
+     * 在单独的进程中执行指定的命令。
      *
      * <p>This is a convenience method.  An invocation of the form
      * <tt>exec(command)</tt>
@@ -528,7 +519,6 @@ public class Runtime {
         return exec(cmdarray, envp, null);
     }
 
-
     /**
      * Executes the specified command and arguments in a separate process with
      * the specified environment and working directory.
@@ -612,6 +602,7 @@ public class Runtime {
      * @see     ProcessBuilder
      * @since 1.3
      */
+    // 使用指定的环境变量和工作目录在单独的进程中执行指定的命令
     public Process exec(String[] cmdarray, String[] envp, File dir)
         throws IOException {
         return new ProcessBuilder(cmdarray)
@@ -620,6 +611,8 @@ public class Runtime {
             .start();
     }
 
+
+    /// CPU、内存
     /**
      * Returns the number of processors available to the Java virtual machine.
      *
@@ -632,6 +625,7 @@ public class Runtime {
      *          machine; never smaller than one
      * @since 1.4
      */
+    // 返回Java虚拟机可用的处理器数量
     public native int availableProcessors();
 
     /**
@@ -643,6 +637,7 @@ public class Runtime {
      * @return  an approximation to the total amount of memory currently
      *          available for future allocated objects, measured in bytes.
      */
+    // 返回Java虚拟机中的可用内存大小
     public native long freeMemory();
 
     /**
@@ -656,6 +651,7 @@ public class Runtime {
      * @return  the total amount of memory currently available for current
      *          and future objects, measured in bytes.
      */
+    // 返回Java虚拟机中的内存总量
     public native long totalMemory();
 
     /**
@@ -667,8 +663,10 @@ public class Runtime {
      *          attempt to use, measured in bytes
      * @since 1.4
      */
+    // 返回Java虚拟机将尝试使用的最大内存量
     public native long maxMemory();
 
+    /// 垃圾收集
     /**
      * Runs the garbage collector.
      * Calling this method suggests that the Java virtual machine expend
@@ -685,6 +683,7 @@ public class Runtime {
      * The method {@link System#gc()} is the conventional and convenient
      * means of invoking this method.
      */
+    // 运行垃圾收集器
     public native void gc();
 
     /* Wormhole for calling java.lang.ref.Finalizer.runFinalization */
@@ -708,6 +707,7 @@ public class Runtime {
      *
      * @see     java.lang.Object#finalize()
      */
+    // 运行任何对象的终结方法
     public void runFinalization() {
         runFinalization0();
     }
@@ -730,6 +730,7 @@ public class Runtime {
      * @param   on   <code>true</code> to enable instruction tracing;
      *               <code>false</code> to disable this feature.
      */
+    // 启用/禁用跟踪指令
     public native void traceInstructions(boolean on);
 
     /**
@@ -748,6 +749,7 @@ public class Runtime {
      * @param   on   <code>true</code> to enable instruction tracing;
      *               <code>false</code> to disable this feature.
      */
+    // 启用/禁用跟踪方法调用
     public native void traceMethodCalls(boolean on);
 
     /**
@@ -778,6 +780,7 @@ public class Runtime {
      * @see        java.lang.SecurityException
      * @see        java.lang.SecurityManager#checkLink(java.lang.String)
      */
+    // 加载指定的文件名作为动态库
     @CallerSensitive
     public void load(String filename) {
         load0(Reflection.getCallerClass(), filename);
@@ -792,7 +795,7 @@ public class Runtime {
             throw new UnsatisfiedLinkError(
                 "Expecting an absolute path of the library: " + filename);
         }
-        ClassLoader.loadLibrary(fromClass, filename, true);
+        ClassLoader.loadLibrary(fromClass, filename, true); // 由类加载器加载库
     }
 
     /**
@@ -844,63 +847,9 @@ public class Runtime {
         }
         if (libname.indexOf((int)File.separatorChar) != -1) {
             throw new UnsatisfiedLinkError(
-    "Directory separator should not appear in library name: " + libname);
+                    "Directory separator should not appear in library name: " + libname);
         }
         ClassLoader.loadLibrary(fromClass, libname, false);
-    }
-
-    /**
-     * Creates a localized version of an input stream. This method takes
-     * an <code>InputStream</code> and returns an <code>InputStream</code>
-     * equivalent to the argument in all respects except that it is
-     * localized: as characters in the local character set are read from
-     * the stream, they are automatically converted from the local
-     * character set to Unicode.
-     * <p>
-     * If the argument is already a localized stream, it may be returned
-     * as the result.
-     *
-     * @param      in InputStream to localize
-     * @return     a localized input stream
-     * @see        java.io.InputStream
-     * @see        java.io.BufferedReader#BufferedReader(java.io.Reader)
-     * @see        java.io.InputStreamReader#InputStreamReader(java.io.InputStream)
-     * @deprecated As of JDK&nbsp;1.1, the preferred way to translate a byte
-     * stream in the local encoding into a character stream in Unicode is via
-     * the <code>InputStreamReader</code> and <code>BufferedReader</code>
-     * classes.
-     */
-    @Deprecated
-    public InputStream getLocalizedInputStream(InputStream in) {
-        return in;
-    }
-
-    /**
-     * Creates a localized version of an output stream. This method
-     * takes an <code>OutputStream</code> and returns an
-     * <code>OutputStream</code> equivalent to the argument in all respects
-     * except that it is localized: as Unicode characters are written to
-     * the stream, they are automatically converted to the local
-     * character set.
-     * <p>
-     * If the argument is already a localized stream, it may be returned
-     * as the result.
-     *
-     * @deprecated As of JDK&nbsp;1.1, the preferred way to translate a
-     * Unicode character stream into a byte stream in the local encoding is via
-     * the <code>OutputStreamWriter</code>, <code>BufferedWriter</code>, and
-     * <code>PrintWriter</code> classes.
-     *
-     * @param      out OutputStream to localize
-     * @return     a localized output stream
-     * @see        java.io.OutputStream
-     * @see        java.io.BufferedWriter#BufferedWriter(java.io.Writer)
-     * @see        java.io.OutputStreamWriter#OutputStreamWriter(java.io.OutputStream)
-     * @see        java.io.PrintWriter#PrintWriter(java.io.OutputStream)
-     */
-    @Deprecated
-    public OutputStream getLocalizedOutputStream(OutputStream out) {
-        return out;
     }
 
 }

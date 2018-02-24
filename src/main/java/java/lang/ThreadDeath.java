@@ -45,7 +45,7 @@ package java.lang;
  *
  * @since   JDK1.0
  */
-
+// 线程死亡错误，由受害者线程抛出
 public class ThreadDeath extends Error {
     private static final long serialVersionUID = -4417128565033088268L;
 }

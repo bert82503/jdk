@@ -31,7 +31,7 @@ package java.lang;
  * @see     java.lang.SecurityManager
  * @since   JDK1.0
  */
-// 违反安全异常，由安全管理器抛出
+// 安全侵犯异常，由安全管理器抛出
 public class SecurityException extends RuntimeException {
     private static final long serialVersionUID = 6878364983674394167L;
 

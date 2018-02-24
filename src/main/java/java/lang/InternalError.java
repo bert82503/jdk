@@ -32,6 +32,7 @@ package java.lang;
  * @author  unascribed
  * @since   JDK1.0
  */
+// JVM内部错误，表示Java虚拟机发生了一些意外的内部错误
 public
 class InternalError extends VirtualMachineError {
     private static final long serialVersionUID = -9062593416125562365L;

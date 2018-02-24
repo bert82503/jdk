@@ -26,9 +26,6 @@
 package java.lang;
 
 import java.security.*;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.StringTokenizer;
 
 /**
  * This class is for runtime permissions. A RuntimePermission
@@ -346,7 +343,7 @@ import java.util.StringTokenizer;
  * @author Marianne Mueller
  * @author Roland Schemers
  */
-
+// 运行许可
 public final class RuntimePermission extends BasicPermission {
 
     private static final long serialVersionUID = 7399184964622342223L;
@@ -363,9 +360,7 @@ public final class RuntimePermission extends BasicPermission {
      * @throws NullPointerException if <code>name</code> is <code>null</code>.
      * @throws IllegalArgumentException if <code>name</code> is empty.
      */
-
-    public RuntimePermission(String name)
-    {
+    public RuntimePermission(String name) {
         super(name);
     }
 
@@ -380,9 +375,7 @@ public final class RuntimePermission extends BasicPermission {
      * @throws NullPointerException if <code>name</code> is <code>null</code>.
      * @throws IllegalArgumentException if <code>name</code> is empty.
      */
-
-    public RuntimePermission(String name, String actions)
-    {
+    public RuntimePermission(String name, String actions) {
         super(name, actions);
     }
 }

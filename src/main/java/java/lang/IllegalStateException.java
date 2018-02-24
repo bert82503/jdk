@@ -34,6 +34,7 @@ package java.lang;
  * @author  Jonni Kanerva
  * @since   JDK1.1
  */
+// 非法状态异常，示意方法在一个非法或不合适的时间里被调用
 public
 class IllegalStateException extends RuntimeException {
     /**
@@ -93,5 +94,5 @@ class IllegalStateException extends RuntimeException {
         super(cause);
     }
 
-    static final long serialVersionUID = -1848914673093119416L;
+    private static final long serialVersionUID = -1848914673093119416L;
 }

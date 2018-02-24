@@ -33,35 +33,37 @@ package java.lang;
  * @author   Mark Reinhold
  * @since    1.3
  */
-
+// JVM关闭挂钩，包含数据结构和关于虚拟机关闭序列的逻辑
 class Shutdown {
 
-    /* Shutdown state */
-    private static final int RUNNING = 0;
-    private static final int HOOKS = 1;
-    private static final int FINALIZERS = 2;
+    /* Shutdown state/关闭状态 */
+    private static final int RUNNING = 0; // 运行中
+    private static final int HOOKS = 1; // 挂钩
+    private static final int FINALIZERS = 2; // 终结
     private static int state = RUNNING;
 
     /* Should we run all finalizers upon exit? */
     private static boolean runFinalizersOnExit = false;
 
     // The system shutdown hooks are registered with a predefined slot.
+    // 系统关闭挂钩使用预定义的插槽进行注册
     // The list of shutdown hooks is as follows:
-    // (0) Console restore hook
-    // (1) Application hooks
-    // (2) DeleteOnExit hook
+    // (0) Console restore hook/控制台恢复挂钩
+    // (1) Application hooks/应用程序挂钩
+    // (2) DeleteOnExit hook/在退出时删除挂钩
     private static final int MAX_SYSTEM_HOOKS = 10;
+    // 可运行的系统挂钩数组
     private static final Runnable[] hooks = new Runnable[MAX_SYSTEM_HOOKS];
 
     // the index of the currently running shutdown hook to the hooks array
     private static int currentRunningHook = 0;
 
     /* The preceding static fields are protected by this lock */
-    private static class Lock { };
-    private static Object lock = new Lock();
+    private static class Lock { }
+    private static final Object lock = new Lock();
 
-    /* Lock object for the native halt method */
-    private static Object haltLock = new Lock();
+    /* Lock object for the native halt method/本地停止方法(halt)的对象锁 */
+    private static final Object haltLock = new Lock();
 
     /* Invoked by Runtime.runFinalizersOnExit */
     static void setRunFinalizersOnExit(boolean run) {
@@ -91,6 +93,7 @@ class Shutdown {
      *        if registerShutdownInProgress is true and the shutdown process
      *           already passes the given slot
      */
+    // 核心实现 添加一个新的关闭挂钩
     static void add(int slot, boolean registerShutdownInProgress, Runnable hook) {
         synchronized (lock) {
             if (hooks[slot] != null)
@@ -110,6 +113,7 @@ class Shutdown {
 
     /* Run all registered shutdown hooks
      */
+    // 运行所有注册的关闭挂钩
     private static void runHooks() {
         for (int i=0; i < MAX_SYSTEM_HOOKS; i++) {
             try {
@@ -120,7 +124,7 @@ class Shutdown {
                     currentRunningHook = i;
                     hook = hooks[i];
                 }
-                if (hook != null) hook.run();
+                if (hook != null) hook.run(); // 运行关闭挂钩
             } catch(Throwable t) {
                 if (t instanceof ThreadDeath) {
                     ThreadDeath td = (ThreadDeath)t;
@@ -130,6 +134,7 @@ class Shutdown {
         }
     }
 
+    // 强行地终止当前正在运行的Java虚拟机
     /* The halt method is synchronized on the halt lock
      * to avoid corruption of the delete-on-shutdown file list.
      * It invokes the true native halt method.
@@ -157,6 +162,7 @@ class Shutdown {
      * initiated by an exit(0); they're never run on exit(n) for n != 0 or in
      * response to SIGINT, SIGTERM, etc.
      */
+    // 这里定义实际的关闭序列
     private static void sequence() {
         synchronized (lock) {
             /* Guard against the possibility of a daemon thread invoking exit
@@ -164,13 +170,13 @@ class Shutdown {
              */
             if (state != HOOKS) return;
         }
-        runHooks();
+        runHooks(); // 运行所有注册的关闭挂钩
         boolean rfoe;
         synchronized (lock) {
             state = FINALIZERS;
             rfoe = runFinalizersOnExit;
         }
-        if (rfoe) runAllFinalizers();
+        if (rfoe) runAllFinalizers(); // 运行所有终结方法
     }
 
 
@@ -178,6 +184,7 @@ class Shutdown {
      * Also invoked by handlers for system-provided termination events,
      * which should pass a nonzero status code.
      */
+    // 核心实现 由Runtime.exit调用，进行所有的安全检查
     static void exit(int status) {
         boolean runMoreFinalizers = false;
         synchronized (lock) {
@@ -205,12 +212,12 @@ class Shutdown {
             runAllFinalizers();
             halt(status);
         }
-        synchronized (Shutdown.class) {
+        synchronized (Shutdown.class) { // 类型监视器
             /* Synchronize on the class object, causing any other thread
              * that attempts to initiate shutdown to stall indefinitely
              */
-            sequence();
-            halt(status);
+            sequence(); // 这里定义实际的关闭序列
+            halt(status); // 停止虚拟机
         }
     }
 
@@ -219,6 +226,7 @@ class Shutdown {
      * thread has finished.  Unlike the exit method, this method does not
      * actually halt the VM.
      */
+    // 由销毁Java虚拟机过程的最后非守护的线程完成
     static void shutdown() {
         synchronized (lock) {
             switch (state) {
@@ -230,8 +238,8 @@ class Shutdown {
                 break;
             }
         }
-        synchronized (Shutdown.class) {
-            sequence();
+        synchronized (Shutdown.class) { // 类型监视器
+            sequence(); // 这里定义了实际的关闭序列
         }
     }
 
