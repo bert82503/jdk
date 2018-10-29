@@ -12,7 +12,6 @@ package java.util.function;
  * @since 1.8
  */
 // 从long到double的一元函数
-@FunctionalInterface
 public interface LongToDoubleFunction {
 
     /**

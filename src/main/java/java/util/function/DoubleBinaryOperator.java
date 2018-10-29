@@ -13,7 +13,6 @@ package java.util.function;
  * @since 1.8
  */
 // 二元浮点数运算符
-@FunctionalInterface
 public interface DoubleBinaryOperator {
     /**
      * Applies this operator to the given operands.

@@ -13,7 +13,6 @@ package java.util.function;
  * @since 1.8
  */
 // 二元长整数运算符
-@FunctionalInterface
 public interface LongBinaryOperator {
 
     /**

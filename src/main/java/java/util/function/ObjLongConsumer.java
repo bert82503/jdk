@@ -16,7 +16,6 @@ package java.util.function;
  * @since 1.8
  */
 // T和长整数参数操作
-@FunctionalInterface
 public interface ObjLongConsumer<T> {
 
     /**

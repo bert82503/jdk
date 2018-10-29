@@ -17,7 +17,6 @@ import java.util.Objects;
  * @since 1.8
  */
 // 核心接口 从T到void的一元函数，一个接受一个入参但不返回任何结果的操作
-@FunctionalInterface
 public interface Consumer<T> {
 
     /**

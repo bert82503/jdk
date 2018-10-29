@@ -12,7 +12,6 @@ package java.util.function;
  * @since 1.8
  */
 // 从int到long的一元函数
-@FunctionalInterface
 public interface IntToLongFunction {
 
     /**

@@ -16,7 +16,6 @@ import java.util.Objects;
  * @since 1.8
  */
 // 核心接口 从T到R的一元函数，接受一个参数并产生一个结果的一元函数
-@FunctionalInterface
 public interface Function<T, R> {
 
     /**

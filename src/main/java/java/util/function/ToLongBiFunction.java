@@ -15,7 +15,6 @@ package java.util.function;
  * @since 1.8
  */
 // 从T、U到long的二元函数
-@FunctionalInterface
 public interface ToLongBiFunction<T, U> {
 
     /**

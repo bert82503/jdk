@@ -14,7 +14,6 @@ package java.util.function;
  * @since 1.8
  */
 // 一元运算符(单个操作数，生产与操作数类型相同的结果)
-@FunctionalInterface
 public interface UnaryOperator<T> extends Function<T, T> {
 
     // 返回总是返回其入参的一元运算符

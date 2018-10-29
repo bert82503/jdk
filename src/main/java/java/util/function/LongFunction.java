@@ -14,7 +14,6 @@ package java.util.function;
  * @since 1.8
  */
 // 从long到R的一元函数
-@FunctionalInterface
 public interface LongFunction<R> {
 
     /**

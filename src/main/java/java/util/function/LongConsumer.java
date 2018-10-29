@@ -15,7 +15,6 @@ import java.util.Objects;
  * @since 1.8
  */
 // 长整数参数操作
-@FunctionalInterface
 public interface LongConsumer {
 
     /**

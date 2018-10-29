@@ -14,7 +14,6 @@ import java.util.Objects;
  * @since 1.8
  */
 // 整数参数的谓词(返回布尔值的函数)
-@FunctionalInterface
 public interface IntPredicate {
 
     /**

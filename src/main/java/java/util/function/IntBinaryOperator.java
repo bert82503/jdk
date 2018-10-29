@@ -13,7 +13,6 @@ package java.util.function;
  * @since 1.8
  */
 // 二元整数运算符
-@FunctionalInterface
 public interface IntBinaryOperator {
 
     /**

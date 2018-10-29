@@ -16,7 +16,6 @@ import java.util.Objects;
  * @since 1.8
  */
 // 表示两个参数的谓词(返回布尔值的函数)
-@FunctionalInterface
 public interface BiPredicate<T, U> {
 
     /**

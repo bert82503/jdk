@@ -14,7 +14,6 @@ import java.util.Objects;
  * @since 1.8
  */
 // 一元长整数运算符
-@FunctionalInterface
 public interface LongUnaryOperator {
 
     /**

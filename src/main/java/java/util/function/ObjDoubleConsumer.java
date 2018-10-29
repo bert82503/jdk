@@ -16,7 +16,6 @@ package java.util.function;
  * @since 1.8
  */
 // T和浮点数参数操作
-@FunctionalInterface
 public interface ObjDoubleConsumer<T> {
 
     /**

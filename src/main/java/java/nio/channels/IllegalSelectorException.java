@@ -39,8 +39,7 @@ package java.nio.channels;
  */
 
 public class IllegalSelectorException
-    extends IllegalArgumentException
-{
+    extends RuntimeException {
 
     private static final long serialVersionUID = -8406323347253320987L;
 

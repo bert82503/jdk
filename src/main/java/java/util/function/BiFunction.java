@@ -17,7 +17,6 @@ import java.util.Objects;
  * @since 1.8
  */
 // 从T、U到R的二元函数，接受两个参数并产生一个结果的二元函数
-@FunctionalInterface
 public interface BiFunction<T, U, R> {
 
     /**

@@ -14,7 +14,6 @@ package java.util.function;
  * @since 1.8
  */
 // 从double到R的一元函数
-@FunctionalInterface
 public interface DoubleFunction<R> {
 
     /**

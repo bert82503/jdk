@@ -38,8 +38,7 @@ package java.nio.channels;
  */
 
 public class UnresolvedAddressException
-    extends IllegalArgumentException
-{
+    extends RuntimeException {
 
     private static final long serialVersionUID = 6136959093620794148L;
 

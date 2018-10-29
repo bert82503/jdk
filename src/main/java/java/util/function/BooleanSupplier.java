@@ -14,7 +14,6 @@ package java.util.function;
  * @since 1.8
  */
 // 表示布尔值结果的供应商
-@FunctionalInterface
 public interface BooleanSupplier {
 
     /**

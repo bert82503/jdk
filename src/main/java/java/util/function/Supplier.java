@@ -16,7 +16,6 @@ package java.util.function;
  * @since 1.8
  */
 // 核心接口 表示结果的供应商
-@FunctionalInterface
 public interface Supplier<T> {
 
     /**

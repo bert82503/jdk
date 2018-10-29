@@ -38,8 +38,7 @@ package java.nio.charset;
  */
 
 public class IllegalCharsetNameException
-    extends IllegalArgumentException
-{
+    extends RuntimeException {
 
     private static final long serialVersionUID = 1457525358470002989L;
 

@@ -13,7 +13,6 @@ package java.util.function;
  * @since 1.8
  */
 // 从T到int的一元函数
-@FunctionalInterface
 public interface ToIntFunction<T> {
 
     /**

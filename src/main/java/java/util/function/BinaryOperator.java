@@ -19,7 +19,6 @@ import java.util.Comparator;
  * @since 1.8
  */
 // 二元运算符(两个相同类型的操作数，生产与操作数类型相同的结果)
-@FunctionalInterface
 public interface BinaryOperator<T> extends BiFunction<T, T, T> {
     // 最小值、最大值 比较
     /**
