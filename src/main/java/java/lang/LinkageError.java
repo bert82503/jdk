@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1995, 2010, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
@@ -29,7 +5,9 @@ package java.lang;
  * Subclasses of {@code LinkageError} indicate that a class has
  * some dependency on another class; however, the latter class has
  * incompatibly changed after the compilation of the former class.
- *
+ * 链接错误，表明一个类对另一个类有一些依赖性；
+ * 然而，后一类在前一类的编译后发生了不相容变化。
+ * 只有当类的定义发生不相容变化时才发生。
  *
  * @author  Frank Yellin
  * @since   JDK1.0

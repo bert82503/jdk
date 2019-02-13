@@ -1,32 +1,9 @@
-/*
- * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
 /**
  * Thrown when a particular method cannot be found.
+ * 无法找到特定方法时抛出。
  *
  * @author     unascribed
  * @since      JDK1.0

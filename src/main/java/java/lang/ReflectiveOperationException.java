@@ -1,33 +1,10 @@
-/*
- * Copyright (c) 2009, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
 /**
  * Common superclass of exceptions thrown by reflective operations in
  * core reflection.
+ * 反射操作抛出的常见超类异常。
  *
  * @see LinkageError
  * @since 1.7

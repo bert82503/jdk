@@ -1,41 +1,18 @@
-/*
- * Copyright (c) 1995, 2004, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
 /**
  * Thrown when an application tries to load in a class through its
  * string name using:
+ * 当应用程序尝试使用以下反射操作命令通过其字符串名称加载类时抛出：
  * <ul>
  * <li>The <code>forName</code> method in class <code>Class</code>.
- * <li>The <code>findSystemClass</code> method in class
- *     <code>ClassLoader</code> .
+ * <li>The <code>findSystemClass</code> method in class <code>ClassLoader</code>.
  * <li>The <code>loadClass</code> method in class <code>ClassLoader</code>.
  * </ul>
  * <p>
  * but no definition for the class with the specified name could be found.
+ * 但是找不到具有指定名称的类的定义。
  *
  * <p>As of release 1.4, this exception has been retrofitted to conform to
  * the general purpose exception-chaining mechanism.  The "optional exception
@@ -43,6 +20,8 @@ package java.lang;
  * construction time and accessed via the {@link #getException()} method is
  * now known as the <i>cause</i>, and may be accessed via the {@link
  * Throwable#getCause()} method, as well as the aforementioned "legacy method."
+ * 符合通用异常链机制(exception-chaining mechanism)，
+ * 可能在建造时提供的"加载类时引发的可选异常"
  *
  * @author  unascribed
  * @see     java.lang.Class#forName(java.lang.String)
@@ -60,6 +39,7 @@ public class ClassNotFoundException extends ReflectiveOperationException {
      * This field holds the exception ex if the
      * ClassNotFoundException(String s, Throwable ex) constructor was
      * used to instantiate the object
+     * 包含异常原因实例
      * @serial
      * @since 1.2
      */
@@ -69,7 +49,7 @@ public class ClassNotFoundException extends ReflectiveOperationException {
      * Constructs a <code>ClassNotFoundException</code> with no detail message.
      */
     public ClassNotFoundException() {
-        super((Throwable)null);  // Disallow initCause
+        super((Throwable)null);  // Disallow initCause 禁止
     }
 
     /**
@@ -79,7 +59,7 @@ public class ClassNotFoundException extends ReflectiveOperationException {
      * @param   s   the detail message.
      */
     public ClassNotFoundException(String s) {
-        super(s, null);  //  Disallow initCause
+        super(s, null);  //  Disallow initCause 禁止
     }
 
     /**
@@ -92,7 +72,7 @@ public class ClassNotFoundException extends ReflectiveOperationException {
      * @since 1.2
      */
     public ClassNotFoundException(String s, Throwable ex) {
-        super(s, null);  //  Disallow initCause
+        super(s, null);  //  Disallow initCause 禁止
         this.ex = ex;
     }
 
@@ -119,6 +99,7 @@ public class ClassNotFoundException extends ReflectiveOperationException {
      * @return  the cause of this exception.
      * @since   1.4
      */
+    @Override
     public Throwable getCause() {
         return ex;
     }

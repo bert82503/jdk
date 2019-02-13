@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
@@ -31,6 +7,8 @@ package java.lang;
  * set or get a field, or invoke a method, but the currently
  * executing method does not have access to the definition of
  * the specified class, field, method or constructor.
+ * 非法访问异常，当应用程序尝试反射地创建实例(数组除外)，设置或获取字段，或调用方法，
+ * 但当前正在执行的方法无法访问指定类的字段定义、方法或构造函数时抛出。
  *
  * @author  unascribed
  * @see     Class#newInstance()
