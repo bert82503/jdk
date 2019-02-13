@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1995, 2011, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
@@ -29,15 +5,17 @@ package java.lang;
  * {@code RuntimeException} is the superclass of those
  * exceptions that can be thrown during the normal operation of the
  * Java Virtual Machine.
+ * 运行时异常是在JVM的正常操作期间可以抛出的那些异常的超类。
  *
  * <p>{@code RuntimeException} and its subclasses are <em>unchecked
  * exceptions</em>.  Unchecked exceptions do <em>not</em> need to be
  * declared in a method or constructor's {@code throws} clause if they
  * can be thrown by the execution of the method or constructor and
  * propagate outside the method or constructor boundary.
+ * 运行时异常及其子类都是未受检的异常，不需要在方法或构造函数的throws子句中声明未受检的异常。
  *
  * @author  Frank Yellin
- * @jls 11.2 Compile-Time Checking of Exceptions
+ * @jls 11.2 Compile-Time Checking of Exceptions 编译时检查的异常
  * @since   JDK1.0
  */
 public class RuntimeException extends Exception {

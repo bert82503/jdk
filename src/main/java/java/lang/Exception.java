@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1994, 2011, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
@@ -29,6 +5,7 @@ package java.lang;
  * The class {@code Exception} and its subclasses are a form of
  * {@code Throwable} that indicates conditions that a reasonable
  * application might want to catch.
+ * 异常及其子类，表示合理的应用程序可能想要捕获的条件。
  *
  * <p>The class {@code Exception} and any subclasses that are not also
  * subclasses of {@link RuntimeException} are <em>checked
@@ -36,10 +13,11 @@ package java.lang;
  * method or constructor's {@code throws} clause if they can be thrown
  * by the execution of the method or constructor and propagate outside
  * the method or constructor boundary.
+ * 非运行时异常的Exception都是受检查的异常，需要在方法或构造函数的throws子句中声明。
  *
  * @author  Frank Yellin
  * @see     java.lang.Error
- * @jls 11.2 Compile-Time Checking of Exceptions
+ * @jls 11.2 Compile-Time Checking of Exceptions 编译时检查的异常
  * @since   JDK1.0
  */
 public class Exception extends Throwable {

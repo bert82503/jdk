@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1995, 2011, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
@@ -32,6 +8,7 @@ package java.lang;
  * The {@code ThreadDeath} error, though a "normal" condition,
  * is also a subclass of {@code Error} because most applications
  * should not try to catch it.
+ * 错误，表示严重问题，合理的应用程序不应该尝试捕获它。
  * <p>
  * A method is not required to declare in its {@code throws}
  * clause any subclasses of {@code Error} that might be thrown
@@ -43,7 +20,7 @@ package java.lang;
  *
  * @author  Frank Yellin
  * @see     java.lang.ThreadDeath
- * @jls 11.2 Compile-Time Checking of Exceptions
+ * @jls 11.2 Compile-Time Checking of Exceptions 编译时检查的异常
  * @since   JDK1.0
  */
 public class Error extends Throwable {
