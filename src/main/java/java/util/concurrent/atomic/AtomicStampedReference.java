@@ -1,37 +1,3 @@
-/*
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
-
-/*
- *
- *
- *
- *
- *
- * Written by Doug Lea with assistance from members of JCP JSR-166
- * Expert Group and released to the public domain, as explained at
- * http://creativecommons.org/publicdomain/zero/1.0/
- */
 
 package java.util.concurrent.atomic;
 
@@ -49,8 +15,15 @@ package java.util.concurrent.atomic;
  */
 public class AtomicStampedReference<V> {
 
+    /**
+     * "对象引用-邮票/版本号"二元组
+     * <p>
+     * 避免ABA问题
+     */
     private static class Pair<T> {
+        /** 对象引用 */
         final T reference;
+        /** 邮票，版本号 */
         final int stamp;
         private Pair(T reference, int stamp) {
             this.reference = reference;
@@ -61,6 +34,7 @@ public class AtomicStampedReference<V> {
         }
     }
 
+    /** "对象引用-邮票/版本号"二元组 */
     private volatile Pair<V> pair;
 
     /**
@@ -97,7 +71,7 @@ public class AtomicStampedReference<V> {
      * Typical usage is {@code int[1] holder; ref = v.get(holder); }.
      *
      * @param stampHolder an array of size of at least one.  On return,
-     * {@code stampholder[0]} will hold the value of the stamp.
+     * {@code stampHolder[0]} will hold the value of the stamp.
      * @return the current value of the reference
      */
     public V get(int[] stampHolder) {
@@ -163,8 +137,9 @@ public class AtomicStampedReference<V> {
      */
     public void set(V newReference, int newStamp) {
         Pair<V> current = pair;
-        if (newReference != current.reference || newStamp != current.stamp)
+        if (newReference != current.reference || newStamp != current.stamp) {
             this.pair = Pair.of(newReference, newStamp);
+        }
     }
 
     /**
@@ -189,21 +164,33 @@ public class AtomicStampedReference<V> {
     }
 
     // Unsafe mechanics
+    // 不安全的机制
 
     private static final sun.misc.Unsafe UNSAFE = sun.misc.Unsafe.getUnsafe();
     private static final long pairOffset =
         objectFieldOffset(UNSAFE, "pair", AtomicStampedReference.class);
 
+    /**
+     * 比较并交换(Compare-and-Swap, CAS)
+     */
     private boolean casPair(Pair<V> cmp, Pair<V> val) {
         return UNSAFE.compareAndSwapObject(this, pairOffset, cmp, val);
     }
 
-    static long objectFieldOffset(sun.misc.Unsafe UNSAFE,
-                                  String field, Class<?> klazz) {
+    /**
+     * 返回某对象类型的对象字段的偏移值。
+     *
+     * @param unsafe 不安全的对象
+     * @param field  对象字段名称
+     * @param clazz  对象类型
+     */
+    static long objectFieldOffset(sun.misc.Unsafe unsafe,
+                                  String field, Class<?> clazz) {
         try {
-            return UNSAFE.objectFieldOffset(klazz.getDeclaredField(field));
+            return unsafe.objectFieldOffset(clazz.getDeclaredField(field));
         } catch (NoSuchFieldException e) {
             // Convert Exception to corresponding Error
+            // 将异常转换为相应的错误(NoSuchFieldException/没有这个字段异常 => NoSuchFieldError/没有这个字段错误)
             NoSuchFieldError error = new NoSuchFieldError(field);
             error.initCause(e);
             throw error;
