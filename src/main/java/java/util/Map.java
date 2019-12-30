@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.util;
 
@@ -33,6 +9,8 @@ import java.io.Serializable;
 /**
  * An object that maps keys to values.  A map cannot contain duplicate keys;
  * each key can map to at most one value.
+ * 将键映射到值的对象(键-值对)。
+ * 映射表不能包含重复的键，每个键最多可以映射到一个值。
  *
  * <p>This interface takes the place of the <tt>Dictionary</tt> class, which
  * was a totally abstract class rather than an interface.
@@ -128,6 +106,7 @@ import java.io.Serializable;
  */
 public interface Map<K,V> {
     // Query Operations
+    // 查询操作
 
     /**
      * Returns the number of key-value mappings in this map.  If the
@@ -212,6 +191,7 @@ public interface Map<K,V> {
     V get(Object key);
 
     // Modification Operations
+    // 修改操作
 
     /**
      * Associates the specified value with the specified key in this map
@@ -273,6 +253,7 @@ public interface Map<K,V> {
 
 
     // Bulk Operations
+    // 批量操作
 
     /**
      * Copies all of the mappings from the specified map to this map
@@ -306,6 +287,7 @@ public interface Map<K,V> {
 
 
     // Views
+    // 视图
 
     /**
      * Returns a {@link Set} view of the keys contained in this map.
@@ -354,6 +336,7 @@ public interface Map<K,V> {
      * <tt>Set.remove</tt>, <tt>removeAll</tt>, <tt>retainAll</tt> and
      * <tt>clear</tt> operations.  It does not support the
      * <tt>add</tt> or <tt>addAll</tt> operations.
+     * 获取映射条目集合的视图。
      *
      * @return a set view of the mappings contained in this map
      */
@@ -368,6 +351,7 @@ public interface Map<K,V> {
      * the behavior of a map entry is undefined if the backing map has been
      * modified after the entry was returned by the iterator, except through
      * the <tt>setValue</tt> operation on the map entry.
+     * 一个映射条目({@code 键-值}对)。
      *
      * @see Map#entrySet()
      * @since 1.2
@@ -467,7 +451,7 @@ public interface Map<K,V> {
          * @see Comparable
          * @since 1.8
          */
-        public static <K extends Comparable<? super K>, V> Comparator<Map.Entry<K,V>> comparingByKey() {
+        static <K extends Comparable<? super K>, V> Comparator<Map.Entry<K,V>> comparingByKey() {
             return (Comparator<Map.Entry<K, V>> & Serializable)
                 (c1, c2) -> c1.getKey().compareTo(c2.getKey());
         }
@@ -484,7 +468,7 @@ public interface Map<K,V> {
          * @see Comparable
          * @since 1.8
          */
-        public static <K, V extends Comparable<? super V>> Comparator<Map.Entry<K,V>> comparingByValue() {
+        static <K, V extends Comparable<? super V>> Comparator<Map.Entry<K,V>> comparingByValue() {
             return (Comparator<Map.Entry<K, V>> & Serializable)
                 (c1, c2) -> c1.getValue().compareTo(c2.getValue());
         }
@@ -502,7 +486,7 @@ public interface Map<K,V> {
          * @return a comparator that compares {@link Map.Entry} by the key.
          * @since 1.8
          */
-        public static <K, V> Comparator<Map.Entry<K, V>> comparingByKey(Comparator<? super K> cmp) {
+        static <K, V> Comparator<Map.Entry<K, V>> comparingByKey(Comparator<? super K> cmp) {
             Objects.requireNonNull(cmp);
             return (Comparator<Map.Entry<K, V>> & Serializable)
                 (c1, c2) -> cmp.compare(c1.getKey(), c2.getKey());
@@ -521,7 +505,7 @@ public interface Map<K,V> {
          * @return a comparator that compares {@link Map.Entry} by the value.
          * @since 1.8
          */
-        public static <K, V> Comparator<Map.Entry<K, V>> comparingByValue(Comparator<? super V> cmp) {
+        static <K, V> Comparator<Map.Entry<K, V>> comparingByValue(Comparator<? super V> cmp) {
             Objects.requireNonNull(cmp);
             return (Comparator<Map.Entry<K, V>> & Serializable)
                 (c1, c2) -> cmp.compare(c1.getValue(), c2.getValue());
@@ -529,6 +513,7 @@ public interface Map<K,V> {
     }
 
     // Comparison and hashing
+    // 比较和散列
 
     /**
      * Compares the specified object with this map for equality.  Returns
@@ -560,6 +545,7 @@ public interface Map<K,V> {
     int hashCode();
 
     // Defaultable methods
+    // 默认方法
 
     /**
      * Returns the value to which the specified key is mapped, or

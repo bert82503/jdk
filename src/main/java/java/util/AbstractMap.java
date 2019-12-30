@@ -1,34 +1,10 @@
-/*
- * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.util;
-import java.util.Map.Entry;
 
 /**
  * This class provides a skeletal implementation of the <tt>Map</tt>
  * interface, to minimize the effort required to implement this interface.
+ * Map接口的框架实现，以最大程度地减少实现这个接口所需的工作。
  *
  * <p>To implement an unmodifiable map, the programmer needs only to extend this
  * class and provide an implementation for the <tt>entrySet</tt> method, which
@@ -64,7 +40,6 @@ import java.util.Map.Entry;
  * @see Collection
  * @since 1.2
  */
-
 public abstract class AbstractMap<K,V> implements Map<K,V> {
     /**
      * Sole constructor.  (For invocation by subclass constructors, typically
@@ -74,6 +49,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
     }
 
     // Query Operations
+    // 查询操作
 
     /**
      * {@inheritDoc}
@@ -82,6 +58,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * This implementation returns <tt>entrySet().size()</tt>.
      */
     public int size() {
+        // 映射条目集合视图
         return entrySet().size();
     }
 
@@ -109,16 +86,20 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * @throws NullPointerException {@inheritDoc}
      */
     public boolean containsValue(Object value) {
+        // 映射条目集合视图
         Iterator<Entry<K,V>> i = entrySet().iterator();
         if (value==null) {
+            // null场景(允许值为null)
             while (i.hasNext()) {
                 Entry<K,V> e = i.next();
                 if (e.getValue()==null)
                     return true;
             }
         } else {
+            // 非null场景
             while (i.hasNext()) {
                 Entry<K,V> e = i.next();
+                // 使用equals比较
                 if (value.equals(e.getValue()))
                     return true;
             }
@@ -141,16 +122,20 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * @throws NullPointerException {@inheritDoc}
      */
     public boolean containsKey(Object key) {
+        // 映射条目集合视图
         Iterator<Map.Entry<K,V>> i = entrySet().iterator();
         if (key==null) {
+            // null场景(允许键为null)
             while (i.hasNext()) {
                 Entry<K,V> e = i.next();
                 if (e.getKey()==null)
                     return true;
             }
         } else {
+            // 非null场景
             while (i.hasNext()) {
                 Entry<K,V> e = i.next();
+                // 使用equals比较
                 if (key.equals(e.getKey()))
                     return true;
             }
@@ -173,16 +158,20 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * @throws NullPointerException          {@inheritDoc}
      */
     public V get(Object key) {
+        // 映射条目集合视图
         Iterator<Entry<K,V>> i = entrySet().iterator();
         if (key==null) {
+            // null场景(允许键为null)
             while (i.hasNext()) {
                 Entry<K,V> e = i.next();
                 if (e.getKey()==null)
                     return e.getValue();
             }
         } else {
+            // 非null场景
             while (i.hasNext()) {
                 Entry<K,V> e = i.next();
+                // 使用equals比较
                 if (key.equals(e.getKey()))
                     return e.getValue();
             }
@@ -192,6 +181,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
 
 
     // Modification Operations
+    // 修改操作
 
     /**
      * {@inheritDoc}
@@ -232,17 +222,21 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * @throws NullPointerException          {@inheritDoc}
      */
     public V remove(Object key) {
+        // 映射条目集合视图
         Iterator<Entry<K,V>> i = entrySet().iterator();
         Entry<K,V> correctEntry = null;
         if (key==null) {
+            // null场景(允许键为null)
             while (correctEntry==null && i.hasNext()) {
                 Entry<K,V> e = i.next();
                 if (e.getKey()==null)
                     correctEntry = e;
             }
         } else {
+            // 非null场景
             while (correctEntry==null && i.hasNext()) {
                 Entry<K,V> e = i.next();
+                // 使用equals比较
                 if (key.equals(e.getKey()))
                     correctEntry = e;
             }
@@ -251,6 +245,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
         V oldValue = null;
         if (correctEntry !=null) {
             oldValue = correctEntry.getValue();
+            // 使用迭代器移除映射条目
             i.remove();
         }
         return oldValue;
@@ -258,6 +253,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
 
 
     // Bulk Operations
+    // 批量操作
 
     /**
      * {@inheritDoc}
@@ -277,6 +273,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * @throws IllegalArgumentException      {@inheritDoc}
      */
     public void putAll(Map<? extends K, ? extends V> m) {
+        // 映射条目集合视图
         for (Map.Entry<? extends K, ? extends V> e : m.entrySet())
             put(e.getKey(), e.getValue());
     }
@@ -294,11 +291,13 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * @throws UnsupportedOperationException {@inheritDoc}
      */
     public void clear() {
+        // 映射条目集合视图
         entrySet().clear();
     }
 
 
     // Views
+    // 视图
 
     /**
      * Each of these fields are initialized to contain an instance of the
@@ -445,10 +444,16 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
         return vals;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * 获取映射条目集合的视图。
+     */
     public abstract Set<Entry<K,V>> entrySet();
 
 
     // Comparison and hashing
+    // 比较和散列
 
     /**
      * Compares the specified object with this map for equality.  Returns
@@ -476,6 +481,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
         if (o == this)
             return true;
 
+        // 优化：类型、数量
         if (!(o instanceof Map))
             return false;
         Map<?,?> m = (Map<?,?>) o;
@@ -483,15 +489,18 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
             return false;
 
         try {
+            // 映射条目集合视图
             Iterator<Entry<K,V>> i = entrySet().iterator();
             while (i.hasNext()) {
                 Entry<K,V> e = i.next();
                 K key = e.getKey();
                 V value = e.getValue();
                 if (value == null) {
+                    // 值为null场景
                     if (!(m.get(key)==null && m.containsKey(key)))
                         return false;
                 } else {
+                    // 值为非null场景(使用equals比较)
                     if (!value.equals(m.get(key)))
                         return false;
                 }
@@ -525,7 +534,9 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      */
     public int hashCode() {
         int h = 0;
+        // 映射条目集合视图
         Iterator<Entry<K,V>> i = entrySet().iterator();
+        // 使用Entry.hashCode计算映射表的散列值
         while (i.hasNext())
             h += i.next().hashCode();
         return h;
@@ -544,6 +555,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * @return a string representation of this map
      */
     public String toString() {
+        // 映射条目集合视图
         Iterator<Entry<K,V>> i = entrySet().iterator();
         if (! i.hasNext())
             return "{}";
