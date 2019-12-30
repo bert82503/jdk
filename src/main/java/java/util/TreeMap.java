@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1997, 2014, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.util;
 
@@ -35,11 +11,14 @@ import java.util.function.Consumer;
  * The map is sorted according to the {@linkplain Comparable natural
  * ordering} of its keys, or by a {@link Comparator} provided at map
  * creation time, depending on which constructor is used.
+ * 基于红黑树的NavigableMap实现。
+ * 根据键的自然顺序或在映射表创建时提供的比较器对映射表进行排序，具体取决于所使用的构造函数。
  *
  * <p>This implementation provides guaranteed log(n) time cost for the
  * {@code containsKey}, {@code get}, {@code put} and {@code remove}
  * operations.  Algorithms are adaptations of those in Cormen, Leiserson, and
  * Rivest's <em>Introduction to Algorithms</em>.
+ * 本实现提供了保证的log(n)时间成本。
  *
  * <p>Note that the ordering maintained by a tree map, like any sorted map, and
  * whether or not an explicit comparator is provided, must be <em>consistent
@@ -53,6 +32,7 @@ import java.util.function.Consumer;
  * of a sorted map <em>is</em> well-defined even if its ordering is
  * inconsistent with {@code equals}; it just fails to obey the general contract
  * of the {@code Map} interface.
+ * 请注意，如果有序的映射表要正确地实现Map接口，则树映射表所维护的排序(与任何排序的映射一样)以及是否提供显式比较器必须与equals一致。
  *
  * <p><strong>Note that this implementation is not synchronized.</strong>
  * If multiple threads access a map concurrently, and at least one of the
@@ -107,7 +87,6 @@ import java.util.function.Consumer;
  * @see Collection
  * @since 1.2
  */
-
 public class TreeMap<K,V>
     extends AbstractMap<K,V>
     implements NavigableMap<K,V>, Cloneable, java.io.Serializable
@@ -115,20 +94,27 @@ public class TreeMap<K,V>
     /**
      * The comparator used to maintain order in this tree map, or
      * null if it uses the natural ordering of its keys.
+     * 键的比较器，用于维护这个树映射表中的顺序的比较器。
+     * 如果比较器使用其键的自然顺序，则为null。
      *
      * @serial
      */
     private final Comparator<? super K> comparator;
 
+    /**
+     * 树的根结点
+     */
     private transient Entry<K,V> root;
 
     /**
      * The number of entries in the tree
+     * 树中的条目数
      */
     private transient int size = 0;
 
     /**
      * The number of structural modifications to the tree.
+     * 树的结构修改数
      */
     private transient int modCount = 0;
 
@@ -195,6 +181,7 @@ public class TreeMap<K,V>
      * @throws NullPointerException if the specified map is null
      */
     public TreeMap(SortedMap<K, ? extends V> m) {
+        // 键的比较器
         comparator = m.comparator();
         try {
             buildFromSorted(m.size(), m.entrySet().iterator(), null, null);
@@ -205,6 +192,7 @@ public class TreeMap<K,V>
 
 
     // Query Operations
+    // 查询操作
 
     /**
      * Returns the number of key-value mappings in this map.
@@ -246,6 +234,7 @@ public class TreeMap<K,V>
      * @since 1.2
      */
     public boolean containsValue(Object value) {
+        // 第一个条目
         for (Entry<K,V> e = getFirstEntry(); e != null; e = successor(e))
             if (valEquals(value, e.value))
                 return true;
@@ -346,9 +335,11 @@ public class TreeMap<K,V>
         if (key == null)
             throw new NullPointerException();
         @SuppressWarnings("unchecked")
-            Comparable<? super K> k = (Comparable<? super K>) key;
+        Comparable<? super K> k = (Comparable<? super K>) key;
+        // 树的根结点
         Entry<K,V> p = root;
         while (p != null) {
+            // 比较键
             int cmp = k.compareTo(p.key);
             if (cmp < 0)
                 p = p.left;
@@ -368,11 +359,13 @@ public class TreeMap<K,V>
      */
     final Entry<K,V> getEntryUsingComparator(Object key) {
         @SuppressWarnings("unchecked")
-            K k = (K) key;
+        K k = (K) key;
         Comparator<? super K> cpr = comparator;
         if (cpr != null) {
+            // 树的根结点
             Entry<K,V> p = root;
             while (p != null) {
+                // 比较键
                 int cmp = cpr.compare(k, p.key);
                 if (cmp < 0)
                     p = p.left;
@@ -392,8 +385,10 @@ public class TreeMap<K,V>
      * than the specified key), returns {@code null}.
      */
     final Entry<K,V> getCeilingEntry(K key) {
+        // 树的根结点
         Entry<K,V> p = root;
         while (p != null) {
+            // 比较键
             int cmp = compare(key, p.key);
             if (cmp < 0) {
                 if (p.left != null)
@@ -424,8 +419,10 @@ public class TreeMap<K,V>
      * key; if no such entry exists, returns {@code null}.
      */
     final Entry<K,V> getFloorEntry(K key) {
+        // 树的根结点
         Entry<K,V> p = root;
         while (p != null) {
+            // 比较键
             int cmp = compare(key, p.key);
             if (cmp > 0) {
                 if (p.right != null)
@@ -458,8 +455,10 @@ public class TreeMap<K,V>
      * returns {@code null}.
      */
     final Entry<K,V> getHigherEntry(K key) {
+        // 树的根结点
         Entry<K,V> p = root;
         while (p != null) {
+            // 比较键
             int cmp = compare(key, p.key);
             if (cmp < 0) {
                 if (p.left != null)
@@ -489,8 +488,10 @@ public class TreeMap<K,V>
      * the specified key), returns {@code null}.
      */
     final Entry<K,V> getLowerEntry(K key) {
+        // 树的根结点
         Entry<K,V> p = root;
         while (p != null) {
+            // 比较键
             int cmp = compare(key, p.key);
             if (cmp > 0) {
                 if (p.right != null)
@@ -533,8 +534,10 @@ public class TreeMap<K,V>
      *         does not permit null keys
      */
     public V put(K key, V value) {
+        // 树的根结点
         Entry<K,V> t = root;
         if (t == null) {
+            // 比较键
             compare(key, key); // type (and possibly null) check
 
             root = new Entry<>(key, value, null);
@@ -549,6 +552,7 @@ public class TreeMap<K,V>
         if (cpr != null) {
             do {
                 parent = t;
+                // 比较键
                 cmp = cpr.compare(key, t.key);
                 if (cmp < 0)
                     t = t.left;
@@ -562,9 +566,10 @@ public class TreeMap<K,V>
             if (key == null)
                 throw new NullPointerException();
             @SuppressWarnings("unchecked")
-                Comparable<? super K> k = (Comparable<? super K>) key;
+            Comparable<? super K> k = (Comparable<? super K>) key;
             do {
                 parent = t;
+                // 比较键
                 cmp = k.compareTo(t.key);
                 if (cmp < 0)
                     t = t.left;
@@ -651,7 +656,7 @@ public class TreeMap<K,V>
         return clone;
     }
 
-    // NavigableMap API methods
+    // NavigableMap API methods 导航映射表的方法
 
     /**
      * @since 1.6
@@ -778,6 +783,7 @@ public class TreeMap<K,V>
     }
 
     // Views
+    // 视图
 
     /**
      * Fields initialized to contain an instance of the entry set view
@@ -1024,7 +1030,7 @@ public class TreeMap<K,V>
         }
     }
 
-    // View class support
+    // View class support 视图类支持
 
     class Values extends AbstractCollection<V> {
         public Iterator<V> iterator() {
@@ -1187,6 +1193,7 @@ public class TreeMap<K,V>
 
     /**
      * Base class for TreeMap Iterators
+     * 迭代器
      */
     abstract class PrivateEntryIterator<T> implements Iterator<T> {
         Entry<K,V> next;
@@ -1284,10 +1291,11 @@ public class TreeMap<K,V>
         }
     }
 
-    // Little utilities
+    // Little utilities 辅助方法
 
     /**
      * Compares two keys using the correct comparison method for this TreeMap.
+     * 使用正确的比较方法比较两个键。
      */
     @SuppressWarnings("unchecked")
     final int compare(Object k1, Object k2) {
@@ -1299,7 +1307,7 @@ public class TreeMap<K,V>
      * Test two values for equality.  Differs from o1.equals(o2) only in
      * that it copes with {@code null} o1 properly.
      */
-    static final boolean valEquals(Object o1, Object o2) {
+    static boolean valEquals(Object o1, Object o2) {
         return (o1==null ? o2==null : o1.equals(o2));
     }
 
@@ -1329,7 +1337,7 @@ public class TreeMap<K,V>
     }
 
 
-    // SubMaps
+    // SubMaps 子映射表
 
     /**
      * Dummy value serving as unmatchable fence key for unbounded
@@ -1345,6 +1353,7 @@ public class TreeMap<K,V>
         private static final long serialVersionUID = -2102997345730753016L;
         /**
          * The backing map.
+         * 底层的树映射表
          */
         final TreeMap<K,V> m;
 
@@ -2011,36 +2020,8 @@ public class TreeMap<K,V>
         TreeMap.Entry<K,V> subLower(K key)   { return absHigher(key); }
     }
 
-    /**
-     * This class exists solely for the sake of serialization
-     * compatibility with previous releases of TreeMap that did not
-     * support NavigableMap.  It translates an old-version SubMap into
-     * a new-version AscendingSubMap. This class is never otherwise
-     * used.
-     *
-     * @serial include
-     */
-    private class SubMap extends AbstractMap<K,V>
-        implements SortedMap<K,V>, java.io.Serializable {
-        private static final long serialVersionUID = -6520786458950516097L;
-        private boolean fromStart = false, toEnd = false;
-        private K fromKey, toKey;
-        private Object readResolve() {
-            return new AscendingSubMap<>(TreeMap.this,
-                                         fromStart, fromKey, true,
-                                         toEnd, toKey, false);
-        }
-        public Set<Map.Entry<K,V>> entrySet() { throw new InternalError(); }
-        public K lastKey() { throw new InternalError(); }
-        public K firstKey() { throw new InternalError(); }
-        public SortedMap<K,V> subMap(K fromKey, K toKey) { throw new InternalError(); }
-        public SortedMap<K,V> headMap(K toKey) { throw new InternalError(); }
-        public SortedMap<K,V> tailMap(K fromKey) { throw new InternalError(); }
-        public Comparator<? super K> comparator() { throw new InternalError(); }
-    }
 
-
-    // Red-black mechanics
+    // Red-black mechanics 红黑树机制
 
     private static final boolean RED   = false;
     private static final boolean BLACK = true;
@@ -2048,14 +2029,33 @@ public class TreeMap<K,V>
     /**
      * Node in the Tree.  Doubles as a means to pass key-value pairs back to
      * user (see Map.Entry).
+     * 树中的结点。
+     * 用作将键-值对传递给用户的一种方法。
      */
-
     static final class Entry<K,V> implements Map.Entry<K,V> {
+        /**
+         * 键
+         */
         K key;
+        /**
+         * 值
+         */
         V value;
+        /**
+         * 左子树
+         */
         Entry<K,V> left;
+        /**
+         * 右子树
+         */
         Entry<K,V> right;
+        /**
+         * 父亲结点
+         */
         Entry<K,V> parent;
+        /**
+         * 颜色属性(黑/红)
+         */
         boolean color = BLACK;
 
         /**
@@ -2104,10 +2104,12 @@ public class TreeMap<K,V>
                 return false;
             Map.Entry<?,?> e = (Map.Entry<?,?>)o;
 
+            // 键和值都相等
             return valEquals(key,e.getKey()) && valEquals(value,e.getValue());
         }
 
         public int hashCode() {
+            // 键和值的散列值
             int keyHash = (key==null ? 0 : key.hashCode());
             int valueHash = (value==null ? 0 : value.hashCode());
             return keyHash ^ valueHash;
@@ -2123,8 +2125,10 @@ public class TreeMap<K,V>
      * key-sort function).  Returns null if the TreeMap is empty.
      */
     final Entry<K,V> getFirstEntry() {
+        // 树的根结点
         Entry<K,V> p = root;
         if (p != null)
+            // 查找最左边的叶子结点
             while (p.left != null)
                 p = p.left;
         return p;
@@ -2135,8 +2139,10 @@ public class TreeMap<K,V>
      * key-sort function).  Returns null if the TreeMap is empty.
      */
     final Entry<K,V> getLastEntry() {
+        // 树的根结点
         Entry<K,V> p = root;
         if (p != null)
+            // 查找最右边的叶子结点
             while (p.right != null)
                 p = p.right;
         return p;
@@ -2188,6 +2194,7 @@ public class TreeMap<K,V>
 
     /**
      * Balancing operations.
+     * 平衡操作
      *
      * Implementations of rebalancings during insertion and deletion are
      * slightly different than the CLR version.  Rather than using dummy
@@ -2219,6 +2226,7 @@ public class TreeMap<K,V>
 
     /** From CLR */
     private void rotateLeft(Entry<K,V> p) {
+        // 向左旋转
         if (p != null) {
             Entry<K,V> r = p.right;
             p.right = r.left;
@@ -2238,6 +2246,7 @@ public class TreeMap<K,V>
 
     /** From CLR */
     private void rotateRight(Entry<K,V> p) {
+        // 向右旋转
         if (p != null) {
             Entry<K,V> l = p.left;
             p.left = l.right;
@@ -2255,6 +2264,7 @@ public class TreeMap<K,V>
 
     /** From CLR */
     private void fixAfterInsertion(Entry<K,V> x) {
+        // 插入结点后修复平衡
         x.color = RED;
 
         while (x != null && x != root && x.parent.color == RED) {
@@ -2296,7 +2306,8 @@ public class TreeMap<K,V>
     }
 
     /**
-     * Delete node p, and then rebalance the tree.
+     * Delete node p, and then re-balance the tree.
+     * 删除节点p，然后重新平衡树。
      */
     private void deleteEntry(Entry<K,V> p) {
         modCount++;
@@ -2348,6 +2359,7 @@ public class TreeMap<K,V>
 
     /** From CLR */
     private void fixAfterDeletion(Entry<K,V> x) {
+        // 删除结点后修复平衡
         while (x != root && colorOf(x) == BLACK) {
             if (x == leftOf(parentOf(x))) {
                 Entry<K,V> sib = rightOf(parentOf(x));
@@ -2669,6 +2681,9 @@ public class TreeMap<K,V>
      * negative size estimates: -1 for ascend, -2 for descend.
      */
     static class TreeMapSpliterator<K,V> {
+        /**
+         * 树映射表
+         */
         final TreeMap<K,V> tree;
         TreeMap.Entry<K,V> current; // traverser; initially first node in range
         TreeMap.Entry<K,V> fence;   // one past last, or null
@@ -3016,4 +3031,5 @@ public class TreeMap<K,V>
             }
         }
     }
+
 }

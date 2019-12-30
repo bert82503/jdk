@@ -1,37 +1,3 @@
-/*
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
-
-/*
- *
- *
- *
- *
- *
- * Written by Doug Lea and Josh Bloch with assistance from members of JCP
- * JSR-166 Expert Group and released to the public domain, as explained at
- * http://creativecommons.org/publicdomain/zero/1.0/
- */
 
 package java.util;
 
@@ -46,6 +12,8 @@ package java.util;
  * {@code lowerKey}, {@code floorKey}, {@code ceilingKey}, and
  * {@code higherKey} return only the associated keys. All of these
  * methods are designed for locating, not traversing entries.
+ * 使用导航方法扩展的有序的映射表，返回给定搜索目标的最接近匹配项。
+ * 所有这些方法都是为查找而不是遍历条目而设计的。
  *
  * <p>A {@code NavigableMap} may be accessed and traversed in either
  * ascending or descending key order.  The {@code descendingMap}

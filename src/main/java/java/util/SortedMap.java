@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1998, 2011, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.util;
 
@@ -34,6 +10,9 @@ package java.util;
  * {@code entrySet}, {@code keySet} and {@code values} methods).
  * Several additional operations are provided to take advantage of the
  * ordering.  (This interface is the map analogue of {@link SortedSet}.)
+ * 提供其键的总体排序的Map。
+ * 根据其键的自然顺序或通常在排序的映射表创建时提供的比较器来对映射表进行排序。
+ * 遍历排序后的映射表的集合视图时，将反映这个顺序。
  *
  * <p>All keys inserted into a sorted map must implement the {@code Comparable}
  * interface (or be accepted by the specified comparator).  Furthermore, all
@@ -109,7 +88,6 @@ package java.util;
  * @see ClassCastException
  * @since 1.2
  */
-
 public interface SortedMap<K,V> extends Map<K,V> {
     /**
      * Returns the comparator used to order the keys in this map, or
