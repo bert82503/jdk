@@ -1810,17 +1810,17 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * classes, and HashSet.
      */
 
-    // Create a regular (non-tree) node
+    // Create a regular (non-tree) node 创建一个常规(非树)节点
     Node<K,V> newNode(int hash, K key, V value, Node<K,V> next) {
         return new Node<>(hash, key, value, next);
     }
 
-    // For conversion from TreeNodes to plain nodes
+    // For conversion from TreeNodes to plain nodes 用于从TreeNodes转换为纯节点
     Node<K,V> replacementNode(Node<K,V> p, Node<K,V> next) {
         return new Node<>(p.hash, p.key, p.value, next);
     }
 
-    // Create a tree bin node
+    // Create a tree bin node 创建树箱节点
     TreeNode<K,V> newTreeNode(int hash, K key, V value, Node<K,V> next) {
         return new TreeNode<>(hash, key, value, next);
     }

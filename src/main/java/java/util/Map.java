@@ -582,6 +582,7 @@ public interface Map<K,V> {
      * otherwise specified by the implementing class, actions are performed in
      * the order of entry set iteration (if an iteration order is specified.)
      * Exceptions thrown by the action are relayed to the caller.
+     * 在这个映射表中为每个映射条目执行给定的操作，直到所有条目都已处理或操作抛出异常。
      *
      * @implSpec
      * The default implementation is equivalent to, for this {@code map}:

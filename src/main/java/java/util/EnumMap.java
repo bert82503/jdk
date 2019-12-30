@@ -1,31 +1,6 @@
-/*
- * Copyright (c) 2003, 2012, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.util;
 
-import java.util.Map.Entry;
 import sun.misc.SharedSecrets;
 
 /**
@@ -81,6 +56,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V>
 {
     /**
      * The <tt>Class</tt> object for the enum type of all the keys of this map.
+     * 键的枚举类
      *
      * @serial
      */
@@ -95,11 +71,13 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V>
      * Array representation of this map.  The ith element is the value
      * to which universe[i] is currently mapped, or null if it isn't
      * mapped to anything, or NULL if it's mapped to null.
+     * 枚举值的数组表示形式(Enum#ordinal())
      */
     private transient Object[] vals;
 
     /**
      * The number of mappings in this map.
+     * 映射数量
      */
     private transient int size = 0;
 

@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.util;
 
@@ -41,6 +17,10 @@ import java.io.IOException;
  * reinserted into a map <tt>m</tt> if <tt>m.put(k, v)</tt> is invoked when
  * <tt>m.containsKey(k)</tt> would return <tt>true</tt> immediately prior to
  * the invocation.)
+ * 基于散列表和双向链表的Map接口的实现，具有可预测的迭代顺序。
+ * 本实现与HashMap的不同之处在于，它维护贯穿其所有映射条目的双向链表。
+ * 这个链表定义了迭代顺序，通常是将键插入映射表的顺序(插入顺序)。
+ * 请注意，如果将键重新插入到映射表中，则插入顺序不会受到影响。
  *
  * <p>This implementation spares its clients from the unspecified, generally
  * chaotic ordering provided by {@link HashMap} (and {@link Hashtable}),
@@ -188,9 +168,20 @@ public class LinkedHashMap<K,V>
 
     /**
      * HashMap.Node subclass for normal LinkedHashMap entries.
+     * 散列箱结点。
+     * <p>
+     * 数据结构：双向链表，双链表，双向循环链表
      */
     static class Entry<K,V> extends HashMap.Node<K,V> {
-        Entry<K,V> before, after;
+        /**
+         * 直接前驱结点
+         */
+        Entry<K,V> before;
+        /**
+         * 直接后继结点
+         */
+        Entry<K,V> after;
+
         Entry(int hash, K key, V value, Node<K,V> next) {
             super(hash, key, value, next);
         }
@@ -200,37 +191,42 @@ public class LinkedHashMap<K,V>
 
     /**
      * The head (eldest) of the doubly linked list.
+     * 双向链表的头结点(最年长)
      */
     transient LinkedHashMap.Entry<K,V> head;
 
     /**
      * The tail (youngest) of the doubly linked list.
+     * 双向链表的尾结点(最年轻)
      */
     transient LinkedHashMap.Entry<K,V> tail;
 
     /**
      * The iteration ordering method for this linked hash map: <tt>true</tt>
      * for access-order, <tt>false</tt> for insertion-order.
+     * 这个链接的散列映射表的迭代排序方法：对于访问顺序为true，对于插入顺序为false。
      *
      * @serial
      */
     final boolean accessOrder;
 
-    // internal utilities
+    // internal utilities 内部实用程序
 
-    // link at the end of list
+    // link at the end of list 链接到链表末尾
     private void linkNodeLast(LinkedHashMap.Entry<K,V> p) {
+        // 双向链表的尾结点(最年轻)
         LinkedHashMap.Entry<K,V> last = tail;
         tail = p;
         if (last == null)
             head = p;
         else {
+            // 双向链表的直接前驱结点、直接后继结点
             p.before = last;
             last.after = p;
         }
     }
 
-    // apply src's links to dst
+    // apply src's links to dst 应用源链表到目标链表
     private void transferLinks(LinkedHashMap.Entry<K,V> src,
                                LinkedHashMap.Entry<K,V> dst) {
         LinkedHashMap.Entry<K,V> b = dst.before = src.before;
@@ -245,7 +241,7 @@ public class LinkedHashMap<K,V>
             a.before = dst;
     }
 
-    // overrides of HashMap hook methods
+    // overrides of HashMap hook methods HashMap钩子方法的重写
 
     void reinitialize() {
         super.reinitialize();
@@ -255,6 +251,7 @@ public class LinkedHashMap<K,V>
     Node<K,V> newNode(int hash, K key, V value, Node<K,V> e) {
         LinkedHashMap.Entry<K,V> p =
             new LinkedHashMap.Entry<K,V>(hash, key, value, e);
+        // 插入到链表末尾
         linkNodeLast(p);
         return p;
     }
@@ -280,9 +277,10 @@ public class LinkedHashMap<K,V>
         return t;
     }
 
-    void afterNodeRemoval(Node<K,V> e) { // unlink
+    void afterNodeRemoval(Node<K,V> e) { // unlink 取消链接
         LinkedHashMap.Entry<K,V> p =
             (LinkedHashMap.Entry<K,V>)e, b = p.before, a = p.after;
+        // 将当前结点的直接前驱结点、直接后继结点都设置为null
         p.before = p.after = null;
         if (b == null)
             head = a;
@@ -294,7 +292,7 @@ public class LinkedHashMap<K,V>
             a.before = b;
     }
 
-    void afterNodeInsertion(boolean evict) { // possibly remove eldest
+    void afterNodeInsertion(boolean evict) { // possibly remove eldest 可能删除最年长的结点
         LinkedHashMap.Entry<K,V> first;
         if (evict && (first = head) != null && removeEldestEntry(first)) {
             K key = first.key;
@@ -302,7 +300,7 @@ public class LinkedHashMap<K,V>
         }
     }
 
-    void afterNodeAccess(Node<K,V> e) { // move node to last
+    void afterNodeAccess(Node<K,V> e) { // move node to last 将节点移到最后
         LinkedHashMap.Entry<K,V> last;
         if (accessOrder && (last = tail) != e) {
             LinkedHashMap.Entry<K,V> p =
@@ -412,6 +410,7 @@ public class LinkedHashMap<K,V>
      *         specified value
      */
     public boolean containsValue(Object value) {
+        // 从双向链表的头结点(最年长)开始查找
         for (LinkedHashMap.Entry<K,V> e = head; e != null; e = e.after) {
             V v = e.value;
             if (v == value || (value != null && value.equals(v)))
@@ -437,6 +436,7 @@ public class LinkedHashMap<K,V>
      */
     public V get(Object key) {
         Node<K,V> e;
+        // 键的散列值-插槽索引，获取键所在的插槽结点链表下的结点
         if ((e = getNode(hash(key), key)) == null)
             return null;
         if (accessOrder)
@@ -449,6 +449,7 @@ public class LinkedHashMap<K,V>
      */
     public V getOrDefault(Object key, V defaultValue) {
        Node<K,V> e;
+        // 键的散列值-插槽索引，获取键所在的插槽结点链表下的结点
        if ((e = getNode(hash(key), key)) == null)
            return defaultValue;
        if (accessOrder)
@@ -461,6 +462,7 @@ public class LinkedHashMap<K,V>
      */
     public void clear() {
         super.clear();
+        // 将双向链表的头结点(最年长)、双向链表的尾结点(最年轻)都置为null
         head = tail = null;
     }
 
@@ -627,6 +629,7 @@ public class LinkedHashMap<K,V>
      * Its {@link Spliterator} typically provides faster sequential
      * performance but much poorer parallel performance than that of
      * {@code HashMap}.
+     * 获取映射条目集合的视图。
      *
      * @return a set view of the mappings contained in this map
      */
@@ -674,8 +677,10 @@ public class LinkedHashMap<K,V>
         }
     }
 
-    // Map overrides
+    // Map overrides 映射表的覆盖
 
+    // 在这个映射表中为每个映射条目执行给定的操作，直到所有条目都已处理或操作抛出异常。
+    @Override
     public void forEach(BiConsumer<? super K, ? super V> action) {
         if (action == null)
             throw new NullPointerException();
@@ -686,6 +691,7 @@ public class LinkedHashMap<K,V>
             throw new ConcurrentModificationException();
     }
 
+    @Override
     public void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
         if (function == null)
             throw new NullPointerException();
@@ -696,10 +702,16 @@ public class LinkedHashMap<K,V>
             throw new ConcurrentModificationException();
     }
 
-    // Iterators
+    // Iterators 迭代器
 
     abstract class LinkedHashIterator {
+        /**
+         * 下一个条目结点
+         */
         LinkedHashMap.Entry<K,V> next;
+        /**
+         * 当前条目结点
+         */
         LinkedHashMap.Entry<K,V> current;
         int expectedModCount;
 
@@ -751,6 +763,5 @@ public class LinkedHashMap<K,V>
         implements Iterator<Map.Entry<K,V>> {
         public final Map.Entry<K,V> next() { return nextNode(); }
     }
-
 
 }
