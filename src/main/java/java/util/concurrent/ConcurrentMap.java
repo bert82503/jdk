@@ -43,6 +43,7 @@ import java.util.function.Function;
 /**
  * A {@link java.util.Map} providing thread safety and atomicity
  * guarantees.
+ * 提供线程安全性和原子性保证的Map。
  *
  * <p>Memory consistency effects: As with other concurrent
  * collections, actions in a thread prior to placing an object into a
@@ -50,6 +51,8 @@ import java.util.function.Function;
  * <a href="package-summary.html#MemoryVisibility"><i>happen-before</i></a>
  * actions subsequent to the access or removal of that object from
  * the {@code ConcurrentMap} in another thread.
+ * 内存一致性影响：与其他并发容器一样，在将对象作为键或值放入ConcurrentMap中之前，
+ * 线程中的操作发生在从另一个线程中的ConcurrentMap中访问或删除该对象之后的操作之前。
  *
  * <p>This interface is a member of the
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
@@ -514,4 +517,5 @@ public interface ConcurrentMap<K, V> extends Map<K, V> {
             }
         }
     }
+
 }
