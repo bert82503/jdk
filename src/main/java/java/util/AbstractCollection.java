@@ -1,33 +1,11 @@
-/*
- * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.util;
 
 /**
  * This class provides a skeletal implementation of the <tt>Collection</tt>
- * interface, to minimize the effort required to implement this interface. <p>
+ * interface, to minimize the effort required to implement this interface.
+ * 本类提供Collection接口的框架实现，以最大程度地减少实现这个接口所需的工作。
+ * <p>
  *
  * To implement an unmodifiable collection, the programmer needs only to
  * extend this class and provide implementations for the <tt>iterator</tt> and
@@ -57,7 +35,6 @@ package java.util;
  * @see Collection
  * @since 1.2
  */
-
 public abstract class AbstractCollection<E> implements Collection<E> {
     /**
      * Sole constructor.  (For invocation by subclass constructors, typically
@@ -67,14 +44,21 @@ public abstract class AbstractCollection<E> implements Collection<E> {
     }
 
     // Query Operations
+    // 查询操作
 
     /**
      * Returns an iterator over the elements contained in this collection.
+     * 元素的迭代器。
      *
      * @return an iterator over the elements contained in this collection
      */
     public abstract Iterator<E> iterator();
 
+    /**
+     * {@inheritDoc}
+     *
+     * 元素的数量
+     */
     public abstract int size();
 
     /**
@@ -83,6 +67,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * <p>This implementation returns <tt>size() == 0</tt>.
      */
     public boolean isEmpty() {
+        // 元素的数量
         return size() == 0;
     }
 
@@ -96,12 +81,15 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * @throws NullPointerException {@inheritDoc}
      */
     public boolean contains(Object o) {
+        // 元素的迭代器
         Iterator<E> it = iterator();
         if (o==null) {
+            // null场景(允许元素为null)
             while (it.hasNext())
                 if (it.next()==null)
                     return true;
         } else {
+            // 非null场景
             while (it.hasNext())
                 if (o.equals(it.next()))
                     return true;
@@ -177,6 +165,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
         T[] r = a.length >= size ? a :
                   (T[])java.lang.reflect.Array
                   .newInstance(a.getClass().getComponentType(), size);
+        // 元素的迭代器
         Iterator<E> it = iterator();
 
         for (int i = 0; i < r.length; i++) {
@@ -186,6 +175,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
                 } else if (a.length < i) {
                     return Arrays.copyOf(r, i);
                 } else {
+                    // 基于内存的数组复制
                     System.arraycopy(r, 0, a, 0, i);
                     if (a.length > i) {
                         a[i] = null;
@@ -245,6 +235,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
     }
 
     // Modification Operations
+    // 修改操作
 
     /**
      * {@inheritDoc}
@@ -259,6 +250,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * @throws IllegalStateException         {@inheritDoc}
      */
     public boolean add(E e) {
+        // 不支持的操作
         throw new UnsupportedOperationException();
     }
 
@@ -279,8 +271,10 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * @throws NullPointerException          {@inheritDoc}
      */
     public boolean remove(Object o) {
+        // 元素的迭代器
         Iterator<E> it = iterator();
         if (o==null) {
+            // null场景(允许元素为null)
             while (it.hasNext()) {
                 if (it.next()==null) {
                     it.remove();
@@ -288,6 +282,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
                 }
             }
         } else {
+            // 非null场景
             while (it.hasNext()) {
                 if (o.equals(it.next())) {
                     it.remove();
@@ -300,9 +295,12 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 
 
     // Bulk Operations
+    // 批量操作
 
     /**
      * {@inheritDoc}
+     *
+     * 子集，集合的包含关系。
      *
      * <p>This implementation iterates over the specified collection,
      * checking each element returned by the iterator in turn to see
@@ -316,12 +314,15 @@ public abstract class AbstractCollection<E> implements Collection<E> {
     public boolean containsAll(Collection<?> c) {
         for (Object e : c)
             if (!contains(e))
+                // 反例：只要有一个元素不包含，则返回
                 return false;
         return true;
     }
 
     /**
      * {@inheritDoc}
+     *
+     * 并集。
      *
      * <p>This implementation iterates over the specified collection, and adds
      * each object returned by the iterator to this collection, in turn.
@@ -339,8 +340,10 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * @see #add(Object)
      */
     public boolean addAll(Collection<? extends E> c) {
+        // 容器已修改标识
         boolean modified = false;
         for (E e : c)
+            // 遍历添加
             if (add(e))
                 modified = true;
         return modified;
@@ -348,6 +351,8 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 
     /**
      * {@inheritDoc}
+     *
+     * 相对补集。
      *
      * <p>This implementation iterates over this collection, checking each
      * element returned by the iterator in turn to see if it's contained
@@ -369,10 +374,13 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      */
     public boolean removeAll(Collection<?> c) {
         Objects.requireNonNull(c);
+        // 容器已修改标识
         boolean modified = false;
+        // 元素的迭代器
         Iterator<?> it = iterator();
         while (it.hasNext()) {
             if (c.contains(it.next())) {
+                // 存在的，则移除
                 it.remove();
                 modified = true;
             }
@@ -382,6 +390,8 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 
     /**
      * {@inheritDoc}
+     *
+     * 交集。
      *
      * <p>This implementation iterates over this collection, checking each
      * element returned by the iterator in turn to see if it's contained
@@ -403,10 +413,13 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      */
     public boolean retainAll(Collection<?> c) {
         Objects.requireNonNull(c);
+        // 容器已修改标识
         boolean modified = false;
+        // 元素的迭代器
         Iterator<E> it = iterator();
         while (it.hasNext()) {
             if (!c.contains(it.next())) {
+                // 不存在的，则移除
                 it.remove();
                 modified = true;
             }
@@ -430,15 +443,18 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * @throws UnsupportedOperationException {@inheritDoc}
      */
     public void clear() {
+        // 元素的迭代器
         Iterator<E> it = iterator();
         while (it.hasNext()) {
             it.next();
+            // 遍历地移除
             it.remove();
         }
     }
 
 
     //  String conversion
+    // 字符串转换
 
     /**
      * Returns a string representation of this collection.  The string
@@ -447,12 +463,15 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * (<tt>"[]"</tt>).  Adjacent elements are separated by the characters
      * <tt>", "</tt> (comma and space).  Elements are converted to strings as
      * by {@link String#valueOf(Object)}.
+     * 返回这个容器的字符串表示形式。
      *
      * @return a string representation of this collection
      */
     public String toString() {
+        // 元素的迭代器
         Iterator<E> it = iterator();
         if (! it.hasNext())
+            // 空的容器
             return "[]";
 
         StringBuilder sb = new StringBuilder();

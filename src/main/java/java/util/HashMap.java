@@ -135,6 +135,8 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * when overpopulated. However, since the vast majority of bins in
      * normal use are not overpopulated, checking for existence of
      * tree bins may be delayed in the course of table methods.
+     * 本映射表通常用作装箱(存储桶)的散列表，但是当存储桶太大时，它们将被转换为树结点的存储桶，
+     * 每个存储桶的结构都与TreeMap中的结构类似。
      *
      * Tree bins (i.e., bins whose elements are all TreeNodes) are
      * ordered primarily by hashCode, but in the case of ties, if two
@@ -399,7 +401,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * necessary. When allocated, length is always a power of two.
      * (We also tolerate length zero in some operations to allow
      * bootstrapping mechanics that are currently not needed.)
-     * 结点的散列表，在首次使用时初始化，并根据需要调整大小。
+     * 结点桶数组/插槽的散列表，在首次使用时初始化，并根据需要调整大小。
      * (在某些操作中，我们还允许长度为零，以允许使用当前不需要的引导机制。)
      */
     transient Node<K,V>[] table;
@@ -1875,7 +1877,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      */
     static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
         /**
-         * 父结点，红黑树的链接
+         * 父亲结点，红黑树的链接
          */
         TreeNode<K,V> parent;  // red-black tree links
         /**

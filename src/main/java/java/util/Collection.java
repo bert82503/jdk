@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.util;
 
@@ -38,6 +14,10 @@ import java.util.stream.StreamSupport;
  * specific subinterfaces like <tt>Set</tt> and <tt>List</tt>.  This interface
  * is typically used to pass collections around and manipulate them where
  * maximum generality is desired.
+ * 容器层次结构中的根接口。容器表示一组对象，称为其元素。(容器表示一组元素)
+ * 一些容器允许重复的元素，而另一些则不允许。一些是有序的，而其他则是无序的。
+ * JDK不提供这个接口的任何直接实现，提供更特定的子接口的实现。
+ * 本接口通常用于传递容器并在需要最大通用性的地方操作它们。
  *
  * <p><i>Bags</i> or <i>multisets</i> (unordered collections that may contain
  * duplicate elements) should implement this interface directly.
@@ -140,14 +120,15 @@ import java.util.stream.StreamSupport;
  * @see     AbstractCollection
  * @since 1.2
  */
-
 public interface Collection<E> extends Iterable<E> {
     // Query Operations
+    // 查询操作
 
     /**
      * Returns the number of elements in this collection.  If this collection
      * contains more than <tt>Integer.MAX_VALUE</tt> elements, returns
      * <tt>Integer.MAX_VALUE</tt>.
+     * 元素的数量。
      *
      * @return the number of elements in this collection
      */
@@ -183,6 +164,7 @@ public interface Collection<E> extends Iterable<E> {
      * guarantees concerning the order in which the elements are returned
      * (unless this collection is an instance of some class that provides a
      * guarantee).
+     * 元素的迭代器。
      *
      * @return an <tt>Iterator</tt> over the elements in this collection
      */
@@ -252,6 +234,7 @@ public interface Collection<E> extends Iterable<E> {
     <T> T[] toArray(T[] a);
 
     // Modification Operations
+    // 修改操作
 
     /**
      * Ensures that this collection contains the specified element (optional
@@ -312,10 +295,12 @@ public interface Collection<E> extends Iterable<E> {
 
 
     // Bulk Operations
+    // 批量操作
 
     /**
      * Returns <tt>true</tt> if this collection contains all of the elements
      * in the specified collection.
+     * 子集，集合的包含关系。
      *
      * @param  c collection to be checked for containment in this collection
      * @return <tt>true</tt> if this collection contains all of the elements
@@ -340,6 +325,7 @@ public interface Collection<E> extends Iterable<E> {
      * (This implies that the behavior of this call is undefined if the
      * specified collection is this collection, and this collection is
      * nonempty.)
+     * 并集。
      *
      * @param c collection containing elements to be added to this collection
      * @return <tt>true</tt> if this collection changed as a result of the call
@@ -364,6 +350,7 @@ public interface Collection<E> extends Iterable<E> {
      * specified collection (optional operation).  After this call returns,
      * this collection will contain no elements in common with the specified
      * collection.
+     * 相对补集。
      *
      * @param c collection containing elements to be removed from this collection
      * @return <tt>true</tt> if this collection changed as a result of the
@@ -409,8 +396,10 @@ public interface Collection<E> extends Iterable<E> {
     default boolean removeIf(Predicate<? super E> filter) {
         Objects.requireNonNull(filter);
         boolean removed = false;
+        // 元素的迭代器
         final Iterator<E> each = iterator();
         while (each.hasNext()) {
+            // 评估谓词条件
             if (filter.test(each.next())) {
                 each.remove();
                 removed = true;
@@ -424,6 +413,7 @@ public interface Collection<E> extends Iterable<E> {
      * specified collection (optional operation).  In other words, removes from
      * this collection all of its elements that are not contained in the
      * specified collection.
+     * 交集，集合的交集操作。
      *
      * @param c collection containing elements to be retained in this collection
      * @return <tt>true</tt> if this collection changed as a result of the call
@@ -454,6 +444,7 @@ public interface Collection<E> extends Iterable<E> {
 
 
     // Comparison and hashing
+    // 比较和散列
 
     /**
      * Compares the specified object with this collection for equality. <p>
@@ -507,6 +498,9 @@ public interface Collection<E> extends Iterable<E> {
      */
     int hashCode();
 
+    // Defaultable methods
+    // 默认方法
+
     /**
      * Creates a {@link Spliterator} over the elements in this collection.
      *
@@ -559,11 +553,13 @@ public interface Collection<E> extends Iterable<E> {
      */
     @Override
     default Spliterator<E> spliterator() {
+        // 可分割的迭代器
         return Spliterators.spliterator(this, 0);
     }
 
     /**
      * Returns a sequential {@code Stream} with this collection as its source.
+     * 返回以这个容器为源的顺序流。
      *
      * <p>This method should be overridden when the {@link #spliterator()}
      * method cannot return a spliterator that is {@code IMMUTABLE},
@@ -578,12 +574,15 @@ public interface Collection<E> extends Iterable<E> {
      * @since 1.8
      */
     default Stream<E> stream() {
+        // 流支持
         return StreamSupport.stream(spliterator(), false);
     }
 
     /**
      * Returns a possibly parallel {@code Stream} with this collection as its
      * source.  It is allowable for this method to return a sequential stream.
+     * 返回以这个容器为源的可能的并行流。
+     * 这个方法允许返回顺序流。
      *
      * <p>This method should be overridden when the {@link #spliterator()}
      * method cannot return a spliterator that is {@code IMMUTABLE},
@@ -599,6 +598,7 @@ public interface Collection<E> extends Iterable<E> {
      * @since 1.8
      */
     default Stream<E> parallelStream() {
+        // 流支持
         return StreamSupport.stream(spliterator(), true);
     }
 }

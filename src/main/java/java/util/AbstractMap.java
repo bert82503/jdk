@@ -58,7 +58,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * This implementation returns <tt>entrySet().size()</tt>.
      */
     public int size() {
-        // 映射条目集合视图
+        // 映射条目集合的视图
         return entrySet().size();
     }
 
@@ -69,6 +69,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * This implementation returns <tt>size() == 0</tt>.
      */
     public boolean isEmpty() {
+        // 键-值对的映射数
         return size() == 0;
     }
 
@@ -86,7 +87,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * @throws NullPointerException {@inheritDoc}
      */
     public boolean containsValue(Object value) {
-        // 映射条目集合视图
+        // 映射条目集合的视图
         Iterator<Entry<K,V>> i = entrySet().iterator();
         if (value==null) {
             // null场景(允许值为null)
@@ -122,7 +123,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * @throws NullPointerException {@inheritDoc}
      */
     public boolean containsKey(Object key) {
-        // 映射条目集合视图
+        // 映射条目集合的视图
         Iterator<Map.Entry<K,V>> i = entrySet().iterator();
         if (key==null) {
             // null场景(允许键为null)
@@ -158,7 +159,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * @throws NullPointerException          {@inheritDoc}
      */
     public V get(Object key) {
-        // 映射条目集合视图
+        // 映射条目集合的视图
         Iterator<Entry<K,V>> i = entrySet().iterator();
         if (key==null) {
             // null场景(允许键为null)
@@ -196,6 +197,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * @throws IllegalArgumentException      {@inheritDoc}
      */
     public V put(K key, V value) {
+        // 不支持的操作
         throw new UnsupportedOperationException();
     }
 
@@ -222,7 +224,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * @throws NullPointerException          {@inheritDoc}
      */
     public V remove(Object key) {
-        // 映射条目集合视图
+        // 映射条目集合的视图
         Iterator<Entry<K,V>> i = entrySet().iterator();
         Entry<K,V> correctEntry = null;
         if (key==null) {
@@ -273,7 +275,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * @throws IllegalArgumentException      {@inheritDoc}
      */
     public void putAll(Map<? extends K, ? extends V> m) {
-        // 映射条目集合视图
+        // 映射条目集合的视图
         for (Map.Entry<? extends K, ? extends V> e : m.entrySet())
             put(e.getKey(), e.getValue());
     }
@@ -291,7 +293,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * @throws UnsupportedOperationException {@inheritDoc}
      */
     public void clear() {
-        // 映射条目集合视图
+        // 映射条目集合的视图
         entrySet().clear();
     }
 
@@ -485,11 +487,12 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
         if (!(o instanceof Map))
             return false;
         Map<?,?> m = (Map<?,?>) o;
+        // 键-值对的映射数
         if (m.size() != size())
             return false;
 
         try {
-            // 映射条目集合视图
+            // 映射条目集合的视图
             Iterator<Entry<K,V>> i = entrySet().iterator();
             while (i.hasNext()) {
                 Entry<K,V> e = i.next();
@@ -534,7 +537,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      */
     public int hashCode() {
         int h = 0;
-        // 映射条目集合视图
+        // 映射条目集合的视图
         Iterator<Entry<K,V>> i = entrySet().iterator();
         // 使用Entry.hashCode计算映射表的散列值
         while (i.hasNext())
@@ -551,13 +554,15 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * the key followed by an equals sign (<tt>"="</tt>) followed by the
      * associated value.  Keys and values are converted to strings as by
      * {@link String#valueOf(Object)}.
+     * 返回这个映射表的字符串表示形式。
      *
      * @return a string representation of this map
      */
     public String toString() {
-        // 映射条目集合视图
+        // 映射条目集合的视图
         Iterator<Entry<K,V>> i = entrySet().iterator();
         if (! i.hasNext())
+            // 空的映射表
             return "{}";
 
         StringBuilder sb = new StringBuilder();

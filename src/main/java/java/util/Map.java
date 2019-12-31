@@ -112,6 +112,7 @@ public interface Map<K,V> {
      * Returns the number of key-value mappings in this map.  If the
      * map contains more than <tt>Integer.MAX_VALUE</tt> elements, returns
      * <tt>Integer.MAX_VALUE</tt>.
+     * 键-值对的映射数。
      *
      * @return the number of key-value mappings in this map
      */
@@ -287,7 +288,7 @@ public interface Map<K,V> {
 
 
     // Views
-    // 视图
+    // 视图(容器)
 
     /**
      * Returns a {@link Set} view of the keys contained in this map.
@@ -604,6 +605,7 @@ public interface Map<K,V> {
      */
     default void forEach(BiConsumer<? super K, ? super V> action) {
         Objects.requireNonNull(action);
+        // 映射条目集合的视图
         for (Map.Entry<K, V> entry : entrySet()) {
             K k;
             V v;
@@ -614,6 +616,7 @@ public interface Map<K,V> {
                 // this usually means the entry is no longer in the map.
                 throw new ConcurrentModificationException(ise);
             }
+            // 执行键和值的操作
             action.accept(k, v);
         }
     }
@@ -659,6 +662,7 @@ public interface Map<K,V> {
      */
     default void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
         Objects.requireNonNull(function);
+        // 映射条目集合的视图
         for (Map.Entry<K, V> entry : entrySet()) {
             K k;
             V v;
@@ -671,6 +675,7 @@ public interface Map<K,V> {
             }
 
             // ise thrown from function is not a cme.
+            // 应用键和值合并的二元函数
             v = function.apply(k, v);
 
             try {
@@ -941,6 +946,7 @@ public interface Map<K,V> {
         V v;
         if ((v = get(key)) == null) {
             V newValue;
+            // 应用键的一元函数(由键动态地获取值)
             if ((newValue = mappingFunction.apply(key)) != null) {
                 put(key, newValue);
                 return newValue;
@@ -1001,6 +1007,7 @@ public interface Map<K,V> {
         Objects.requireNonNull(remappingFunction);
         V oldValue;
         if ((oldValue = get(key)) != null) {
+            // 应用键和旧值合并的二元函数
             V newValue = remappingFunction.apply(key, oldValue);
             if (newValue != null) {
                 put(key, newValue);
@@ -1077,6 +1084,7 @@ public interface Map<K,V> {
         Objects.requireNonNull(remappingFunction);
         V oldValue = get(key);
 
+        // 应用键和旧值合并的二元函数
         V newValue = remappingFunction.apply(key, oldValue);
         if (newValue == null) {
             // delete mapping
@@ -1158,6 +1166,7 @@ public interface Map<K,V> {
         Objects.requireNonNull(remappingFunction);
         Objects.requireNonNull(value);
         V oldValue = get(key);
+        // 应用新旧值合并的二元函数
         V newValue = (oldValue == null) ? value :
                    remappingFunction.apply(oldValue, value);
         if(newValue == null) {
