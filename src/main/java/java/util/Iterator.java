@@ -36,7 +36,7 @@ public interface Iterator<E> {
      * Returns {@code true} if the iteration has more elements.
      * (In other words, returns {@code true} if {@link #next} would
      * return an element rather than throwing an exception.)
-     * 迭代具有更多的元素。
+     * 迭代含有更多的元素。
      *
      * @return {@code true} if the iteration has more elements
      */
