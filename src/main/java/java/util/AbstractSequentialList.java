@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1997, 2006, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.util;
 
@@ -30,7 +6,10 @@ package java.util;
  * interface to minimize the effort required to implement this interface
  * backed by a "sequential access" data store (such as a linked list).  For
  * random access data (such as an array), <tt>AbstractList</tt> should be used
- * in preference to this class.<p>
+ * in preference to this class.
+ * 本类提供List接口的框架实现，以最大程度地减少实现由"随机访问"数据存储所需的工作(链表)。
+ * 对于随机访问数据(数组)，应优先使用AbstractList，而不是这个类。
+ * <p>
  *
  * This class is the opposite of the <tt>AbstractList</tt> class in the sense
  * that it implements the "random access" methods (<tt>get(int index)</tt>,
@@ -65,7 +44,6 @@ package java.util;
  * @see AbstractCollection
  * @since 1.2
  */
-
 public abstract class AbstractSequentialList<E> extends AbstractList<E> {
     /**
      * Sole constructor.  (For invocation by subclass constructors, typically
@@ -83,8 +61,10 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
      *
      * @throws IndexOutOfBoundsException {@inheritDoc}
      */
+    @Override
     public E get(int index) {
         try {
+            // 元素的列表迭代器
             return listIterator(index).next();
         } catch (NoSuchElementException exc) {
             throw new IndexOutOfBoundsException("Index: "+index);
@@ -110,8 +90,10 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
      * @throws IllegalArgumentException      {@inheritDoc}
      * @throws IndexOutOfBoundsException     {@inheritDoc}
      */
+    @Override
     public E set(int index, E element) {
         try {
+            // 元素的列表迭代器
             ListIterator<E> e = listIterator(index);
             E oldVal = e.next();
             e.set(element);
@@ -141,8 +123,10 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
      * @throws IllegalArgumentException      {@inheritDoc}
      * @throws IndexOutOfBoundsException     {@inheritDoc}
      */
+    @Override
     public void add(int index, E element) {
         try {
+            // 元素的列表迭代器
             listIterator(index).add(element);
         } catch (NoSuchElementException exc) {
             throw new IndexOutOfBoundsException("Index: "+index);
@@ -166,8 +150,10 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
      * @throws UnsupportedOperationException {@inheritDoc}
      * @throws IndexOutOfBoundsException     {@inheritDoc}
      */
+    @Override
     public E remove(int index) {
         try {
+            // 元素的列表迭代器
             ListIterator<E> e = listIterator(index);
             E outCast = e.next();
             e.remove();
@@ -179,6 +165,7 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
 
 
     // Bulk Operations
+    // 批量操作
 
     /**
      * Inserts all of the elements in the specified collection into this
@@ -226,6 +213,7 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
 
 
     // Iterators
+    // 迭代器
 
     /**
      * Returns an iterator over the elements in this list (in proper
@@ -235,7 +223,9 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
      *
      * @return an iterator over the elements in this list (in proper sequence)
      */
+    @Override
     public Iterator<E> iterator() {
+        // 元素的列表迭代器
         return listIterator();
     }
 
@@ -249,5 +239,6 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
      *         sequence)
      * @throws IndexOutOfBoundsException {@inheritDoc}
      */
+    @Override
     public abstract ListIterator<E> listIterator(int index);
 }

@@ -7,8 +7,8 @@ package java.util;
  * backed by a "random access" data store (such as an array).  For sequential
  * access data (such as a linked list), {@link AbstractSequentialList} should
  * be used in preference to this class.
- * 本类提供List接口的框架实现，以最大程度地减少实现由"随机访问"数据存储所需的工作。
- * 对于顺序访问数据，应优先使用AbstractSequentialList，而不是这个类。
+ * 本类提供List接口的框架实现，以最大程度地减少实现由"随机访问"数据存储所需的工作(数组)。
+ * 对于顺序访问数据(链表)，应优先使用AbstractSequentialList，而不是这个类。
  *
  * <p>To implement an unmodifiable list, the programmer needs only to extend
  * this class and provide implementations for the {@link #get(int)} and
@@ -96,7 +96,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
      *
      * @throws IndexOutOfBoundsException {@inheritDoc}
      */
-    abstract public E get(int index);
+    public abstract E get(int index);
 
     /**
      * {@inheritDoc}
