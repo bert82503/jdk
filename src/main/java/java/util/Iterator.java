@@ -7,7 +7,7 @@ import java.util.function.Consumer;
  * An iterator over a collection.  {@code Iterator} takes the place of
  * {@link Enumeration} in the Java Collections Framework.  Iterators
  * differ from enumerations in two ways:
- * 容器上的迭代器。在Java容器框架中，迭代器替代了枚举。
+ * 容器迭代器。在Java容器框架中，迭代器替代了枚举。
  * 迭代器与枚举有以下两种不同：
  *
  * <ul>
@@ -36,7 +36,7 @@ public interface Iterator<E> {
      * Returns {@code true} if the iteration has more elements.
      * (In other words, returns {@code true} if {@link #next} would
      * return an element rather than throwing an exception.)
-     * 迭代含有更多的元素。
+     * 迭代包含更多的元素。
      *
      * @return {@code true} if the iteration has more elements
      */

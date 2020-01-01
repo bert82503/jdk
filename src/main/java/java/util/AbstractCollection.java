@@ -162,6 +162,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
     public <T> T[] toArray(T[] a) {
         // Estimate size of array; be prepared to see more or fewer elements
         int size = size();
+        // 通过反射创建数组实例
         T[] r = a.length >= size ? a :
                   (T[])java.lang.reflect.Array
                   .newInstance(a.getClass().getComponentType(), size);
@@ -221,7 +222,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
             }
             r[i++] = (T)it.next();
         }
-        // trim if overallocated
+        // trim if over allocated
         return (i == r.length) ? r : Arrays.copyOf(r, i);
     }
 

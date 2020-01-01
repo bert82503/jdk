@@ -20,7 +20,7 @@ package java.util;
  * <i>not</i> defined in terms of the cursor position;  they are defined to
  * operate on the last element returned by a call to {@link #next} or
  * {@link #previous()}.
- * 列表上的迭代器，允许程序员在任一方向上遍历列表，
+ * 列表迭代器，允许程序员在任一方向上遍历列表，
  * 在迭代过程中修改列表，并获取迭代器在列表中的当前位置。
  *
  * <p>This interface is a member of the
@@ -71,7 +71,7 @@ public interface ListIterator<E> extends Iterator<E> {
      * traversing the list in the reverse direction.  (In other words,
      * returns {@code true} if {@link #previous} would return an element
      * rather than throwing an exception.)
-     * 如果反向遍历列表时，这个列表迭代器含有更多的元素，则返回true。
+     * 如果反向遍历列表时，这个列表迭代器包含更多的元素，则返回true。
      *
      * @return {@code true} if the list iterator has more elements when
      *         traversing the list in the reverse direction

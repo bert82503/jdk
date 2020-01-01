@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1997, 2014, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.util;
 
@@ -31,7 +7,10 @@ import java.util.function.UnaryOperator;
  * An ordered collection (also known as a <i>sequence</i>).  The user of this
  * interface has precise control over where in the list each element is
  * inserted.  The user can access elements by their integer index (position in
- * the list), and search for elements in the list.<p>
+ * the list), and search for elements in the list.
+ * 列表，一个有序的容器(序列)。本接口的用户可以精确地控制列表中每个元素的插入位置。
+ * 用户可以通过其索引(列表中的位置)访问元素，并在列表中搜索元素。
+ * <p>
  *
  * Unlike sets, lists typically allow duplicate elements.  More formally,
  * lists typically allow pairs of elements <tt>e1</tt> and <tt>e2</tt>
@@ -39,7 +18,9 @@ import java.util.function.UnaryOperator;
  * null elements if they allow null elements at all.  It is not inconceivable
  * that someone might wish to implement a list that prohibits duplicates, by
  * throwing runtime exceptions when the user attempts to insert them, but we
- * expect this usage to be rare.<p>
+ * expect this usage to be rare.
+ * 与集合不同，列表允许重复的元素。
+ * <p>
  *
  * The <tt>List</tt> interface places additional stipulations, beyond those
  * specified in the <tt>Collection</tt> interface, on the contracts of the
@@ -107,14 +88,15 @@ import java.util.function.UnaryOperator;
  * @see AbstractSequentialList
  * @since 1.2
  */
-
 public interface List<E> extends Collection<E> {
     // Query Operations
+    // 查询操作
 
     /**
      * Returns the number of elements in this list.  If this list contains
      * more than <tt>Integer.MAX_VALUE</tt> elements, returns
      * <tt>Integer.MAX_VALUE</tt>.
+     * 列表中元素的数量。
      *
      * @return the number of elements in this list
      */
@@ -146,6 +128,7 @@ public interface List<E> extends Collection<E> {
 
     /**
      * Returns an iterator over the elements in this list in proper sequence.
+     * 元素的迭代器。
      *
      * @return an iterator over the elements in this list in proper sequence
      */
@@ -212,10 +195,12 @@ public interface List<E> extends Collection<E> {
 
 
     // Modification Operations
+    // 修改操作
 
     /**
      * Appends the specified element to the end of this list (optional
      * operation).
+     * 将指定的元素追加到这个列表的末尾(可选操作)。
      *
      * <p>Lists that support this operation may place limitations on what
      * elements may be added to this list.  In particular, some
@@ -262,6 +247,7 @@ public interface List<E> extends Collection<E> {
 
 
     // Bulk Modification Operations
+    // 批量操作
 
     /**
      * Returns <tt>true</tt> if this list contains all of the elements of the
@@ -377,6 +363,9 @@ public interface List<E> extends Collection<E> {
      */
     boolean retainAll(Collection<?> c);
 
+    // Defaultable methods
+    // 默认方法
+
     /**
      * Replaces each element of this list with the result of applying the
      * operator to that element.  Errors or runtime exceptions thrown by
@@ -408,8 +397,10 @@ public interface List<E> extends Collection<E> {
      */
     default void replaceAll(UnaryOperator<E> operator) {
         Objects.requireNonNull(operator);
+        // 元素的列表迭代器
         final ListIterator<E> li = this.listIterator();
         while (li.hasNext()) {
+            // 应用一元运算符
             li.set(operator.apply(li.next()));
         }
     }
@@ -474,8 +465,10 @@ public interface List<E> extends Collection<E> {
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     default void sort(Comparator<? super E> c) {
+        // 使用数组排序
         Object[] a = this.toArray();
         Arrays.sort(a, (Comparator) c);
+        // 元素的列表迭代器
         ListIterator<E> i = this.listIterator();
         for (Object e : a) {
             i.next();
@@ -494,6 +487,7 @@ public interface List<E> extends Collection<E> {
 
 
     // Comparison and hashing
+    // 比较和散列
 
     /**
      * Compares the specified object with this list for equality.  Returns
@@ -532,9 +526,11 @@ public interface List<E> extends Collection<E> {
 
 
     // Positional Access Operations
+    // 位置访问操作
 
     /**
      * Returns the element at the specified position in this list.
+     * 返回这个列表中指定位置的元素。
      *
      * @param index index of the element to return
      * @return the element at the specified position in this list
@@ -546,6 +542,7 @@ public interface List<E> extends Collection<E> {
     /**
      * Replaces the element at the specified position in this list with the
      * specified element (optional operation).
+     * 用指定的元素替换这个列表中指定位置的元素。
      *
      * @param index index of the element to replace
      * @param element element to be stored at the specified position
@@ -568,6 +565,7 @@ public interface List<E> extends Collection<E> {
      * (optional operation).  Shifts the element currently at that position
      * (if any) and any subsequent elements to the right (adds one to their
      * indices).
+     * 将指定的元素插入到这个列表中的指定位置(可选操作)。
      *
      * @param index index at which the specified element is to be inserted
      * @param element element to be inserted
@@ -589,6 +587,7 @@ public interface List<E> extends Collection<E> {
      * operation).  Shifts any subsequent elements to the left (subtracts one
      * from their indices).  Returns the element that was removed from the
      * list.
+     * 移除这个列表中指定位置的元素(可选操作)。
      *
      * @param index the index of the element to be removed
      * @return the element previously at the specified position
@@ -601,6 +600,7 @@ public interface List<E> extends Collection<E> {
 
 
     // Search Operations
+    // 搜索操作
 
     /**
      * Returns the index of the first occurrence of the specified element
@@ -608,6 +608,8 @@ public interface List<E> extends Collection<E> {
      * More formally, returns the lowest index <tt>i</tt> such that
      * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
      * or -1 if there is no such index.
+     * 返回指定元素在这个列表中首次出现的索引。
+     * 如果这个列表不包含该元素，则返回-1。
      *
      * @param o element to search for
      * @return the index of the first occurrence of the specified element in
@@ -627,6 +629,8 @@ public interface List<E> extends Collection<E> {
      * More formally, returns the highest index <tt>i</tt> such that
      * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
      * or -1 if there is no such index.
+     * 返回指定元素在这个列表中最后一次出现的索引。
+     * 如果这个列表不包含该元素，则返回-1。
      *
      * @param o element to search for
      * @return the index of the last occurrence of the specified element in
@@ -642,10 +646,12 @@ public interface List<E> extends Collection<E> {
 
 
     // List Iterators
+    // 列表迭代器
 
     /**
      * Returns a list iterator over the elements in this list (in proper
      * sequence).
+     * 元素的列表迭代器。
      *
      * @return a list iterator over the elements in this list (in proper
      *         sequence)
@@ -670,6 +676,7 @@ public interface List<E> extends Collection<E> {
     ListIterator<E> listIterator(int index);
 
     // View
+    // 视图(列表)
 
     /**
      * Returns a view of the portion of this list between the specified
@@ -678,7 +685,9 @@ public interface List<E> extends Collection<E> {
      * empty.)  The returned list is backed by this list, so non-structural
      * changes in the returned list are reflected in this list, and vice-versa.
      * The returned list supports all of the optional list operations supported
-     * by this list.<p>
+     * by this list.
+     * 返回这个列表中指定的fromIndex(包括)和toIndex(不包括)之间的视图。
+     * <p>
      *
      * This method eliminates the need for explicit range operations (of
      * the sort that commonly exist for arrays).  Any operation that expects
