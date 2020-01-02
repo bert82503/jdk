@@ -454,7 +454,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
     }
 
 
-    //  String conversion
+    // String conversion
     // 字符串转换
 
     /**
