@@ -1,34 +1,12 @@
-/*
- * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.util;
 
 /**
  * This class provides a skeletal implementation of the <tt>Set</tt>
  * interface to minimize the effort required to implement this
- * interface. <p>
+ * interface.
+ * 本类提供Set接口的框架实现，以最大程度地减少实现这个接口所需的工作。
+ * <p>
  *
  * The process of implementing a set by extending this class is identical
  * to that of implementing a Collection by extending AbstractCollection,
@@ -54,7 +32,6 @@ package java.util;
  * @see Set
  * @since 1.2
  */
-
 public abstract class AbstractSet<E> extends AbstractCollection<E> implements Set<E> {
     /**
      * Sole constructor.  (For invocation by subclass constructors, typically
@@ -64,6 +41,7 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
     }
 
     // Comparison and hashing
+    // 比较和散列
 
     /**
      * Compares the specified object with this set for equality.  Returns
@@ -82,16 +60,18 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
      * @param o object to be compared for equality with this set
      * @return <tt>true</tt> if the specified object is equal to this set
      */
+    @Override
     public boolean equals(Object o) {
         if (o == this)
             return true;
-
+        // 非集合类或两个元素的数量不相等
         if (!(o instanceof Set))
             return false;
         Collection<?> c = (Collection<?>) o;
         if (c.size() != size())
             return false;
         try {
+            // 等价性包含
             return containsAll(c);
         } catch (ClassCastException unused)   {
             return false;
@@ -117,9 +97,12 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
      * @see Object#equals(Object)
      * @see Set#equals(Object)
      */
+    @Override
     public int hashCode() {
         int h = 0;
+        // 元素的迭代器
         Iterator<E> i = iterator();
+        // 所有元素的散列码之和
         while (i.hasNext()) {
             E obj = i.next();
             if (obj != null)
@@ -165,10 +148,12 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
      * @see #remove(Object)
      * @see #contains(Object)
      */
+    @Override
     public boolean removeAll(Collection<?> c) {
         Objects.requireNonNull(c);
         boolean modified = false;
 
+        // 使用元素数量小的进行迭代移除，减少查找次数
         if (size() > c.size()) {
             for (Iterator<?> i = c.iterator(); i.hasNext(); )
                 modified |= remove(i.next());

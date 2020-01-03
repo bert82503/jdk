@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.util;
 
@@ -30,6 +6,8 @@ package java.util;
  * contain no pair of elements <code>e1</code> and <code>e2</code> such that
  * <code>e1.equals(e2)</code>, and at most one null element.  As implied by
  * its name, this interface models the mathematical <i>set</i> abstraction.
+ * 不包含重复元素的容器。最多包含一个null元素。
+ * 顾名思义，本接口对数学集合抽象进行建模。
  *
  * <p>The <tt>Set</tt> interface places additional stipulations, beyond those
  * inherited from the <tt>Collection</tt> interface, on the contracts of all
@@ -81,9 +59,9 @@ package java.util;
  * @see Collections#EMPTY_SET
  * @since 1.2
  */
-
 public interface Set<E> extends Collection<E> {
     // Query Operations
+    // 查询操作
 
     /**
      * Returns the number of elements in this set (its cardinality).  If this
@@ -191,6 +169,7 @@ public interface Set<E> extends Collection<E> {
 
 
     // Modification Operations
+    // 修改操作
 
     /**
      * Adds the specified element to this set if it is not already present
@@ -250,6 +229,7 @@ public interface Set<E> extends Collection<E> {
 
 
     // Bulk Operations
+    // 批量操作
 
     /**
      * Returns <tt>true</tt> if this set contains all of the elements of the
@@ -353,6 +333,7 @@ public interface Set<E> extends Collection<E> {
 
 
     // Comparison and hashing
+    // 比较和散列
 
     /**
      * Compares the specified object with this set for equality.  Returns
