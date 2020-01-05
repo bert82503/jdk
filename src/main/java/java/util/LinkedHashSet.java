@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.util;
 
@@ -36,6 +12,10 @@ package java.util;
  * is reinserted into a set <tt>s</tt> if <tt>s.add(e)</tt> is invoked when
  * <tt>s.contains(e)</tt> would return <tt>true</tt> immediately prior to
  * the invocation.)
+ * 由散列表和双向链表实现的Set接口，具有可预测的迭代顺序。
+ * 本实现与HashSet的不同之处在于，它维护贯穿其所有映射条目的双向链表。
+ * 这个双向链表定义了迭代顺序，即将元素插入到集合中的顺序(插入顺序)。
+ * 请注意，如果将元素重新插入到集合中，则插入顺序不会受到影响。
  *
  * <p>This implementation spares its clients from the unspecified, generally
  * chaotic ordering provided by {@link HashSet}, without incurring the
@@ -114,7 +94,6 @@ package java.util;
  * @see     Hashtable
  * @since   1.4
  */
-
 public class LinkedHashSet<E>
     extends HashSet<E>
     implements Set<E>, Cloneable, java.io.Serializable {
@@ -131,41 +110,46 @@ public class LinkedHashSet<E>
      *               than zero, or if the load factor is nonpositive
      */
     public LinkedHashSet(int initialCapacity, float loadFactor) {
+        // 基于散列表和双向链表实现的映射表(LinkedHashMap)
         super(initialCapacity, loadFactor, true);
     }
 
     /**
      * Constructs a new, empty linked hash set with the specified initial
-     * capacity and the default load factor (0.75).
+     * capacity and the default load factor (0.75 {@link HashMap#DEFAULT_LOAD_FACTOR}).
      *
      * @param   initialCapacity   the initial capacity of the LinkedHashSet
      * @throws  IllegalArgumentException if the initial capacity is less
      *              than zero
      */
     public LinkedHashSet(int initialCapacity) {
-        super(initialCapacity, .75f, true);
+        // 基于散列表和双向链表实现的映射表(LinkedHashMap)
+        super(initialCapacity, HashMap.DEFAULT_LOAD_FACTOR, true);
     }
 
     /**
      * Constructs a new, empty linked hash set with the default initial
-     * capacity (16) and load factor (0.75).
+     * capacity (16 {@link HashMap#DEFAULT_INITIAL_CAPACITY}) and load factor (0.75 {@link HashMap#DEFAULT_LOAD_FACTOR}).
      */
     public LinkedHashSet() {
-        super(16, .75f, true);
+        // 基于散列表和双向链表实现的映射表(LinkedHashMap)
+        super(HashMap.DEFAULT_INITIAL_CAPACITY, HashMap.DEFAULT_LOAD_FACTOR, true);
     }
 
     /**
      * Constructs a new linked hash set with the same elements as the
      * specified collection.  The linked hash set is created with an initial
      * capacity sufficient to hold the elements in the specified collection
-     * and the default load factor (0.75).
+     * and the default load factor (0.75 {@link HashMap#DEFAULT_LOAD_FACTOR}).
      *
      * @param c  the collection whose elements are to be placed into
      *           this set
      * @throws NullPointerException if the specified collection is null
      */
     public LinkedHashSet(Collection<? extends E> c) {
-        super(Math.max(2*c.size(), 11), .75f, true);
+        // 基于散列表和双向链表实现的映射表(LinkedHashMap)
+        // TODO 容器的2倍大小，为何选择与11比较最大值，而不是16？
+        super(Math.max(2*c.size(), 11), HashMap.DEFAULT_LOAD_FACTOR, true);
         addAll(c);
     }
 

@@ -82,7 +82,7 @@ public class HashSet<E>
 
     /**
      * Constructs a new, empty set; the backing <tt>HashMap</tt> instance has
-     * default initial capacity (16) and load factor (0.75).
+     * default initial capacity (16 {@link HashMap#DEFAULT_INITIAL_CAPACITY}) and load factor (0.75 {@link HashMap#DEFAULT_LOAD_FACTOR}).
      */
     public HashSet() {
         // 基于散列表实现的映射表
@@ -92,7 +92,7 @@ public class HashSet<E>
     /**
      * Constructs a new set containing the elements in the specified
      * collection.  The <tt>HashMap</tt> is created with default load factor
-     * (0.75) and an initial capacity sufficient to contain the elements in
+     * (0.75 {@link HashMap#DEFAULT_LOAD_FACTOR}) and an initial capacity sufficient to contain the elements in
      * the specified collection.
      *
      * @param c the collection whose elements are to be placed into this set
@@ -100,7 +100,7 @@ public class HashSet<E>
      */
     public HashSet(Collection<? extends E> c) {
         // 基于散列表实现的映射表
-        map = new HashMap<>(Math.max((int) (c.size()/.75f) + 1, 16));
+        map = new HashMap<>(Math.max((int) (c.size()/HashMap.DEFAULT_LOAD_FACTOR) + 1, HashMap.DEFAULT_INITIAL_CAPACITY));
         addAll(c);
     }
 
@@ -120,7 +120,7 @@ public class HashSet<E>
 
     /**
      * Constructs a new, empty set; the backing <tt>HashMap</tt> instance has
-     * the specified initial capacity and default load factor (0.75).
+     * the specified initial capacity and default load factor (0.75 {@link HashMap#DEFAULT_LOAD_FACTOR}).
      *
      * @param      initialCapacity   the initial capacity of the hash table
      * @throws     IllegalArgumentException if the initial capacity is less
@@ -145,7 +145,7 @@ public class HashSet<E>
      *             than zero, or if the load factor is nonpositive
      */
     HashSet(int initialCapacity, float loadFactor, boolean dummy) {
-        // 基于散列表和双向链表实现的映射表(LinkedHashSet)
+        // 基于散列表和双向链表实现的映射表(由LinkedHashSet使用)
         map = new LinkedHashMap<>(initialCapacity, loadFactor);
     }
 
@@ -159,7 +159,7 @@ public class HashSet<E>
      */
     @Override
     public Iterator<E> iterator() {
-        // 集合的元素存储在映射表的键中
+        // 集合的元素存储在映射表的键中(不建议遍历集合，会创建keySet对象)
         return map.keySet().iterator();
     }
 
