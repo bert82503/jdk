@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1997, 2017, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.util;
 
@@ -34,6 +10,9 @@ import sun.misc.SharedSecrets;
  * iteration order of the set; in particular, it does not guarantee that the
  * order will remain constant over time.  This class permits the <tt>null</tt>
  * element.
+ * 本类实现Set接口，由散列表支持(实际上是一个HashMap实例)。
+ * 它不保证集合的迭代顺序，特别是它不能保证顺序会随着时间的推移保持恒定。
+ * 本类允许使用null元素。
  *
  * <p>This class offers constant time performance for the basic operations
  * (<tt>add</tt>, <tt>remove</tt>, <tt>contains</tt> and <tt>size</tt>),
@@ -86,16 +65,19 @@ import sun.misc.SharedSecrets;
  * @see     HashMap
  * @since   1.2
  */
-
 public class HashSet<E>
     extends AbstractSet<E>
     implements Set<E>, Cloneable, java.io.Serializable
 {
     static final long serialVersionUID = -5024744406713321676L;
 
+    /**
+     * 底层的基于散列表实现的映射表
+     */
     private transient HashMap<E,Object> map;
 
     // Dummy value to associate with an Object in the backing Map
+    // 与底层映射表中的对象关联的虚拟值
     private static final Object PRESENT = new Object();
 
     /**
@@ -103,6 +85,7 @@ public class HashSet<E>
      * default initial capacity (16) and load factor (0.75).
      */
     public HashSet() {
+        // 基于散列表实现的映射表
         map = new HashMap<>();
     }
 
@@ -116,6 +99,7 @@ public class HashSet<E>
      * @throws NullPointerException if the specified collection is null
      */
     public HashSet(Collection<? extends E> c) {
+        // 基于散列表实现的映射表
         map = new HashMap<>(Math.max((int) (c.size()/.75f) + 1, 16));
         addAll(c);
     }
@@ -130,6 +114,7 @@ public class HashSet<E>
      *             than zero, or if the load factor is nonpositive
      */
     public HashSet(int initialCapacity, float loadFactor) {
+        // 基于散列表实现的映射表
         map = new HashMap<>(initialCapacity, loadFactor);
     }
 
@@ -142,6 +127,7 @@ public class HashSet<E>
      *             than zero
      */
     public HashSet(int initialCapacity) {
+        // 基于散列表实现的映射表
         map = new HashMap<>(initialCapacity);
     }
 
@@ -159,17 +145,21 @@ public class HashSet<E>
      *             than zero, or if the load factor is nonpositive
      */
     HashSet(int initialCapacity, float loadFactor, boolean dummy) {
+        // 基于散列表和双向链表实现的映射表(LinkedHashSet)
         map = new LinkedHashMap<>(initialCapacity, loadFactor);
     }
 
     /**
      * Returns an iterator over the elements in this set.  The elements
      * are returned in no particular order.
+     * 返回这个集合中元素的迭代器。元素以不特定的顺序返回。
      *
      * @return an Iterator over the elements in this set
      * @see ConcurrentModificationException
      */
+    @Override
     public Iterator<E> iterator() {
+        // 集合的元素存储在映射表的键中
         return map.keySet().iterator();
     }
 
@@ -200,7 +190,9 @@ public class HashSet<E>
      * @param o element whose presence in this set is to be tested
      * @return <tt>true</tt> if this set contains the specified element
      */
+    @Override
     public boolean contains(Object o) {
+        // 元素存储在映射表的键中
         return map.containsKey(o);
     }
 
@@ -216,7 +208,9 @@ public class HashSet<E>
      * @return <tt>true</tt> if this set did not already contain the specified
      * element
      */
+    @Override
     public boolean add(E e) {
+        // 元素存储在映射表的键中
         return map.put(e, PRESENT)==null;
     }
 
@@ -232,7 +226,9 @@ public class HashSet<E>
      * @param o object to be removed from this set, if present
      * @return <tt>true</tt> if the set contained the specified element
      */
+    @Override
     public boolean remove(Object o) {
+        // 元素存储在映射表的键中
         return map.remove(o)==PRESENT;
     }
 

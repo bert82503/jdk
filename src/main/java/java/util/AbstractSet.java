@@ -71,7 +71,7 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
         if (c.size() != size())
             return false;
         try {
-            // 等价性包含
+            // 相等集合，等价性包含
             return containsAll(c);
         } catch (ClassCastException unused)   {
             return false;
@@ -105,6 +105,7 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
         // 所有元素的散列码之和
         while (i.hasNext()) {
             E obj = i.next();
+            // 元素可能为null
             if (obj != null)
                 h += obj.hashCode();
         }
