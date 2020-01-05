@@ -135,7 +135,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * when overpopulated. However, since the vast majority of bins in
      * normal use are not overpopulated, checking for existence of
      * tree bins may be delayed in the course of table methods.
-     * 本映射表通常用作装箱(存储桶)的散列表，但是当存储桶太大时，它们将被转换为树结点的存储桶，
+     * 本映射表通常用作装桶(存储桶)的散列表，但是当存储桶太大时，它们将被转换为树结点的存储桶，
      * 每个存储桶的结构都与TreeMap中的结构类似。
      *
      * Tree bins (i.e., bins whose elements are all TreeNodes) are
@@ -180,6 +180,9 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * 7:    0.00000094
      * 8:    0.00000006
      * more: less than 1 in ten million
+     * 理想情况下使用随机的散列码，容器中结点分布在散列桶中的频率遵循泊松分布(Poisson distribution)，
+     * 按照泊松分布的计算公式计算出桶中元素个数和概率的对照表，可以看到链表中元素个数为8时的概率已经非常小，
+     * 再多的就更少了。所以作者在选择链表元素个数时选择了8，是根据概率统计而选择的。
      *
      * The root of a tree bin is normally its first node.  However,
      * sometimes (currently only upon Iterator.remove), the root might
@@ -240,7 +243,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * than 2 and should be at least 8 to mesh with assumptions in
      * tree removal about conversion back to plain bins upon
      * shrinkage.
-     * 使用树的箱数阈值
+     * 使用树的桶数阈值(结点的数量阈值)
      */
     static final int TREEIFY_THRESHOLD = 8;
 
@@ -248,7 +251,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * The bin count threshold for untreeifying a (split) bin during a
      * resize operation. Should be less than TREEIFY_THRESHOLD, and at
      * most 6 to mesh with shrinkage detection under removal.
-     * 不使用树的箱数阈值
+     * 不使用树的桶数阈值
      */
     static final int UNTREEIFY_THRESHOLD = 6;
 
@@ -264,7 +267,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     /**
      * Basic hash bin node, used for most entries.  (See below for
      * TreeNode subclass, and in LinkedHashMap for its Entry subclass.)
-     * 基本的散列箱结点，用于大多数条目。
+     * 基本的散列桶结点，用于大多数条目。
      * <p>
      * 数据结构：单向链表，单链表，线性链表
      */
@@ -493,6 +496,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * (16) and the default load factor (0.75).
      */
     public HashMap() {
+        // 默认的初始容量和负载因子
         this.loadFactor = DEFAULT_LOAD_FACTOR; // all other fields defaulted
     }
 
@@ -506,6 +510,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * @throws  NullPointerException if the specified map is null
      */
     public HashMap(Map<? extends K, ? extends V> m) {
+        // 默认的初始容量和负载因子
         this.loadFactor = DEFAULT_LOAD_FACTOR;
         putMapEntries(m, false);
     }
@@ -576,7 +581,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * @see #put(Object, Object)
      */
     public V get(Object key) {
-        // 基本的散列箱结点
+        // 基本的散列桶结点
         Node<K,V> e;
         // 键的散列值-插槽索引，获取键所在的插槽结点链表下的结点
         return (e = getNode(hash(key), key)) == null ? null : e.value;
@@ -676,7 +681,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
             else {
                 for (int binCount = 0; ; ++binCount) {
                     if ((e = p.next) == null) {
-                        // 在单向链表的表头插入新结点
+                        // 在单向链表的表尾插入新结点
                         p.next = newNode(hash, key, value, null);
                         if (binCount >= TREEIFY_THRESHOLD - 1) // -1 for 1st
                             treeifyBin(tab, hash);
@@ -1822,7 +1827,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
         return new Node<>(p.hash, p.key, p.value, next);
     }
 
-    // Create a tree bin node 创建树箱节点
+    // Create a tree bin node 创建树桶节点
     TreeNode<K,V> newTreeNode(int hash, K key, V value, Node<K,V> next) {
         return new TreeNode<>(hash, key, value, next);
     }
@@ -1846,6 +1851,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     }
 
     // Callbacks to allow LinkedHashMap post-actions
+    // 允许后置处理的回调
     void afterNodeAccess(Node<K,V> p) { }
     void afterNodeInsertion(boolean evict) { }
     void afterNodeRemoval(Node<K,V> p) { }
@@ -1865,15 +1871,15 @@ public class HashMap<K,V> extends AbstractMap<K,V>
 
     /* ------------------------------------------------------------ */
     // Tree bins
-    // 树箱
+    // 树桶
 
     /**
      * Entry for Tree bins. Extends LinkedHashMap.Entry (which in turn
      * extends Node) so can be used as extension of either regular or
      * linked node.
-     * 树箱条目，可以用作常规或链表结点的扩展。
+     * 树桶条目，可以用作常规或链表结点的扩展。
      * <p>
-     * 数据结构：红黑树，一种自平衡二叉查找树，典型的用途是实现关联数组
+     * 数据结构：红黑树，一种自平衡的二叉查找树，典型的用途是实现关联数组
      */
     static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
         /**
@@ -1906,6 +1912,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
          * 返回包含这个结点的树的根结点。
          */
         final TreeNode<K,V> root() {
+            // 依次向上遍历父亲结点，直到父亲结点为null，即为根结点
             for (TreeNode<K,V> r = this, p;;) {
                 if ((p = r.parent) == null)
                     return r;

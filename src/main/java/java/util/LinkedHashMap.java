@@ -168,7 +168,7 @@ public class LinkedHashMap<K,V>
 
     /**
      * HashMap.Node subclass for normal LinkedHashMap entries.
-     * 散列箱结点。
+     * 散列桶结点。
      * <p>
      * 数据结构：双向链表，双链表，双向循环链表
      */
