@@ -12,7 +12,7 @@ package java.util;
  * {@code lowerKey}, {@code floorKey}, {@code ceilingKey}, and
  * {@code higherKey} return only the associated keys. All of these
  * methods are designed for locating, not traversing entries.
- * 使用导航方法扩展的有序的映射表，返回给定搜索目标的最接近匹配项。
+ * 使用导航方法扩展的有序的映射表，返回给定搜索目标的最接近匹配项。(一致性散列算法)
  * 所有这些方法都是为查找而不是遍历条目而设计的。
  *
  * <p>A {@code NavigableMap} may be accessed and traversed in either
@@ -212,6 +212,8 @@ public interface NavigableMap<K,V> extends SortedMap<K,V> {
      *         or {@code null} if this map is empty
      */
     Map.Entry<K,V> pollLastEntry();
+
+    // 降序
 
     /**
      * Returns a reverse order view of the mappings contained in this map.

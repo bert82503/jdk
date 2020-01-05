@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1998, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.util;
 
@@ -33,6 +9,9 @@ package java.util;
  * ascending element order. Several additional operations are provided
  * to take advantage of the ordering.  (This interface is the set
  * analogue of {@link SortedMap}.)
+ * 进一步提供其元素的总体排序的集合。
+ * 元素使用其自然顺序或通过在排序集合创建时提供的比较器进行排序。
+ * 集合的迭代器将以升序顺序遍历集合。
  *
  * <p>All elements inserted into a sorted set must implement the <tt>Comparable</tt>
  * interface (or be accepted by the specified comparator).  Furthermore, all
@@ -104,12 +83,13 @@ package java.util;
  * @see ClassCastException
  * @since 1.2
  */
-
 public interface SortedSet<E> extends Set<E> {
     /**
      * Returns the comparator used to order the elements in this set,
      * or <tt>null</tt> if this set uses the {@linkplain Comparable
      * natural ordering} of its elements.
+     * 返回用于对这个集合中的元素进行排序的比较器；
+     * 如果这个集合使用其元素的自然排序，则返回null。
      *
      * @return the comparator used to order the elements in this set,
      *         or <tt>null</tt> if this set uses the natural ordering
@@ -125,6 +105,7 @@ public interface SortedSet<E> extends Set<E> {
      * by this set, so changes in the returned set are reflected in
      * this set, and vice-versa.  The returned set supports all
      * optional set operations that this set supports.
+     * 返回这个集合部分的视图，其元素范围从fromElement(包括)到toElement(不包括)。
      *
      * <p>The returned set will throw an <tt>IllegalArgumentException</tt>
      * on an attempt to insert an element outside its range.
@@ -156,6 +137,7 @@ public interface SortedSet<E> extends Set<E> {
      * backed by this set, so changes in the returned set are
      * reflected in this set, and vice-versa.  The returned set
      * supports all optional set operations that this set supports.
+     * 元素严格小于toElement
      *
      * <p>The returned set will throw an <tt>IllegalArgumentException</tt>
      * on an attempt to insert an element outside its range.
@@ -183,6 +165,7 @@ public interface SortedSet<E> extends Set<E> {
      * set is backed by this set, so changes in the returned set are
      * reflected in this set, and vice-versa.  The returned set
      * supports all optional set operations that this set supports.
+     * 元素大于或等于fromElement
      *
      * <p>The returned set will throw an <tt>IllegalArgumentException</tt>
      * on an attempt to insert an element outside its range.
@@ -206,6 +189,7 @@ public interface SortedSet<E> extends Set<E> {
 
     /**
      * Returns the first (lowest) element currently in this set.
+     * 返回当前在这个集合中的第一个(最年轻)元素。(剔除策略)
      *
      * @return the first (lowest) element currently in this set
      * @throws NoSuchElementException if this set is empty
@@ -214,6 +198,7 @@ public interface SortedSet<E> extends Set<E> {
 
     /**
      * Returns the last (highest) element currently in this set.
+     * 返回当前在这个集合中的最后一个(最年长)元素。(剔除策略)
      *
      * @return the last (highest) element currently in this set
      * @throws NoSuchElementException if this set is empty

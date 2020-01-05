@@ -1,37 +1,3 @@
-/*
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
-
-/*
- *
- *
- *
- *
- *
- * Written by Doug Lea and Josh Bloch with assistance from members of JCP
- * JSR-166 Expert Group and released to the public domain, as explained at
- * http://creativecommons.org/publicdomain/zero/1.0/
- */
 
 package java.util;
 
@@ -55,6 +21,7 @@ package java.util;
  * whether lower and upper bounds are inclusive versus exclusive.
  * Subsets of any {@code NavigableSet} must implement the {@code
  * NavigableSet} interface.
+ * 使用导航方法扩展的有序的集合，报告给定搜索目标的最接近匹配项。(一致性散列算法)
  *
  * <p> The return values of navigation methods may be ambiguous in
  * implementations that permit {@code null} elements. However, even
@@ -87,6 +54,7 @@ public interface NavigableSet<E> extends SortedSet<E> {
     /**
      * Returns the greatest element in this set strictly less than the
      * given element, or {@code null} if there is no such element.
+     * 返回这个集合中严格小于给定元素的最大元素。
      *
      * @param e the value to match
      * @return the greatest element less than {@code e},
@@ -101,6 +69,7 @@ public interface NavigableSet<E> extends SortedSet<E> {
     /**
      * Returns the greatest element in this set less than or equal to
      * the given element, or {@code null} if there is no such element.
+     * 返回这个集合中小于或等于给定元素的最大元素。
      *
      * @param e the value to match
      * @return the greatest element less than or equal to {@code e},
@@ -115,6 +84,7 @@ public interface NavigableSet<E> extends SortedSet<E> {
     /**
      * Returns the least element in this set greater than or equal to
      * the given element, or {@code null} if there is no such element.
+     * 返回这个集合中大于或等于给定元素的最小元素。
      *
      * @param e the value to match
      * @return the least element greater than or equal to {@code e},
@@ -129,6 +99,7 @@ public interface NavigableSet<E> extends SortedSet<E> {
     /**
      * Returns the least element in this set strictly greater than the
      * given element, or {@code null} if there is no such element.
+     * 返回这个集合中严格大于给定元素的最小元素。
      *
      * @param e the value to match
      * @return the least element greater than {@code e},
@@ -143,6 +114,7 @@ public interface NavigableSet<E> extends SortedSet<E> {
     /**
      * Retrieves and removes the first (lowest) element,
      * or returns {@code null} if this set is empty.
+     * 检索并移除第一个(最年轻)的元素。
      *
      * @return the first element, or {@code null} if this set is empty
      */
@@ -151,6 +123,7 @@ public interface NavigableSet<E> extends SortedSet<E> {
     /**
      * Retrieves and removes the last (highest) element,
      * or returns {@code null} if this set is empty.
+     * 检索并移除最后一个(最年长)的元素。
      *
      * @return the last element, or {@code null} if this set is empty
      */
@@ -158,10 +131,13 @@ public interface NavigableSet<E> extends SortedSet<E> {
 
     /**
      * Returns an iterator over the elements in this set, in ascending order.
+     * 升序排序
      *
      * @return an iterator over the elements in this set, in ascending order
      */
     Iterator<E> iterator();
+
+    // 降序
 
     /**
      * Returns a reverse order view of the elements contained in this set.
