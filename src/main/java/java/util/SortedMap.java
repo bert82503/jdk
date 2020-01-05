@@ -187,6 +187,7 @@ public interface SortedMap<K,V> extends Map<K,V> {
 
     /**
      * Returns the first (lowest) key currently in this map.
+     * 返回这个映射表中当前的第一个(最年轻)键。
      *
      * @return the first (lowest) key currently in this map
      * @throws NoSuchElementException if this map is empty
@@ -195,6 +196,7 @@ public interface SortedMap<K,V> extends Map<K,V> {
 
     /**
      * Returns the last (highest) key currently in this map.
+     * 返回这个映射表中当前的最后一个(最年长)键。
      *
      * @return the last (highest) key currently in this map
      * @throws NoSuchElementException if this map is empty

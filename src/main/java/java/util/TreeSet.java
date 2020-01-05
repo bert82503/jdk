@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1998, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.util;
 
@@ -30,9 +6,12 @@ package java.util;
  * The elements are ordered using their {@linkplain Comparable natural
  * ordering}, or by a {@link Comparator} provided at set creation
  * time, depending on which constructor is used.
+ * 基于TreeMap的NavigableSet实现。
+ * 元素使用其自然顺序进行排序，或通过在创建时设置提供的比较器进行排序，具体取决于所使用的构造函数。
  *
  * <p>This implementation provides guaranteed log(n) time cost for the basic
  * operations ({@code add}, {@code remove} and {@code contains}).
+ * 本实现为基本操作提供了保证的log(n)时间成本。
  *
  * <p>Note that the ordering maintained by a set (whether or not an explicit
  * comparator is provided) must be <i>consistent with equals</i> if it is to
@@ -88,16 +67,17 @@ package java.util;
  * @see     TreeMap
  * @since   1.2
  */
-
 public class TreeSet<E> extends AbstractSet<E>
     implements NavigableSet<E>, Cloneable, java.io.Serializable
 {
     /**
      * The backing map.
+     * 底层的可导航的映射表(元素存储在映射表的键中)
      */
     private transient NavigableMap<E,Object> m;
 
     // Dummy value to associate with an Object in the backing Map
+    // 与底层映射表中的对象关联的虚拟值
     private static final Object PRESENT = new Object();
 
     /**
@@ -121,6 +101,7 @@ public class TreeSet<E> extends AbstractSet<E>
      * {@code ClassCastException}.
      */
     public TreeSet() {
+        // 基于红黑树实现的可导航的映射表(TreeMap)
         this(new TreeMap<E,Object>());
     }
 
@@ -138,6 +119,7 @@ public class TreeSet<E> extends AbstractSet<E>
      *        ordering} of the elements will be used.
      */
     public TreeSet(Comparator<? super E> comparator) {
+        // 基于红黑树实现的可导航的映射表(TreeMap)
         this(new TreeMap<>(comparator));
     }
 
@@ -156,6 +138,7 @@ public class TreeSet<E> extends AbstractSet<E>
      * @throws NullPointerException if the specified collection is null
      */
     public TreeSet(Collection<? extends E> c) {
+        // 基于红黑树实现的可导航的映射表(TreeMap)
         this();
         addAll(c);
     }
@@ -168,6 +151,7 @@ public class TreeSet<E> extends AbstractSet<E>
      * @throws NullPointerException if the specified sorted set is null
      */
     public TreeSet(SortedSet<E> s) {
+        // 基于红黑树实现的可导航的映射表(TreeMap)
         this(s.comparator());
         addAll(s);
     }
@@ -177,9 +161,13 @@ public class TreeSet<E> extends AbstractSet<E>
      *
      * @return an iterator over the elements in this set in ascending order
      */
+    @Override
     public Iterator<E> iterator() {
+        // 可导航的键集合的迭代器(不建议遍历集合，会创建navigableKeySetView对象)
         return m.navigableKeySet().iterator();
     }
+
+    // 降序
 
     /**
      * Returns an iterator over the elements in this set in descending order.
@@ -230,7 +218,9 @@ public class TreeSet<E> extends AbstractSet<E>
      *         and this set uses natural ordering, or its comparator
      *         does not permit null elements
      */
+    @Override
     public boolean contains(Object o) {
+        // 元素存储在映射表的键中
         return m.containsKey(o);
     }
 
@@ -251,7 +241,9 @@ public class TreeSet<E> extends AbstractSet<E>
      *         and this set uses natural ordering, or its comparator
      *         does not permit null elements
      */
+    @Override
     public boolean add(E e) {
+        // 元素存储在映射表的键中
         return m.put(e, PRESENT)==null;
     }
 
@@ -272,7 +264,9 @@ public class TreeSet<E> extends AbstractSet<E>
      *         and this set uses natural ordering, or its comparator
      *         does not permit null elements
      */
+    @Override
     public boolean remove(Object o) {
+        // 元素存储在映射表的键中
         return m.remove(o)==PRESENT;
     }
 
@@ -295,6 +289,7 @@ public class TreeSet<E> extends AbstractSet<E>
      *         if any element is null and this set uses natural ordering, or
      *         its comparator does not permit null elements
      */
+    @Override
     public  boolean addAll(Collection<? extends E> c) {
         // Use linear-time version if applicable
         if (m.size()==0 && c.size() > 0 &&
@@ -320,8 +315,9 @@ public class TreeSet<E> extends AbstractSet<E>
      * @throws IllegalArgumentException {@inheritDoc}
      * @since 1.6
      */
+    @Override
     public NavigableSet<E> subSet(E fromElement, boolean fromInclusive,
-                                  E toElement,   boolean toInclusive) {
+                                  E toElement, boolean toInclusive) {
         return new TreeSet<>(m.subMap(fromElement, fromInclusive,
                                        toElement,   toInclusive));
     }
@@ -334,6 +330,7 @@ public class TreeSet<E> extends AbstractSet<E>
      * @throws IllegalArgumentException {@inheritDoc}
      * @since 1.6
      */
+    @Override
     public NavigableSet<E> headSet(E toElement, boolean inclusive) {
         return new TreeSet<>(m.headMap(toElement, inclusive));
     }
@@ -346,6 +343,7 @@ public class TreeSet<E> extends AbstractSet<E>
      * @throws IllegalArgumentException {@inheritDoc}
      * @since 1.6
      */
+    @Override
     public NavigableSet<E> tailSet(E fromElement, boolean inclusive) {
         return new TreeSet<>(m.tailMap(fromElement, inclusive));
     }
@@ -357,6 +355,7 @@ public class TreeSet<E> extends AbstractSet<E>
      *         or its comparator does not permit null elements
      * @throws IllegalArgumentException {@inheritDoc}
      */
+    @Override
     public SortedSet<E> subSet(E fromElement, E toElement) {
         return subSet(fromElement, true, toElement, false);
     }
@@ -368,6 +367,7 @@ public class TreeSet<E> extends AbstractSet<E>
      *         not permit null elements
      * @throws IllegalArgumentException {@inheritDoc}
      */
+    @Override
     public SortedSet<E> headSet(E toElement) {
         return headSet(toElement, false);
     }
@@ -379,10 +379,12 @@ public class TreeSet<E> extends AbstractSet<E>
      *         not permit null elements
      * @throws IllegalArgumentException {@inheritDoc}
      */
+    @Override
     public SortedSet<E> tailSet(E fromElement) {
         return tailSet(fromElement, true);
     }
 
+    @Override
     public Comparator<? super E> comparator() {
         return m.comparator();
     }
@@ -390,18 +392,25 @@ public class TreeSet<E> extends AbstractSet<E>
     /**
      * @throws NoSuchElementException {@inheritDoc}
      */
+    @Override
     public E first() {
+        // 元素存储在映射表的键中
+        // 返回这个映射表中当前的第一个(最年轻)键
         return m.firstKey();
     }
 
     /**
      * @throws NoSuchElementException {@inheritDoc}
      */
+    @Override
     public E last() {
+        // 元素存储在映射表的键中
+        // 返回这个映射表中当前的最后一个(最年长)键
         return m.lastKey();
     }
 
     // NavigableSet API methods
+    // 可导航的集合接口方法
 
     /**
      * @throws ClassCastException {@inheritDoc}
@@ -410,7 +419,9 @@ public class TreeSet<E> extends AbstractSet<E>
      *         does not permit null elements
      * @since 1.6
      */
+    @Override
     public E lower(E e) {
+        // 元素存储在映射表的键中
         return m.lowerKey(e);
     }
 
@@ -421,7 +432,9 @@ public class TreeSet<E> extends AbstractSet<E>
      *         does not permit null elements
      * @since 1.6
      */
+    @Override
     public E floor(E e) {
+        // 元素存储在映射表的键中
         return m.floorKey(e);
     }
 
@@ -432,7 +445,9 @@ public class TreeSet<E> extends AbstractSet<E>
      *         does not permit null elements
      * @since 1.6
      */
+    @Override
     public E ceiling(E e) {
+        // 元素存储在映射表的键中
         return m.ceilingKey(e);
     }
 
@@ -443,23 +458,29 @@ public class TreeSet<E> extends AbstractSet<E>
      *         does not permit null elements
      * @since 1.6
      */
+    @Override
     public E higher(E e) {
+        // 元素存储在映射表的键中
         return m.higherKey(e);
     }
 
     /**
      * @since 1.6
      */
+    @Override
     public E pollFirst() {
         Map.Entry<E,?> e = m.pollFirstEntry();
+        // 元素存储在映射表的键中
         return (e == null) ? null : e.getKey();
     }
 
     /**
      * @since 1.6
      */
+    @Override
     public E pollLast() {
         Map.Entry<E,?> e = m.pollLastEntry();
+        // 元素存储在映射表的键中
         return (e == null) ? null : e.getKey();
     }
 

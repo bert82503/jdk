@@ -72,7 +72,7 @@ public class HashSet<E>
     static final long serialVersionUID = -5024744406713321676L;
 
     /**
-     * 底层的基于散列表实现的映射表
+     * 底层的基于散列表实现的映射表(元素存储在映射表的键中)
      */
     private transient HashMap<E,Object> map;
 
