@@ -1,46 +1,12 @@
-/*
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
-
-/*
- *
- *
- *
- *
- *
- * Written by Doug Lea with assistance from members of JCP JSR-166
- * Expert Group and released to the public domain, as explained at
- * http://creativecommons.org/publicdomain/zero/1.0/
- */
 
 package java.util.concurrent;
+
 import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.NavigableMap;
 import java.util.NavigableSet;
 import java.util.Set;
 import java.util.SortedSet;
@@ -52,14 +18,19 @@ import java.util.Spliterator;
  * sorted according to their {@linkplain Comparable natural ordering},
  * or by a {@link Comparator} provided at set creation time, depending
  * on which constructor is used.
+ * 基于ConcurrentSkipListMap实现的可伸缩的并发的NavigableSet实现。
+ * 集合中的元素根据其自然顺序或在集合创建时提供的比较器进行排序，具体取决于所使用的构造函数。
  *
  * <p>This implementation provides expected average <i>log(n)</i> time
  * cost for the {@code contains}, {@code add}, and {@code remove}
  * operations and their variants.  Insertion, removal, and access
  * operations safely execute concurrently by multiple threads.
+ * 本实现为某些操作及其变体提供了预期的平均log(n)时间成本。
+ * 插入，移除，更新和访问操作可以安全地由多个线程同时执行。
  *
  * <p>Iterators and spliterators are
  * <a href="package-summary.html#Weakly"><i>weakly consistent</i></a>.
+ * 迭代器和分路器是弱一致性的。
  *
  * <p>Ascending ordered views and their iterators are faster than
  * descending ones.
@@ -101,6 +72,7 @@ public class ConcurrentSkipListSet<E>
      * The underlying map. Uses Boolean.TRUE as value for each
      * element.  This field is declared final for the sake of thread
      * safety, which entails some ugliness in clone().
+     * 基础的并发可导航的映射表
      */
     private final ConcurrentNavigableMap<E,Object> m;
 
@@ -109,6 +81,7 @@ public class ConcurrentSkipListSet<E>
      * their {@linkplain Comparable natural ordering}.
      */
     public ConcurrentSkipListSet() {
+        // 并发跳跃表的映射表
         m = new ConcurrentSkipListMap<E,Object>();
     }
 
@@ -121,6 +94,7 @@ public class ConcurrentSkipListSet<E>
      *        ordering} of the elements will be used.
      */
     public ConcurrentSkipListSet(Comparator<? super E> comparator) {
+        // 并发跳跃表的映射表
         m = new ConcurrentSkipListMap<E,Object>(comparator);
     }
 
@@ -136,6 +110,7 @@ public class ConcurrentSkipListSet<E>
      *         of its elements are null
      */
     public ConcurrentSkipListSet(Collection<? extends E> c) {
+        // 并发跳跃表的映射表
         m = new ConcurrentSkipListMap<E,Object>();
         addAll(c);
     }
@@ -149,6 +124,7 @@ public class ConcurrentSkipListSet<E>
      *         of its elements are null
      */
     public ConcurrentSkipListSet(SortedSet<E> s) {
+        // 并发跳跃表的映射表
         m = new ConcurrentSkipListMap<E,Object>(s.comparator());
         addAll(s);
     }
@@ -179,6 +155,7 @@ public class ConcurrentSkipListSet<E>
     }
 
     /* ---------------- Set operations -------------- */
+    // 集合操作
 
     /**
      * Returns the number of elements in this set.  If this set
@@ -219,7 +196,9 @@ public class ConcurrentSkipListSet<E>
      *         compared with the elements currently in this set
      * @throws NullPointerException if the specified element is null
      */
+    @Override
     public boolean contains(Object o) {
+        // 元素存储在映射表的键中
         return m.containsKey(o);
     }
 
@@ -237,7 +216,9 @@ public class ConcurrentSkipListSet<E>
      *         with the elements currently in this set
      * @throws NullPointerException if the specified element is null
      */
+    @Override
     public boolean add(E e) {
+        // 元素存储在映射表的键中
         return m.putIfAbsent(e, Boolean.TRUE) == null;
     }
 
@@ -255,6 +236,7 @@ public class ConcurrentSkipListSet<E>
      *         with the elements currently in this set
      * @throws NullPointerException if the specified element is null
      */
+    @Override
     public boolean remove(Object o) {
         return m.remove(o, Boolean.TRUE);
     }
@@ -271,7 +253,9 @@ public class ConcurrentSkipListSet<E>
      *
      * @return an iterator over the elements in this set in ascending order
      */
+    @Override
     public Iterator<E> iterator() {
+        // 可导航的键集合的迭代器
         return m.navigableKeySet().iterator();
     }
 
@@ -299,6 +283,7 @@ public class ConcurrentSkipListSet<E>
      * @param o the object to be compared for equality with this set
      * @return {@code true} if the specified object is equal to this set
      */
+    @Override
     public boolean equals(Object o) {
         // Override AbstractSet version to avoid calling size()
         if (o == this)
@@ -307,6 +292,7 @@ public class ConcurrentSkipListSet<E>
             return false;
         Collection<?> c = (Collection<?>) o;
         try {
+            // 集合互相包含
             return containsAll(c) && c.containsAll(this);
         } catch (ClassCastException unused) {
             return false;
@@ -384,7 +370,7 @@ public class ConcurrentSkipListSet<E>
 
     /* ---------------- SortedSet operations -------------- */
 
-
+    @Override
     public Comparator<? super E> comparator() {
         return m.comparator();
     }
@@ -511,11 +497,20 @@ public class ConcurrentSkipListSet<E>
         UNSAFE.putObjectVolatile(this, mapOffset, map);
     }
 
+    // Unsafe mechanics
+    // 非安全机制
+    /**
+     * 非安全的对象
+     */
     private static final sun.misc.Unsafe UNSAFE;
+    /**
+     * 基础的并发可导航的映射表的偏移量
+     */
     private static final long mapOffset;
     static {
         try {
             UNSAFE = sun.misc.Unsafe.getUnsafe();
+            // 并发跳跃表的集合的类型对象
             Class<?> k = ConcurrentSkipListSet.class;
             mapOffset = UNSAFE.objectFieldOffset
                 (k.getDeclaredField("m"));
