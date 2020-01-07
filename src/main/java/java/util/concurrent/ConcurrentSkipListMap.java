@@ -1,39 +1,6 @@
-/*
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
-
-/*
- *
- *
- *
- *
- *
- * Written by Doug Lea with assistance from members of JCP JSR-166
- * Expert Group and released to the public domain, as explained at
- * http://creativecommons.org/publicdomain/zero/1.0/
- */
 
 package java.util.concurrent;
+
 import java.io.Serializable;
 import java.util.AbstractCollection;
 import java.util.AbstractMap;
@@ -45,18 +12,14 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.NavigableMap;
 import java.util.NavigableSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.SortedMap;
-import java.util.SortedSet;
 import java.util.Spliterator;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ConcurrentNavigableMap;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 /**
@@ -64,6 +27,8 @@ import java.util.function.Function;
  * The map is sorted according to the {@linkplain Comparable natural
  * ordering} of its keys, or by a {@link Comparator} provided at map
  * creation time, depending on which constructor is used.
+ * 可伸缩的并发的ConcurrentNavigableMap实现。
+ * 根据映射键的自然顺序或在映射表创建时提供的比较器对映射表进行排序，具体取决于所使用的构造函数。
  *
  * <p>This class implements a concurrent variant of <a
  * href="http://en.wikipedia.org/wiki/Skip_list" target="_top">SkipLists</a>
@@ -72,9 +37,12 @@ import java.util.function.Function;
  * {@code remove} operations and their variants.  Insertion, removal,
  * update, and access operations safely execute concurrently by
  * multiple threads.
+ * 本类实现了跳跃表的并发变体，从而为某些操作及其变体提供了预期的平均log(n)时间成本。
+ * 插入，移除，更新和访问操作可以安全地由多个线程同时执行。
  *
  * <p>Iterators and spliterators are
  * <a href="package-summary.html#Weakly"><i>weakly consistent</i></a>.
+ * 迭代器和分路器是弱一致性的。
  *
  * <p>Ascending key ordered views and their iterators are faster than
  * descending ones.
@@ -96,6 +64,10 @@ import java.util.function.Function;
  * <em>not</em> guaranteed to be performed atomically. For example, an
  * iterator operating concurrently with a {@code putAll} operation
  * might view only some of the added elements.
+ * 注意，与大多数集合不同，size方法不是常量时间操作。
+ * 因为这些映射表的异步性质，确定元素的当前数量需要对元素进行遍历。
+ * 因此，如果在遍历期间修改了这个容器，则可能会报告不准确的结果。
+ * 此外，不能保证批量操作是原子执行的。
  *
  * <p>This class and its views and iterators implement all of the
  * <em>optional</em> methods of the {@link Map} and {@link Iterator}
@@ -123,7 +95,12 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
      * structure: 1) Array based implementations seem to encounter
      * more complexity and overhead 2) We can use cheaper algorithms
      * for the heavily-traversed index lists than can be used for the
-     * base lists.  Here's a picture of some of the basics for a
+     * base lists.
+     * 本类实现了树状的二维链接的跳跃表，其中索引级别在与保存数据的基本结点不同的结点中表示。
+     * 采取这种方法而不是基于数组的结构有两个原因：
+     * 1）基于数组的实现似乎遇到了更多的复杂性和开销；
+     * 2）我们可以为遍历索引链表使用比用于基础索引更便宜的算法列表。
+     * Here's a picture of some of the basics for a
      * possible list with 2 levels of index:
      *
      * Head nodes          Index nodes
@@ -153,6 +130,10 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
      * insertions, and when traversing to keep track of triples
      * (predecessor, node, successor) in order to detect when and how
      * to unlink these deleted nodes.
+     * 基本链表使用HM链接有序集算法的变体。
+     * 请参见Tim Harris的"非阻塞链表的实用实现"和Maged Michael的"高性能动态无锁散列表和基于链表的集合"。
+     * 这些链表中的基本思想是在删除时标记已删除节点的"下一个"指针，以避免与并发插入发生冲突，
+     * 并且在遍历以追踪三元组(前驱，结点，后继)时进行标记，以检测何时以及如何取消链接这些已删除的结点。
      *
      * Rather than using mark-bits to mark list deletions (which can
      * be slow and space-intensive using AtomicMarkedReference), nodes
@@ -359,11 +340,13 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
 
     /**
      * Special value used to identify base-level header
+     * 用于标识基本级别表头的特殊值
      */
     private static final Object BASE_HEADER = new Object();
 
     /**
      * The topmost head index of the skiplist.
+     * 跳跃表的最高头索引。
      */
     private transient volatile HeadIndex<K,V> head;
 
@@ -371,6 +354,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
      * The comparator used to maintain order in this map, or null if
      * using natural ordering.  (Non-private to simplify access in
      * nested classes.)
+     * 比较器用于维护这个映射表中的顺序。
      * @serial
      */
     final Comparator<? super K> comparator;
@@ -388,24 +372,28 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
      * Initializes or resets state. Needed by constructors, clone,
      * clear, readObject. and ConcurrentSkipListSet.clone.
      * (Note that comparator must be separately initialized.)
+     * 初始化或重置状态。
      */
     private void initialize() {
         keySet = null;
         entrySet = null;
         values = null;
         descendingMap = null;
+        // 跳跃表的最高头索引
         head = new HeadIndex<K,V>(new Node<K,V>(null, BASE_HEADER, null),
                                   null, null, 1);
     }
 
     /**
      * compareAndSet head node
+     * CAS比较并设置头结点
      */
     private boolean casHead(HeadIndex<K,V> cmp, HeadIndex<K,V> val) {
         return UNSAFE.compareAndSwapObject(this, headOffset, cmp, val);
     }
 
     /* ---------------- Nodes -------------- */
+    // 结点
 
     /**
      * Nodes hold keys and values, and are singly linked in sorted
@@ -413,10 +401,25 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
      * headed by a dummy node accessible as head.node. The value field
      * is declared only as Object because it takes special non-V
      * values for marker and header nodes.
+     * 结点保存键和值，并按排序顺序单独链接，可能与某些中间的标记结点链接在一起。
+     * 这个链表可作为头结点访问的虚拟节点为首。
+     * 值字段仅声明为对象，因为它为标记和表头结点采用特殊的非V值。
+     * <p>
+     * 数据结构：单向链表，单链表，线性链表
      */
     static final class Node<K,V> {
+        /**
+         * 结点的键，不可修改
+         */
         final K key;
+        // 并发可修改(volatile)
+        /**
+         * 结点的值，并发可修改
+         */
         volatile Object value;
+        /**
+         * 指向下一个结点，并发可修改
+         */
         volatile Node<K,V> next;
 
         /**
@@ -443,6 +446,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
 
         /**
          * compareAndSet value field
+         * CAS比较并设置值的字段
          */
         boolean casValue(Object cmp, Object val) {
             return UNSAFE.compareAndSwapObject(this, valueOffset, cmp, val);
@@ -450,6 +454,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
 
         /**
          * compareAndSet next field
+         * CAS比较并设置下一个结点的字段
          */
         boolean casNext(Node<K,V> cmp, Node<K,V> val) {
             return UNSAFE.compareAndSwapObject(this, nextOffset, cmp, val);
@@ -461,6 +466,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
          * because callers will have already read value field and need
          * to use that read (not another done here) and so directly
          * test if value points to node.
+         * 如果这个结点是标记，则返回true。
          *
          * @return true if this node is a marker node
          */
@@ -470,6 +476,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
 
         /**
          * Returns true if this node is the header of base-level list.
+         * 如果这个结点是基本级别的链表的头结点，则返回true。
          * @return true if this node is header node
          */
         boolean isBaseHeader() {
@@ -478,6 +485,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
 
         /**
          * Tries to append a deletion marker to this node.
+         * 尝试将删除标记附加到这个结点。
          * @param f the assumed current successor of this node
          * @return true if successful
          */
@@ -534,14 +542,25 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
         }
 
         // UNSAFE mechanics
+        // 非安全机制
 
+        /**
+         * 非安全的对象
+         */
         private static final sun.misc.Unsafe UNSAFE;
+        /**
+         * 结点的值的偏移量
+         */
         private static final long valueOffset;
+        /**
+         * 下一个结点的偏移量
+         */
         private static final long nextOffset;
 
         static {
             try {
                 UNSAFE = sun.misc.Unsafe.getUnsafe();
+                // 结点的类型对象
                 Class<?> k = Node.class;
                 valueOffset = UNSAFE.objectFieldOffset
                     (k.getDeclaredField("value"));
@@ -554,6 +573,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     }
 
     /* ---------------- Indexing -------------- */
+    // 索引
 
     /**
      * Index nodes represent the levels of the skip list.  Note that
@@ -561,10 +581,22 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
      * fields, they have different types and are handled in different
      * ways, that can't nicely be captured by placing field in a
      * shared abstract class.
+     * 索引结点表示跳跃表的级别。
+     * 请注意，即使结点和索引都具有前驱结点字段，但是它们具有不同的类型并且以不同的方式处理，
+     * 因此无法通过将字段放在共享的抽象类中来很好地捕获。
      */
     static class Index<K,V> {
+        /**
+         * 当前的索引结点
+         */
         final Node<K,V> node;
+        /**
+         * 向下级别的索引
+         */
         final Index<K,V> down;
+        /**
+         * 向右级别的索引
+         */
         volatile Index<K,V> right;
 
         /**
@@ -578,6 +610,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
 
         /**
          * compareAndSet right field
+         * CAS比较并设置向右级别的索引的字段
          */
         final boolean casRight(Index<K,V> cmp, Index<K,V> val) {
             return UNSAFE.compareAndSwapObject(this, rightOffset, cmp, val);
@@ -585,6 +618,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
 
         /**
          * Returns true if the node this indexes has been deleted.
+         * 如果是已删除的索引的结点，则返回true。
          * @return true if indexed node is known to be deleted
          */
         final boolean indexesDeletedNode() {
@@ -595,6 +629,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
          * Tries to CAS newSucc as successor.  To minimize races with
          * unlink that may lose this index node, if the node being
          * indexed is known to be deleted, it doesn't try to link in.
+         * 尝试以CAS newSucc索引作为后继者。
          * @param succ the expected current successor
          * @param newSucc the new successor
          * @return true if successful
@@ -609,6 +644,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
          * Tries to CAS right field to skip over apparent successor
          * succ.  Fails (forcing a retraversal by caller) if this node
          * is known to be deleted.
+         * 尝试访问CAS向右级别的索引的字段以跳过明显的后继成功者。
          * @param succ the expected current successor
          * @return true if successful
          */
@@ -617,11 +653,19 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
         }
 
         // Unsafe mechanics
+        // 非安全机制
+        /**
+         * 非安全的对象
+         */
         private static final sun.misc.Unsafe UNSAFE;
+        /**
+         * 向右级别的索引的偏移量
+         */
         private static final long rightOffset;
         static {
             try {
                 UNSAFE = sun.misc.Unsafe.getUnsafe();
+                // 索引结点的类型对象
                 Class<?> k = Index.class;
                 rightOffset = UNSAFE.objectFieldOffset
                     (k.getDeclaredField("right"));
@@ -632,11 +676,16 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     }
 
     /* ---------------- Head nodes -------------- */
+    // 头结点
 
     /**
      * Nodes heading each level keep track of their level.
+     * 指向每个级别的结点会追踪其级别。
      */
     static final class HeadIndex<K,V> extends Index<K,V> {
+        /**
+         * 级别
+         */
         final int level;
         HeadIndex(Node<K,V> node, Index<K,V> down, Index<K,V> right, int level) {
             super(node, down, right);
@@ -645,17 +694,19 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     }
 
     /* ---------------- Comparison utilities -------------- */
+    // 比较辅助方法集
 
     /**
      * Compares using comparator or natural ordering if null.
      * Called only by methods that have performed required type checks.
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
-    static final int cpr(Comparator c, Object x, Object y) {
+    static int cpr(Comparator c, Object x, Object y) {
         return (c != null) ? c.compare(x, y) : ((Comparable)x).compareTo(y);
     }
 
     /* ---------------- Traversal -------------- */
+    // 遍历
 
     /**
      * Returns a base-level node with key strictly less than given key,
@@ -769,6 +820,8 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     /**
      * Gets value for key. Almost the same as findNode, but returns
      * the found value (to avoid retries during re-reads)
+     * 获取键对应的值。
+     * 与findNode几乎相同，但是返回找到的值(以避免在重新读取期间重试)。
      *
      * @param key the key
      * @return the value, or null if absent
@@ -805,10 +858,13 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     }
 
     /* ---------------- Insertion -------------- */
+    // 插入
 
     /**
      * Main insertion method.  Adds element if not present, or
      * replaces value if present and onlyIfAbsent is false.
+     * 主要插入方法。
+     * 如果不存在则添加元素，或者如果存在且onlyIfAbsent为false则替换值。
      * @param key the key
      * @param value the value that must be associated with key
      * @param onlyIfAbsent if should not insert if already present
@@ -1031,9 +1087,11 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     }
 
     /* ---------------- Finding and removing first element -------------- */
+    // 查找并移除第一个元素
 
     /**
      * Specialized variant of findNode to get first valid node.
+     * 获取第一个有效节点。
      * @return first node or null if empty
      */
     final Node<K,V> findFirst() {
@@ -1138,6 +1196,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     }
 
     /* ---------------- Finding and removing last element -------------- */
+    // 查找并移除最后一个元素
 
     /**
      * Specialized version of find to get last valid node.
@@ -1214,6 +1273,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     }
 
     /* ---------------- Relational operations -------------- */
+    // 关系运算式
 
     // Control values OR'ed as arguments to findNear
 
@@ -1513,6 +1573,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     }
 
     /* ------ Map API methods ------ */
+    // 映射表API方法
 
     /**
      * Returns {@code true} if this map contains a mapping for the specified
@@ -1542,6 +1603,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
      *         with the keys currently in the map
      * @throws NullPointerException if the specified key is null
      */
+    @Override
     public V get(Object key) {
         return doGet(key);
     }
@@ -1575,6 +1637,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
      *         with the keys currently in the map
      * @throws NullPointerException if the specified key or value is null
      */
+    @Override
     public V put(K key, V value) {
         if (value == null)
             throw new NullPointerException();
@@ -1622,6 +1685,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
      * Returns the number of key-value mappings in this map.  If this map
      * contains more than {@code Integer.MAX_VALUE} elements, it
      * returns {@code Integer.MAX_VALUE}.
+     * 返回这个映射表中的键-值映射数。
      *
      * <p>Beware that, unlike in most collections, this method is
      * <em>NOT</em> a constant-time operation. Because of the
@@ -1634,8 +1698,10 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
      *
      * @return the number of elements in this map
      */
+    @Override
     public int size() {
         long count = 0;
+        // 从第一个有效节点开始遍历
         for (Node<K,V> n = findFirst(); n != null; n = n.next) {
             if (n.getValidValue() != null)
                 ++count;
@@ -1648,6 +1714,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
      * @return {@code true} if this map contains no key-value mappings
      */
     public boolean isEmpty() {
+        // 获取第一个有效节点
         return findFirst() == null;
     }
 
@@ -1810,6 +1877,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     }
 
     /* ---------------- View methods -------------- */
+    // 视图方法
 
     /*
      * Note: Lazy initialization works for views because view classes
@@ -1938,6 +2006,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
      * @param o object to be compared for equality with this map
      * @return {@code true} if the specified object is equal to this map
      */
+    @Override
     public boolean equals(Object o) {
         if (o == this)
             return true;
@@ -1973,6 +2042,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
      *         with the keys currently in the map
      * @throws NullPointerException if the specified key or value is null
      */
+    @Override
     public V putIfAbsent(K key, V value) {
         if (value == null)
             throw new NullPointerException();
@@ -2040,6 +2110,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
 
     /* ------ SortedMap API methods ------ */
 
+    @Override
     public Comparator<? super K> comparator() {
         return comparator;
     }
@@ -2384,7 +2455,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
      * needing type-tests for Iterator methods.
      */
 
-    static final <E> List<E> toList(Collection<E> c) {
+    static <E> List<E> toList(Collection<E> c) {
         // Using size() here would be a pessimization.
         ArrayList<E> list = new ArrayList<E>();
         for (E e : c)
@@ -2512,6 +2583,9 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     }
 
     static final class EntrySet<K1,V1> extends AbstractSet<Map.Entry<K1,V1>> {
+        /**
+         * 基础的并发可导航的映射表
+         */
         final ConcurrentNavigableMap<K1, V1> m;
         EntrySet(ConcurrentNavigableMap<K1, V1> map) {
             m = map;
@@ -3260,6 +3334,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     }
 
     // default Map method overrides
+    // 默认的映射表方法覆盖
 
     public void forEach(BiConsumer<? super K, ? super V> action) {
         if (action == null) throw new NullPointerException();
@@ -3595,12 +3670,20 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     }
 
     // Unsafe mechanics
+    // 非安全机制
+    /**
+     * 非安全的对象
+     */
     private static final sun.misc.Unsafe UNSAFE;
+    /**
+     * 跳跃表的最高头索引的偏移量
+     */
     private static final long headOffset;
     private static final long SECONDARY;
     static {
         try {
             UNSAFE = sun.misc.Unsafe.getUnsafe();
+            // 并发跳跃表的映射表的类型对象
             Class<?> k = ConcurrentSkipListMap.class;
             headOffset = UNSAFE.objectFieldOffset
                 (k.getDeclaredField("head"));
