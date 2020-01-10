@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * locate or generate data that constitutes a definition for the class.  A
  * typical strategy is to transform the name into a file name and then read a
  * "class file" of that name from a file system.
- * 类加载器是负责加载类的对象。ClassLoader类是一个抽象类。
+ * 类加载器是负责加载<b>类的对象</b>。ClassLoader类是一个抽象类。
  * 给定类的二进制名称，类加载器应尝试定位或生成构成类定义的数据。
  * 典型的策略是将名称转换为文件名，然后从文件系统中读取该名称的“类文件”。
  *
