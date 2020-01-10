@@ -80,8 +80,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * called the "bootstrap class loader", does not itself have a parent but may
  * serve as the parent of a <tt>ClassLoader</tt> instance.
  * ClassLoader类使用委派模型来搜索类和资源。
- * ClassLoader的每个实例都有一个关联的父类加载器。
- * 当请求查找类或资源时，ClassLoader实例本身会在尝试查找类或资源之前，将对类或资源的搜索委托给其父类加载器。
+ * ClassLoader的每个实例都有一个关联的父亲类加载器。
+ * 当请求查找类或资源时，ClassLoader实例本身会在尝试查找类或资源之前，将对类或资源的搜索委托给其父亲类加载器。
  * 虚拟机的内置类加载器(称为“引导类加载器”)本身不具有父亲，但可以作为ClassLoader实例的父亲。
  *
  * <p> Class loaders that support concurrent loading of classes are known as
@@ -186,8 +186,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public abstract class ClassLoader {
 
-    // 注册本地方法
-
+    /** 注册本地方法 */
     private static native void registerNatives();
     static {
         registerNatives();
@@ -196,7 +195,7 @@ public abstract class ClassLoader {
     // The parent class loader for delegation
     // Note: VM hardcoded the offset of this field, thus all new fields
     // must be added *after* it.
-    // 用于委派的父类加载器
+    /** 用于委派的父亲类加载器 */
     private final ClassLoader parent;
 
     /**
@@ -207,6 +206,7 @@ public abstract class ClassLoader {
         private ParallelLoaders() {}
 
         // the set of parallel capable loader types
+        // 可并行加载的类加载器类型的集合
         private static final Set<Class<? extends ClassLoader>> loaderTypes =
             Collections.newSetFromMap(
                 new WeakHashMap<Class<? extends ClassLoader>, Boolean>());
@@ -281,10 +281,13 @@ public abstract class ClassLoader {
 
     // The packages defined in this class loader.  Each package name is mapped
     // to its corresponding Package object.
-    // 此类加载器中定义的包。
+    // 这个类加载器中定义的包。
     // @GuardedBy("itself")
     private final HashMap<String, Package> packages = new HashMap<>();
 
+    /**
+     * 检查"创建类加载器"的权限。
+     */
     private static Void checkCreateClassLoader() {
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
@@ -293,11 +296,12 @@ public abstract class ClassLoader {
         return null;
     }
 
-    // 创建类加载器实例（父类加载器）
+    // 创建类加载器实例（父亲类加载器）
 
     private ClassLoader(Void unused, ClassLoader parent) {
         this.parent = parent;
         if (ParallelLoaders.isRegistered(this.getClass())) {
+            // 可并行加载的类加载器类型
             parallelLockMap = new ConcurrentHashMap<>();
             package2certs = new ConcurrentHashMap<>();
             domains =
@@ -305,6 +309,7 @@ public abstract class ClassLoader {
             assertionLock = new Object();
         } else {
             // no finer-grained lock; lock on the classloader instance
+            // 没有更细粒度的锁定，锁定类加载器实例(单点加载性能瓶颈)
             parallelLockMap = null;
             package2certs = new Hashtable<>();
             domains = new HashSet<>();
@@ -315,7 +320,7 @@ public abstract class ClassLoader {
     /**
      * Creates a new class loader using the specified parent class loader for
      * delegation.
-     * 使用指定的父类加载器创建新的类加载器，以进行委派。
+     * 使用指定的父亲类加载器创建新的类加载器，以进行委派。
      *
      * <p> If there is a security manager, its {@link
      * SecurityManager#checkCreateClassLoader()
@@ -341,7 +346,7 @@ public abstract class ClassLoader {
      * the method {@link #getSystemClassLoader()
      * <tt>getSystemClassLoader()</tt>} as the parent class loader.
      * 使用{@link #getSystemClassLoader() getSystemClassLoader()}方法
-     * 返回的系统ClassLoader作为父类加载器创建新的类加载器。
+     * 返回的系统ClassLoader作为父亲类加载器创建新的类加载器。
      *
      * <p> If there is a security manager, its {@link
      * SecurityManager#checkCreateClassLoader()
@@ -354,13 +359,14 @@ public abstract class ClassLoader {
      *          of a new class loader.
      */
     protected ClassLoader() {
+        // 系统类加载器(父亲类加载器)
         this(checkCreateClassLoader(), getSystemClassLoader());
     }
 
 
-    // -- Class/类 --
+    // --- Class/类 ---
 
-    // 加载类 - 使用指定的二进制名称加载类
+    // loadClass：加载类，使用指定的二进制名称加载类
 
     /**
      * Loads the class with the specified <a href="#name">binary name</a>.
@@ -370,16 +376,18 @@ public abstract class ClassLoader {
      * to invoking {@link #loadClass(String, boolean) <tt>loadClass(name,
      * false)</tt>}.
      * 使用指定的二进制名称加载类。
-     * 此方法以与{@link #loadClass(String, boolean)}方法相同的方式搜索类。
+     * 本方法以与{@link #loadClass(String, boolean)}方法相同的方式搜索类。
      * 它由JVM调用以解析类引用。
      *
      * @param  name
      *         The <a href="#name">binary name</a> of the class
+     *         类的二进制名称
      *
      * @return  The resulting <tt>Class</tt> object
      *
      * @throws  ClassNotFoundException
      *          If the class was not found
+     *          如果没找到这个类型
      */
     public Class<?> loadClass(String name) throws ClassNotFoundException {
         return loadClass(name, false);
@@ -390,20 +398,22 @@ public abstract class ClassLoader {
      * default implementation of this method searches for classes in the
      * following order:
      * 使用指定的二进制名称加载类。
-     * 此方法的默认实现按以下顺序搜索类：
+     * 本方法的默认实现按以下顺序搜索类：
      *
      * <ol>
      *
      *   <li><p> Invoke {@link #findLoadedClass(String)} to check if the class
-     *   has already been loaded. 调用{@link #findLoadedClass(String)}以检查是否已加载该类 </p></li>
+     *   has already been loaded.
+     *   调用{@link #findLoadedClass(String)}以检查是否已加载该类 </p></li>
      *
      *   <li><p> Invoke the {@link #loadClass(String) <tt>loadClass</tt>} method
      *   on the parent class loader.  If the parent is <tt>null</tt> the class
      *   loader built-in to the virtual machine is used, instead.
-     *   在父类加载器上调用loadClass方法。如果父类加载器为null，则使用内置于虚拟机的类加载器。 </p></li>
+     *   在父亲类加载器上调用loadClass方法。如果父亲类加载器为null，则使用内置于虚拟机的类加载器。 </p></li>
      *
      *   <li><p> Invoke the {@link #findClass(String)} method to find the
-     *   class. 调用{@link #findClass(String)}方法来查找该类。 </p></li>
+     *   class.
+     *   调用{@link #findClass(String)}方法来查找该类。 </p></li>
      *
      * </ol>
      *
@@ -434,44 +444,49 @@ public abstract class ClassLoader {
      *
      * @throws  ClassNotFoundException
      *          If the class could not be found
+     *          如果没找到这个类型
      */
     protected Class<?> loadClass(String name, boolean resolve)
         throws ClassNotFoundException
     {
+        // 1.同步类加载操作的锁对象
         synchronized (getClassLoadingLock(name)) {
             // First, check if the class has already been loaded
-            // 首先，检查是否已加载该类
+            // 2.首先，检查是否已加载该类
             Class<?> c = findLoadedClass(name);
             if (c == null) {
                 long t0 = System.nanoTime();
                 try {
                     if (parent != null) {
-                        // 委派给父类加载器
+                        // 3.委派给父亲类加载器(缺省为系统类加载器)
                         c = parent.loadClass(name, false);
                     } else {
-                        // 委派给引导类加载器
+                        // 4.委派给引导类加载器
                         c = findBootstrapClassOrNull(name);
                     }
                 } catch (ClassNotFoundException e) {
                     // ClassNotFoundException thrown if class not found
                     // from the non-null parent class loader
+                    // 如果从非空的父亲类加载器中找不到这个类，则抛出类找不到的异常
                 }
 
                 if (c == null) {
                     // If still not found, then invoke findClass in order
                     // to find the class.
+                    // 如果仍然找不到类，则调用自身对象的findClass以便找到该类
                     long t1 = System.nanoTime();
-                    // 查找类
+                    // 5.查找类
                     c = findClass(name);
 
                     // this is the defining class loader; record the stats
+                    // 这是定义的类加载器，记录统计数据(双亲委派时间，查找类时间，查找类计数)
                     sun.misc.PerfCounter.getParentDelegationTime().addTime(t1 - t0);
                     sun.misc.PerfCounter.getFindClassTime().addElapsedTimeFrom(t1);
                     sun.misc.PerfCounter.getFindClasses().increment();
                 }
             }
             if (resolve) {
-                // 解析类
+                // 6.解析类
                 resolveClass(c);
             }
             return c;
@@ -492,6 +507,7 @@ public abstract class ClassLoader {
      *
      * @param  className
      *         The name of the to-be-loaded class
+     *         待加载类的名称
      *
      * @return the lock for class loading operations
      *
@@ -503,8 +519,11 @@ public abstract class ClassLoader {
      * @since  1.7
      */
     protected Object getClassLoadingLock(String className) {
+        // 自身的类加载器对象
         Object lock = this;
+        // 并行加载的锁对象的并发散列映射表
         if (parallelLockMap != null) {
+            // 新的锁对象
             Object newLock = new Object();
             lock = parallelLockMap.putIfAbsent(className, newLock);
             if (lock == null) {
@@ -554,7 +573,8 @@ public abstract class ClassLoader {
         domains.add(pd);
     }
 
-    // 查找类 - 查找具有指定二进制名称的类
+
+    // findClass：查找类，查找具有指定二进制名称的类
 
     /**
      * Finds the class with the specified <a href="#name">binary name</a>.
@@ -564,8 +584,8 @@ public abstract class ClassLoader {
      * parent class loader for the requested class.  The default implementation
      * throws a <tt>ClassNotFoundException</tt>.
      * 查找具有指定二进制名称的类。
-     * 此方法应由遵循委托模型的类加载器实现覆盖以加载类，
-     * 并且在检查所请求类的父类加载器之后将由{@link #loadClass loadClass}方法调用。
+     * 此方法应由遵循委派模型的类加载器实现覆盖以加载类，
+     * 并且在检查所请求类的父亲类加载器之后将由{@link #loadClass loadClass}方法调用。
      * 默认实现抛出ClassNotFoundException。
      *
      * @param  name
@@ -575,6 +595,7 @@ public abstract class ClassLoader {
      *
      * @throws  ClassNotFoundException
      *          If the class could not be found
+     *          如果没找到这个类型
      *
      * @since  1.2
      */
@@ -584,7 +605,7 @@ public abstract class ClassLoader {
     }
 
 
-    // 定义类 - 转换为类Class的实例
+    // defineClass：定义类，将字节数组转换为类Class的实例
 
     /**
      * Converts an array of bytes into an instance of class <tt>Class</tt>.
@@ -717,6 +738,7 @@ public abstract class ClassLoader {
     private ProtectionDomain preDefineClass(String name,
                                             ProtectionDomain pd)
     {
+        // 检查类名
         if (!checkName(name))
             throw new NoClassDefFoundError("IllegalName: " + name);
 
@@ -724,6 +746,7 @@ public abstract class ClassLoader {
         // relies on the fact that spoofing is impossible if a class has a name
         // of the form "java.*"
         if ((name != null) && name.startsWith("java.")) {
+            // 禁止的包名(java.*)
             throw new SecurityException
                 ("Prohibited package name: " +
                  name.substring(0, name.lastIndexOf('.')));
@@ -732,13 +755,16 @@ public abstract class ClassLoader {
             pd = defaultDomain;
         }
 
+        // 检查证书
         if (name != null) checkCerts(name, pd.getCodeSource());
 
         return pd;
     }
 
+    // 定义类文件的源位置
     private String defineClassSourceLocation(ProtectionDomain pd)
     {
+        // 代码源
         CodeSource cs = pd.getCodeSource();
         String source = null;
         if (cs != null && cs.getLocation() != null) {
@@ -750,6 +776,7 @@ public abstract class ClassLoader {
     private void postDefineClass(Class<?> c, ProtectionDomain pd)
     {
         if (pd.getCodeSource() != null) {
+            // 证书
             Certificate certs[] = pd.getCodeSource().getCertificates();
             if (certs != null)
                 setSigners(c, certs);
@@ -785,12 +812,12 @@ public abstract class ClassLoader {
      * must be equal to the <a href="#name">binary name</a> of the class
      * specified by the byte array "<tt>b</tt>", otherwise a {@link
      * NoClassDefFoundError <tt>NoClassDefFoundError</tt>} will be thrown. </p>
-     * 指定的名称不能以“java.”开头，因为“java.*”包中的所有类只能由引导类加载器定义。
+     * 指定的名称不能以"java."开头，因为"java.*"包中的所有类只能由引导类加载器定义。
      *
      * @param  name
      *         The expected <a href="#name">binary name</a> of the class, or
      *         <tt>null</tt> if not known
-     *         类的预期二进制名称
+     *         预期的类的二进制名称
      *
      * @param  b
      *         The bytes that make up the class data. The bytes in positions
@@ -801,9 +828,11 @@ public abstract class ClassLoader {
      *
      * @param  off
      *         The start offset in <tt>b</tt> of the class data
+     *         类数据的起始偏移量
      *
      * @param  len
      *         The length of the class data
+     *         类数据的长度
      *
      * @param  protectionDomain
      *         The ProtectionDomain of the class
@@ -815,6 +844,7 @@ public abstract class ClassLoader {
      *
      * @throws  ClassFormatError
      *          If the data did not contain a valid class
+     *          数据不包含有效的类
      *
      * @throws  NoClassDefFoundError
      *          If <tt>name</tt> is not equal to the <a href="#name">binary
@@ -837,9 +867,9 @@ public abstract class ClassLoader {
     {
         // 保护域
         protectionDomain = preDefineClass(name, protectionDomain);
-        // 类定义源位置
+        // 类文件的源位置
         String source = defineClassSourceLocation(protectionDomain);
-        // 将字节数组转换为类Class的实例
+        // 将字节数组转换为Class类的实例
         Class<?> c = defineClass1(name, b, off, len, protectionDomain, source);
         // 证书
         postDefineClass(c, protectionDomain);
@@ -936,6 +966,8 @@ public abstract class ClassLoader {
         return c;
     }
 
+    // 将字节数组转换为类Class的实例
+
     private native Class<?> defineClass0(String name, byte[] b, int off, int len,
                                          ProtectionDomain pd);
 
@@ -974,7 +1006,7 @@ public abstract class ClassLoader {
                 }
             }
         } else {
-            pcerts = ((ConcurrentHashMap<String, Certificate[]>)package2certs).
+            pcerts = package2certs.
                 putIfAbsent(pname, (certs == null? nocerts:certs));
         }
         if (pcerts != null && !compareCerts(pcerts, certs)) {
@@ -1029,7 +1061,7 @@ public abstract class ClassLoader {
     }
 
 
-    // 解析类 - 链接指定的类
+    // resolveClass：解析类，链接指定的类
 
     /**
      * Links the specified class.  This (misleadingly named) method may be
@@ -1063,7 +1095,7 @@ public abstract class ClassLoader {
     /**
      * Finds a class with the specified <a href="#name">binary name</a>,
      * loading it if necessary.
-     * 查找具有指定二进制名称的类，并在必要时加载它。
+     * 查找具有指定二进制名称的系统类，并在必要时加载它。
      *
      * <p> This method loads the class through the system class loader (see
      * {@link #getSystemClassLoader()}).  The <tt>Class</tt> object returned
@@ -1071,7 +1103,7 @@ public abstract class ClassLoader {
      * Subclasses of <tt>ClassLoader</tt> need not usually invoke this method,
      * because most class loaders need to override just {@link
      * #findClass(String)}.  </p>
-     * 本方法通过系统类加载器加载类（请参阅{@link #getSystemClassLoader()}）。
+     * 本方法通过系统类加载器加载系统类（请参阅{@link #getSystemClassLoader()}）。
      * 返回的Class对象可能有多个与之关联的ClassLoader。
      * ClassLoader的子类通常不需要调用此方法，因为大多数类加载器只需要覆盖{@link #findClass(String)}。
      *
@@ -1108,7 +1140,7 @@ public abstract class ClassLoader {
     /**
      * Returns a class loaded by the bootstrap class loader;
      * or return null if not found.
-     * 返回由引导类加载器加载的类。
+     * 返回由引导类加载器加载的引导类。
      */
     private Class<?> findBootstrapClassOrNull(String name)
     {
@@ -1119,6 +1151,8 @@ public abstract class ClassLoader {
 
     // return null if not found
     private native Class<?> findBootstrapClass(String name);
+
+    // 查找已加载的类
 
     /**
      * Returns the class with the given <a href="#name">binary name</a> if this
@@ -1141,11 +1175,12 @@ public abstract class ClassLoader {
         return findLoadedClass0(name);
     }
 
-    private native final Class<?> findLoadedClass0(String name);
+    private native Class<?> findLoadedClass0(String name);
 
     /**
      * Sets the signers of a class.  This should be invoked after defining a
      * class.
+     * 设置类的签名者。
      *
      * @param  c
      *         The <tt>Class</tt> object
@@ -1192,11 +1227,14 @@ public abstract class ClassLoader {
     public URL getResource(String name) {
         URL url;
         if (parent != null) {
+            // 父亲类加载器的资源
             url = parent.getResource(name);
         } else {
+            // 引导类加载器的资源
             url = getBootstrapResource(name);
         }
         if (url == null) {
+            // 当前类加载器的资源
             url = findResource(name);
         }
         return url;
@@ -1290,7 +1328,7 @@ public abstract class ClassLoader {
 
     /**
      * Registers the caller as parallel capable.
-     * 将调用者注册为并行能力。
+     * 将调用者类加载器注册为并行能力。
      * The registration succeeds if and only if all of the following
      * conditions are met:
      * <ol>
@@ -1308,6 +1346,7 @@ public abstract class ClassLoader {
      */
     @CallerSensitive
     protected static boolean registerAsParallelCapable() {
+        // 调用者类加载器
         Class<? extends ClassLoader> callerClass =
             Reflection.getCallerClass().asSubclass(ClassLoader.class);
         return ParallelLoaders.register(callerClass);
@@ -1318,6 +1357,7 @@ public abstract class ClassLoader {
      * classes.  This method locates the resource through the system class
      * loader (see {@link #getSystemClassLoader()}).
      * 从用于加载类的搜索路径中查找指定名称的资源。
+     * 系统资源
      *
      * @param  name
      *         The resource name
@@ -1328,10 +1368,13 @@ public abstract class ClassLoader {
      * @since  1.1
      */
     public static URL getSystemResource(String name) {
+        // 系统类加载器
         ClassLoader system = getSystemClassLoader();
         if (system == null) {
+            // 引导类加载器的资源
             return getBootstrapResource(name);
         }
+        // 系统类加载器的资源
         return system.getResource(name);
     }
 
@@ -1368,8 +1411,10 @@ public abstract class ClassLoader {
     /**
      * Find resources from the VM's built-in classloader.
      * 从VM的内置类加载器中查找资源。
+     * 引导资源
      */
     private static URL getBootstrapResource(String name) {
+        // 引导类路径
         URLClassPath ucp = getBootstrapClassPath();
         Resource res = ucp.getResource(name);
         return res != null ? res.getURL() : null;
@@ -1396,6 +1441,7 @@ public abstract class ClassLoader {
     // Returns the URLClassPath that is used for finding system resources.
     // 用于查找系统资源。
     static URLClassPath getBootstrapClassPath() {
+        // 引导类路径
         return sun.misc.Launcher.getBootstrapClassPath();
     }
 
@@ -1448,14 +1494,14 @@ public abstract class ClassLoader {
 
 
     // -- Hierarchy --
-    // 类加载器层次结构
+    // 类加载器的层次结构
 
     /**
      * Returns the parent class loader for delegation. Some implementations may
      * use <tt>null</tt> to represent the bootstrap class loader. This method
      * will return <tt>null</tt> in such implementations if this class loader's
      * parent is the bootstrap class loader.
-     * 返回委托的父类加载器。
+     * 返回委托的父亲类加载器。
      *
      * <p> If a security manager is present, and the invoker's class loader is
      * not <tt>null</tt> and is not an ancestor of this class loader, then this
@@ -1478,10 +1524,12 @@ public abstract class ClassLoader {
      */
     @CallerSensitive
     public final ClassLoader getParent() {
+        // 父亲类加载器
         if (parent == null)
             return null;
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
+            // 检查对父亲类加载器的访问
             // Check access to the parent class loader
             // If the caller's class loader is same as this class loader,
             // permission check is performed.
@@ -1555,11 +1603,15 @@ public abstract class ClassLoader {
         }
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
+            // 检查对系统类加载器的访问
             checkClassLoaderPermission(scl, Reflection.getCallerClass());
         }
         return scl;
     }
 
+    /**
+     * 初始化系统类加载器。
+     */
     private static synchronized void initSystemClassLoader() {
         if (!sclSet) {
             if (scl != null)
@@ -1568,6 +1620,7 @@ public abstract class ClassLoader {
             sun.misc.Launcher l = sun.misc.Launcher.getLauncher();
             if (l != null) {
                 Throwable oops = null;
+                // 系统类加载器
                 scl = l.getClassLoader();
                 try {
                     scl = AccessController.doPrivileged(
@@ -1597,6 +1650,7 @@ public abstract class ClassLoader {
     boolean isAncestor(ClassLoader cl) {
         ClassLoader acl = this;
         do {
+            // 其父亲类加载器
             acl = acl.parent;
             if (cl == acl) {
                 return true;
@@ -1623,6 +1677,7 @@ public abstract class ClassLoader {
     }
 
     // Returns the class's class loader, or null if none.
+    // 返回类的类加载器
     static ClassLoader getClassLoader(Class<?> caller) {
         // This can be null if the VM is requesting it
         if (caller == null) {
