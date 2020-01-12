@@ -1,42 +1,10 @@
-/*
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
-
-/*
- *
- *
- *
- *
- *
- * Written by Doug Lea with assistance from members of JCP JSR-166
- * Expert Group and released to the public domain, as explained at
- * http://creativecommons.org/publicdomain/zero/1.0/
- */
 
 package java.util.concurrent.atomic;
-import java.util.function.IntUnaryOperator;
-import java.util.function.IntBinaryOperator;
+
 import sun.misc.Unsafe;
+
+import java.util.function.IntBinaryOperator;
+import java.util.function.IntUnaryOperator;
 
 /**
  * An {@code int} value that may be updated atomically.  See the
@@ -47,6 +15,9 @@ import sun.misc.Unsafe;
  * {@link java.lang.Integer}. However, this class does extend
  * {@code Number} to allow uniform access by tools and utilities that
  * deal with numerically-based classes.
+ * 一个可以原子更新的整数值。
+ * <p>
+ * 并发使用场景：原子递增的计数器
  *
  * @since 1.5
  * @author Doug Lea
@@ -55,16 +26,26 @@ public class AtomicInteger extends Number implements java.io.Serializable {
     private static final long serialVersionUID = 6214790243416807050L;
 
     // setup to use Unsafe.compareAndSwapInt for updates
+    /**
+     * 不安全的对象
+     */
     private static final Unsafe unsafe = Unsafe.getUnsafe();
+    /**
+     * 值的偏移量
+     */
     private static final long valueOffset;
 
     static {
         try {
+            // 值的偏移量
             valueOffset = unsafe.objectFieldOffset
                 (AtomicInteger.class.getDeclaredField("value"));
         } catch (Exception ex) { throw new Error(ex); }
     }
 
+    /**
+     * 整数值(volatile-可见性)
+     */
     private volatile int value;
 
     /**
@@ -84,6 +65,7 @@ public class AtomicInteger extends Number implements java.io.Serializable {
 
     /**
      * Gets the current value.
+     * 返回当前值。
      *
      * @return the current value
      */
@@ -102,6 +84,7 @@ public class AtomicInteger extends Number implements java.io.Serializable {
 
     /**
      * Eventually sets to the given value.
+     * 最终设置为给定值。
      *
      * @param newValue the new value
      * @since 1.6
@@ -112,6 +95,7 @@ public class AtomicInteger extends Number implements java.io.Serializable {
 
     /**
      * Atomically sets to the given value and returns the old value.
+     * 原子地设置为给定值，并返回上一个值。
      *
      * @param newValue the new value
      * @return the previous value
@@ -123,6 +107,7 @@ public class AtomicInteger extends Number implements java.io.Serializable {
     /**
      * Atomically sets the value to the given updated value
      * if the current value {@code ==} the expected value.
+     * 如果当前值==期望值，则原子方式将该值设置为给定的更新值。
      *
      * @param expect the expected value
      * @param update the new value
@@ -130,6 +115,7 @@ public class AtomicInteger extends Number implements java.io.Serializable {
      * the actual value was not equal to the expected value.
      */
     public final boolean compareAndSet(int expect, int update) {
+        // CAS更新整数值
         return unsafe.compareAndSwapInt(this, valueOffset, expect, update);
     }
 
@@ -151,6 +137,7 @@ public class AtomicInteger extends Number implements java.io.Serializable {
 
     /**
      * Atomically increments by one the current value.
+     * 将当前值原子地递增一。
      *
      * @return the previous value
      */
@@ -160,6 +147,7 @@ public class AtomicInteger extends Number implements java.io.Serializable {
 
     /**
      * Atomically decrements by one the current value.
+     * 将当前值原子地递减一。
      *
      * @return the previous value
      */
@@ -179,6 +167,7 @@ public class AtomicInteger extends Number implements java.io.Serializable {
 
     /**
      * Atomically increments by one the current value.
+     * 将当前值原子地递增一。
      *
      * @return the updated value
      */
@@ -188,6 +177,7 @@ public class AtomicInteger extends Number implements java.io.Serializable {
 
     /**
      * Atomically decrements by one the current value.
+     * 将当前值原子地递减一。
      *
      * @return the updated value
      */
@@ -295,6 +285,7 @@ public class AtomicInteger extends Number implements java.io.Serializable {
      * Returns the String representation of the current value.
      * @return the String representation of the current value
      */
+    @Override
     public String toString() {
         return Integer.toString(get());
     }
