@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
@@ -40,6 +16,8 @@ import java.util.stream.StreamSupport;
  * A <code>char</code> value represents a character in the <i>Basic
  * Multilingual Plane (BMP)</i> or a surrogate. Refer to <a
  * href="Character.html#unicode">Unicode Character Representation</a> for details.
+ * 一个字符序列是一个可读的字符值的序列。
+ * Unicode字符表示法
  *
  * <p> This interface does not refine the general contracts of the {@link
  * java.lang.Object#equals(java.lang.Object) equals} and {@link
@@ -55,12 +33,14 @@ import java.util.stream.StreamSupport;
  * @since 1.4
  * @spec JSR-51
  */
-
 public interface CharSequence {
+
+    // 读操作
 
     /**
      * Returns the length of this character sequence.  The length is the number
      * of 16-bit <code>char</code>s in the sequence.
+     * 返回这个字符序列的长度。
      *
      * @return  the number of <code>char</code>s in this sequence
      */
@@ -71,6 +51,8 @@ public interface CharSequence {
      * to <tt>length() - 1</tt>.  The first <code>char</code> value of the sequence is at
      * index zero, the next at index one, and so on, as for array
      * indexing.
+     * 返回指定索引处的字符值。
+     * 索引范围从零到<tt>length() - 1</tt>。
      *
      * <p>If the <code>char</code> value specified by the index is a
      * <a href="{@docRoot}/java/lang/Character.html#unicode">surrogate</a>, the surrogate
@@ -85,6 +67,8 @@ public interface CharSequence {
      *          <tt>length()</tt>
      */
     char charAt(int index);
+
+    /// 子字符序列的视图
 
     /**
      * Returns a <code>CharSequence</code> that is a subsequence of this sequence.
@@ -113,13 +97,16 @@ public interface CharSequence {
      *
      * @return  a string consisting of exactly this sequence of characters
      */
-    public String toString();
+    String toString();
+
+    // 默认方法
 
     /**
      * Returns a stream of {@code int} zero-extending the {@code char} values
      * from this sequence.  Any char which maps to a <a
      * href="{@docRoot}/java/lang/Character.html#unicode">surrogate code
      * point</a> is passed through uninterpreted.
+     * 返回一个整数类型的数据流。
      *
      * <p>If the sequence is mutated while the stream is being read, the
      * result is undefined.
@@ -127,7 +114,7 @@ public interface CharSequence {
      * @return an IntStream of char values from this sequence
      * @since 1.8
      */
-    public default IntStream chars() {
+    default IntStream chars() {
         class CharIterator implements PrimitiveIterator.OfInt {
             int cur = 0;
 
@@ -151,6 +138,7 @@ public interface CharSequence {
             }
         }
 
+        // 数据流辅助类
         return StreamSupport.intStream(() ->
                 Spliterators.spliterator(
                         new CharIterator(),
@@ -174,7 +162,7 @@ public interface CharSequence {
      * @return an IntStream of Unicode code points from this sequence
      * @since 1.8
      */
-    public default IntStream codePoints() {
+    default IntStream codePoints() {
         class CodePointIterator implements PrimitiveIterator.OfInt {
             int cur = 0;
 
