@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 2009, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.util;
 
@@ -32,6 +8,7 @@ import java.util.function.Supplier;
  * on objects.  These utilities include {@code null}-safe or {@code
  * null}-tolerant methods for computing the hash code of an object,
  * returning a string for an object, and comparing two objects.
+ * 提供对象行为的null保护、null容忍。
  *
  * @since 1.7
  */
@@ -39,6 +16,8 @@ public final class Objects {
     private Objects() {
         throw new AssertionError("No java.util.Objects instances for you!");
     }
+
+    // 对象等价性
 
     /**
      * Returns {@code true} if the arguments are equal to each other
@@ -85,6 +64,8 @@ public final class Objects {
             return Arrays.deepEquals0(a, b);
     }
 
+    // 散列码映射
+
     /**
      * Returns the hash code of a non-{@code null} argument and 0 for
      * a {@code null} argument.
@@ -128,6 +109,8 @@ public final class Objects {
         return Arrays.hashCode(values);
     }
 
+    // 字符串表示
+
     /**
      * Returns the result of calling {@code toString} for a non-{@code
      * null} argument and {@code "null"} for a {@code null} argument.
@@ -159,6 +142,8 @@ public final class Objects {
         return (o != null) ? o.toString() : nullDefault;
     }
 
+    // 对象比较
+
     /**
      * Returns 0 if the arguments are identical and {@code
      * c.compare(a, b)} otherwise.
@@ -182,6 +167,8 @@ public final class Objects {
     public static <T> int compare(T a, T b, Comparator<? super T> c) {
         return (a == b) ? 0 :  c.compare(a, b);
     }
+
+    // 入参有效性检查
 
     /**
      * Checks that the specified object reference is not {@code null}. This
