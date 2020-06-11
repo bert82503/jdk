@@ -1,27 +1,4 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
+
 package java.util;
 
 import java.util.function.Consumer;
@@ -33,12 +10,15 @@ import java.util.function.Supplier;
  * A container object which may or may not contain a non-null value.
  * If a value is present, {@code isPresent()} will return {@code true} and
  * {@code get()} will return the value.
+ * 可能包含一个非null值得容器对象。
  *
  * <p>Additional methods that depend on the presence or absence of a contained
  * value are provided, such as {@link #orElse(java.lang.Object) orElse()}
  * (return a default value if value not present) and
  * {@link #ifPresent(java.util.function.Consumer) ifPresent()} (execute a block
  * of code if the value is present).
+ * 当对象值不存在时，返回一个默认值，由{@code orElse(Object)}提供；
+ * 当对象值存在时，执行一个代码块，由{@code ifPresent(Consumer)}调用。
  *
  * <p>This is a <a href="../lang/doc-files/ValueBased.html">value-based</a>
  * class; use of identity-sensitive operations (including reference equality
@@ -50,6 +30,7 @@ import java.util.function.Supplier;
 public final class Optional<T> {
     /**
      * Common instance for {@code empty()}.
+     * null/空值的容器
      */
     private static final Optional<?> EMPTY = new Optional<>();
 
@@ -80,7 +61,7 @@ public final class Optional<T> {
      * @param <T> Type of the non-existent value
      * @return an empty {@code Optional}
      */
-    public static<T> Optional<T> empty() {
+    public static <T> Optional<T> empty() {
         @SuppressWarnings("unchecked")
         Optional<T> t = (Optional<T>) EMPTY;
         return t;
@@ -93,8 +74,11 @@ public final class Optional<T> {
      * @throws NullPointerException if value is null
      */
     private Optional(T value) {
+        // 值必须为非null
         this.value = Objects.requireNonNull(value);
     }
+
+    // 静态工厂方法模式
 
     /**
      * Returns an {@code Optional} with the specified present non-null value.
@@ -121,6 +105,8 @@ public final class Optional<T> {
         return value == null ? empty() : of(value);
     }
 
+    // 获取容器的值
+
     /**
      * If a value is present in this {@code Optional}, returns the value,
      * otherwise throws {@code NoSuchElementException}.
@@ -132,10 +118,13 @@ public final class Optional<T> {
      */
     public T get() {
         if (value == null) {
+            // 值不存在异常
             throw new NoSuchElementException("No value present");
         }
         return value;
     }
+
+    // 判断容器的值是否存在
 
     /**
      * Return {@code true} if there is a value present, otherwise {@code false}.
@@ -146,6 +135,8 @@ public final class Optional<T> {
         return value != null;
     }
 
+    // 操作函数(消费者、谓词测试、函数映射)
+
     /**
      * If a value is present, invoke the specified consumer with the value,
      * otherwise do nothing.
@@ -155,8 +146,9 @@ public final class Optional<T> {
      * null
      */
     public void ifPresent(Consumer<? super T> consumer) {
-        if (value != null)
+        if (value != null) {
             consumer.accept(value);
+        }
     }
 
     /**
@@ -172,10 +164,12 @@ public final class Optional<T> {
      */
     public Optional<T> filter(Predicate<? super T> predicate) {
         Objects.requireNonNull(predicate);
-        if (!isPresent())
+        if (!isPresent()) {
+            // 忽略操作行为
             return this;
-        else
+        } else {
             return predicate.test(value) ? this : empty();
+        }
     }
 
     /**
@@ -209,9 +203,10 @@ public final class Optional<T> {
      */
     public<U> Optional<U> map(Function<? super T, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
-        if (!isPresent())
+        if (!isPresent()) {
+            // 返回值不存在的容器
             return empty();
-        else {
+        } else {
             return Optional.ofNullable(mapper.apply(value));
         }
     }
@@ -235,15 +230,19 @@ public final class Optional<T> {
      */
     public<U> Optional<U> flatMap(Function<? super T, Optional<U>> mapper) {
         Objects.requireNonNull(mapper);
-        if (!isPresent())
+        if (!isPresent()) {
             return empty();
-        else {
+        } else {
+            // API返回类型为 Optional<?>
             return Objects.requireNonNull(mapper.apply(value));
         }
     }
 
+    //  值不存在的使用场景
+
     /**
      * Return the value if present, otherwise return {@code other}.
+     * 常量结果值，值提前初始化模式。
      *
      * @param other the value to be returned if there is no value present, may
      * be null
@@ -256,6 +255,7 @@ public final class Optional<T> {
     /**
      * Return the value if present, otherwise invoke {@code other} and return
      * the result of that invocation.
+     * 值的提供者，延迟获取模式。
      *
      * @param other a {@code Supplier} whose result is returned if no value
      * is present
@@ -264,6 +264,7 @@ public final class Optional<T> {
      * null
      */
     public T orElseGet(Supplier<? extends T> other) {
+        // 值对象的提供者
         return value != null ? value : other.get();
     }
 
@@ -287,9 +288,12 @@ public final class Optional<T> {
         if (value != null) {
             return value;
         } else {
+            // 异常对象的提供者
             throw exceptionSupplier.get();
         }
     }
+
+    // 覆盖对象的方法行为
 
     /**
      * Indicates whether some other object is "equal to" this Optional. The
@@ -306,6 +310,7 @@ public final class Optional<T> {
      */
     @Override
     public boolean equals(Object obj) {
+        // 《Effective Java》总结的最佳实践
         if (this == obj) {
             return true;
         }

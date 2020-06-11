@@ -186,8 +186,10 @@ public final class Objects {
      * @throws NullPointerException if {@code obj} is {@code null}
      */
     public static <T> T requireNonNull(T obj) {
-        if (obj == null)
+        if (obj == null) {
+            // 抛出对象值为null的NPE异常
             throw new NullPointerException();
+        }
         return obj;
     }
 
@@ -211,8 +213,10 @@ public final class Objects {
      * @throws NullPointerException if {@code obj} is {@code null}
      */
     public static <T> T requireNonNull(T obj, String message) {
-        if (obj == null)
+        if (obj == null) {
+            // 抛出对象值为null的NPE异常
             throw new NullPointerException(message);
+        }
         return obj;
     }
 
@@ -273,8 +277,10 @@ public final class Objects {
      * @since 1.8
      */
     public static <T> T requireNonNull(T obj, Supplier<String> messageSupplier) {
-        if (obj == null)
+        if (obj == null) {
+            // 抛出对象值为null的NPE异常
             throw new NullPointerException(messageSupplier.get());
+        }
         return obj;
     }
 }
