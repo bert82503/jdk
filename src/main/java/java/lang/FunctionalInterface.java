@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  * type declaration is intended to be a <i>functional interface</i> as
  * defined by the Java Language Specification.
  * <p>
- * 表示接口类型声明是一个<i>函数式接口</i>。
+ * 信息注解类型，表示接口类型声明是一个<i>函数式接口</i>。
  *
  * <p>
  * Conceptually, a functional interface has exactly one abstract
@@ -54,8 +54,9 @@ import java.lang.annotation.Target;
  * @jls 9.4.3 Interface Method Body 接口方法体
  * @since 1.8
  */
-// 核心类 函数式接口
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface FunctionalInterface {}
+public @interface FunctionalInterface {
+    //
+}
