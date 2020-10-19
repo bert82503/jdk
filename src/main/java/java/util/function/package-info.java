@@ -96,27 +96,34 @@
  *     prefix may be left out (as in {@link java.util.function.ObjIntConsumer}).
  *     </li>
  * </ul>
+ *
  * 本包中的函数式接口遵循一个可扩展的命名约定：
+ *
  * <ul>
  *     <li>几种基本的函数形式，包括
- *     {@link java.util.function.Supplier}(生产T的函数)、
- *     {@link java.util.function.Function}(从T到R的一元函数)、
- *     {@link java.util.function.Consumer}(从T到void的一元函数)、
- *     {@link java.util.function.Predicate}(从T到boolean的一元函数)</li>
+ *     {@link java.util.function.Function}(从T到R的一元函数)，
+ *     {@link java.util.function.Consumer}(从T到void的一元函数)，
+ *     {@link java.util.function.Predicate}(从T到boolean的一元函数)，
+ *     {@link java.util.function.Supplier}(生产T的函数)。
+ *     </li>
  *
  *     <li>函数形式有基于最常用的天然数量。基本的形式可以修改一个实参数量的前缀或指示一个不同的数量。
- *     如{@link java.util.function.BiFunction}(从T、U到R的二元函数)</li>
+ *     如{@link java.util.function.BiFunction}(从T、U到R的二元函数)
+ *     </li>
  *
  *     <li>有其它派生类的函数形式，它们扩展了基本的函数形式。包括
- *     {@link java.util.function.UnaryOperator}(一元运算符，继承自Function)、
- *     {@link java.util.function.BinaryOperator}(二元运算符，继承自BiFunction)</li>
+ *     {@link java.util.function.UnaryOperator}(一元运算符，继承自Function)，
+ *     {@link java.util.function.BinaryOperator}(二元运算符，继承自BiFunction)。
+ *     </li>
  *
  *     <li>函数式接口的类型参数可以专门为使用其它类型前缀的基本类型。
  *     专门类型的返回类型，泛型返回类型和泛型参数，在{@link java.util.function.ToIntFunction}中前缀为ToXxx。
  *     类型参数是专门从左到右的，如{@link java.util.function.DoubleConsumer}或{@link java.util.function.ObjIntConsumer}。
- *     这些方案是可以被组合的，如IntToDoubleFunction。</li>
+ *     这些方案是可以被组合的，如IntToDoubleFunction。
+ *     </li>
  *
- *     <li>如果所有的参数都有专业化的前缀，则任意的前缀可能被排除。</li>
+ *     <li>如果所有的参数都有专业化的前缀，则任意的前缀可能被排除。
+ *     </li>
  * </ul>
  *
  * @see java.lang.FunctionalInterface
