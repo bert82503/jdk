@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 2009, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.util;
 
@@ -32,13 +8,18 @@ import java.util.function.Supplier;
  * on objects.  These utilities include {@code null}-safe or {@code
  * null}-tolerant methods for computing the hash code of an object,
  * returning a string for an object, and comparing two objects.
+ * 本类由用于操作对象的静态工具方法组成。
+ * 这些工具方法包括空安全或空容忍的方法，用于计算对象的散列码，返回对象的字符串表示，以及比较两个对象。
  *
  * @since 1.7
  */
 public final class Objects {
     private Objects() {
+        // 不可实例化保护
         throw new AssertionError("No java.util.Objects instances for you!");
     }
+
+    // Object
 
     /**
      * Returns {@code true} if the arguments are equal to each other
@@ -56,6 +37,7 @@ public final class Objects {
      * @see Object#equals(Object)
      */
     public static boolean equals(Object a, Object b) {
+        // 对象相同或对象数据相等
         return (a == b) || (a != null && a.equals(b));
     }
 
@@ -95,7 +77,8 @@ public final class Objects {
      * @see Object#hashCode
      */
     public static int hashCode(Object o) {
-        return o != null ? o.hashCode() : 0;
+        // 对象数据的散列码
+        return (o != null) ? o.hashCode() : 0;
     }
 
    /**
@@ -125,6 +108,7 @@ public final class Objects {
     * @see List#hashCode
     */
     public static int hash(Object... values) {
+        // 数组对象数据的散列码
         return Arrays.hashCode(values);
     }
 
@@ -139,6 +123,7 @@ public final class Objects {
      * @see String#valueOf(Object)
      */
     public static String toString(Object o) {
+        // 对象的字符串表示
         return String.valueOf(o);
     }
 
@@ -156,6 +141,7 @@ public final class Objects {
      * @see Objects#toString(Object)
      */
     public static String toString(Object o, String nullDefault) {
+        // null对象的字符串表示
         return (o != null) ? o.toString() : nullDefault;
     }
 
@@ -180,8 +166,11 @@ public final class Objects {
      * @see Comparator
      */
     public static <T> int compare(T a, T b, Comparator<? super T> c) {
+        // 比较两个对象
         return (a == b) ? 0 :  c.compare(a, b);
     }
+
+    // 状态检查
 
     /**
      * Checks that the specified object reference is not {@code null}. This
@@ -192,6 +181,7 @@ public final class Objects {
      *     this.bar = Objects.requireNonNull(bar);
      * }
      * </pre></blockquote>
+     * 检查指定的对象引用是否不为空。
      *
      * @param obj the object reference to check for nullity
      * @param <T> the type of the reference
@@ -199,6 +189,7 @@ public final class Objects {
      * @throws NullPointerException if {@code obj} is {@code null}
      */
     public static <T> T requireNonNull(T obj) {
+        // 若对象为null，则抛出NPE空指针异常
         if (obj == null)
             throw new NullPointerException();
         return obj;
@@ -232,9 +223,11 @@ public final class Objects {
     /**
      * Returns {@code true} if the provided reference is {@code null} otherwise
      * returns {@code false}.
+     * 如果提供的对象引用是null，则返回true；否则，返回false。
      *
      * @apiNote This method exists to be used as a
      * {@link java.util.function.Predicate}, {@code filter(Objects::isNull)}
+     * 本方法作为谓词存在，filter(Objects::isNull)
      *
      * @param obj a reference to be checked against {@code null}
      * @return {@code true} if the provided reference is {@code null} otherwise
@@ -244,15 +237,18 @@ public final class Objects {
      * @since 1.8
      */
     public static boolean isNull(Object obj) {
+        // 判断对象为null
         return obj == null;
     }
 
     /**
      * Returns {@code true} if the provided reference is non-{@code null}
      * otherwise returns {@code false}.
+     * 如果提供的对象引用是非null，则返回true；否则，返回false。
      *
      * @apiNote This method exists to be used as a
      * {@link java.util.function.Predicate}, {@code filter(Objects::nonNull)}
+     * 本方法作为谓词存在，filter(Objects::nonNull)
      *
      * @param obj a reference to be checked against {@code null}
      * @return {@code true} if the provided reference is non-{@code null}
@@ -276,6 +272,9 @@ public final class Objects {
      * call this method care should be taken that the costs of
      * creating the message supplier are less than the cost of just
      * creating the string message directly.
+     * 本方法允许将消息的创建延迟到进行空检查之后。
+     * 虽然在非空情况下这可能带来性能优势，但在决定调用本方法时，应该注意创建消息提供者的成本要低于直接创建字符串消息的成本。
+     * 降低对象创建的成本
      *
      * @param obj     the object reference to check for nullity
      * @param messageSupplier supplier of the detail message to be

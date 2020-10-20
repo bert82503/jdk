@@ -1,3 +1,4 @@
+
 package java.util.function;
 
 import java.util.Objects;
@@ -5,30 +6,30 @@ import java.util.Objects;
 /**
  * Represents a function that accepts one argument and produces a result.
  * <p>
- * 表示接受一个参数并产生一个结果的一元函数。
+ * 从T到R的一元函数，表示接受一个参数并产生一个结果的一元函数。
  *
  * <p>This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #apply(Object)}.
  *
- * @param <T> the type of the input to the function 函数的入参类型
- * @param <R> the type of the result of the function 函数的结果类型
+ * @param <T> the type of the input to the function 函数入参的类型
+ * @param <R> the type of the result of the function 函数结果的类型
  *
  * @since 1.8
  */
-// 核心接口 从T到R的一元函数，接受一个参数并产生一个结果的一元函数
 @FunctionalInterface
 public interface Function<T, R> {
 
     /**
      * Applies this function to the given argument.
+     * 应用本函数到给定的参数。
      *
      * @param t the function argument 函数参数
      * @return the function result 函数结果
      */
-    // 核心方法 应用本函数到给定的参数
     R apply(T t);
 
-    // 连续组合的函数(before、after)
+    // 连续的组合函数(before、after)
+
     /**
      * Returns a composed function that first applies the {@code before}
      * function to its input, and then applies this function to the result.
@@ -39,7 +40,7 @@ public interface Function<T, R> {
      * (V -> T -> R)
      *
      * @param <V> the type of input to the {@code before} function, and to the
-     *           composed function {@code before}函数的输入参数类型
+     *           composed function {@code before} 函数的输入参数类型
      * @param before the function to apply before this function is applied
      * @return a composed function that first applies the {@code before}
      * function and then applies this function
@@ -58,7 +59,7 @@ public interface Function<T, R> {
      * If evaluation of either function throws an exception, it is relayed to
      * the caller of the composed function.
      * <p>
-     * 返回一个after的组合函数。
+     * 返回一个after的组合函数，首先应用本函数到其输入参数，然后应用{@code after}函数到中间结果。
      * (T -> R -> V)
      *
      * @param <V> the type of output of the {@code after} function, and of the
@@ -75,11 +76,13 @@ public interface Function<T, R> {
         return (T t) -> after.apply(apply(t));
     }
 
-    // 总是返回其入参的函数
+    // 等价函数
+
     /**
      * Returns a function that always returns its input argument.
+     * 返回一个始终返回其输入参数的函数。
      *
-     * @param <T> the type of the input and output objects to the function
+     * @param <T> the type of the input and output objects to the function 函数的输入和输出对象的类型
      * @return a function that always returns its input argument
      */
     static <T> Function<T, T> identity() {
