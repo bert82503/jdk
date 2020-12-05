@@ -8,7 +8,7 @@
  * contexts, such as assignment context, method invocation, or cast context:
  *
  * <pre>{@code
- *     // Assignment context 赋值上下文/方法引用
+ *     // Assignment context 赋值上下文/对象方法引用
  *     Predicate<String> p = String::isEmpty;
  *
  *     // Method invocation context 方法调用上下文
@@ -17,10 +17,10 @@
  *     // Cast context 转换上下文
  *     stream.map((ToIntFunction) e -> e.getSize())...
  * }</pre>
- * <em>函数式接口</em>提供lambda表达式和方法引用的目标类型。
+ * <em>函数式接口</em>为lambda表达式和方法引用提供目标类型。
  * 每个函数式接口有一个单一的抽象方法，称为<em>函数方法</em>。
  * 函数方法可以匹配或适配为lambda表达式的参数和返回类型。
- * 函数式接口可以在多个上下文中提供一个目标类型，如赋值上下文、方法调用、转换上下文。
+ * 函数式接口可以在多个上下文中提供一个目标类型，如赋值上下文、方法调用上下文、转换上下文。
  *
  * <p>The interfaces in this package are general purpose functional interfaces
  * used by the JDK, and are available to be used by user code as well.  While
@@ -30,7 +30,7 @@
  * such as {@link java.io.FileFilter}, are defined in the packages where they
  * are used.
  * 本包中的接口是通用的函数式接口。
- * 虽然并不确定是一套完整的功能集，适配各种lambda表达式形式，但它们提供足够的共同要求。
+ * 虽然并不确定是一套完整的功能集，适配各种lambda表达式形式，但它们提供足够的服务来满足常见的需求。
  * 其它提供特定用途的函数式接口定义在使用的包中。
  *
  * <p>The interfaces in this package are annotated with
@@ -51,8 +51,8 @@
  * provided function to...", this is understood to mean a <i>non-null</i>
  * reference to an object implementing the appropriate functional interface,
  * unless potential nullity is explicitly specified.
- * 函数式接口往往代表抽象的概念，如函数、操作、谓词。
- * 在记录函数式接口或引用函数式接口类型作为变量中，这是常见的直接引用这些抽象的概念。
+ * 函数式接口通常表示抽象概念，如函数、操作、谓词。
+ * 在记录函数式接口或引用函数式接口类型作为变量中，这是常见的直接引用这些抽象概念。
  * 当一个API方法接受或返回一个函数式接口，这是指一个非null对象的引用，该对象实现相应的函数式接口。
  *
  * <p>The functional interfaces in this package follow an extensible naming
@@ -100,18 +100,18 @@
  * 本包中的函数式接口遵循一个可扩展的命名约定：
  *
  * <ul>
- *     <li>几种基本的函数形式，包括
+ *     <li>几种基本的函数形式(一元函数)，包括
  *     {@link java.util.function.Function}(从T到R的一元函数)，
- *     {@link java.util.function.Consumer}(从T到void的一元函数)，
- *     {@link java.util.function.Predicate}(从T到boolean的一元函数)，
- *     {@link java.util.function.Supplier}(生产T的函数)。
+ *     {@link java.util.function.Consumer}(从T到void的一元函数，对象消费者)，
+ *     {@link java.util.function.Predicate}(从T到boolean的一元函数，谓词)，
+ *     {@link java.util.function.Supplier}(生产T的函数，对象生产者)。
  *     </li>
  *
- *     <li>函数形式有基于最常用的天然数量。基本的形式可以修改一个实参数量的前缀或指示一个不同的数量。
+ *     <li>函数形式有基于最常用的自然特性(二元函数)。基本的形式可以修改一个实参数量的前缀或指示一个不同的数量。
  *     如{@link java.util.function.BiFunction}(从T、U到R的二元函数)
  *     </li>
  *
- *     <li>有其它派生类的函数形式，它们扩展了基本的函数形式。包括
+ *     <li>有其它派生类的函数形式，它们扩展了基本的函数形式(运算符)。包括
  *     {@link java.util.function.UnaryOperator}(一元运算符，继承自Function)，
  *     {@link java.util.function.BinaryOperator}(二元运算符，继承自BiFunction)。
  *     </li>

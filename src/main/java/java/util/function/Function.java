@@ -29,6 +29,7 @@ public interface Function<T, R> {
     R apply(T t);
 
     // 连续的组合函数(before、after)
+    // 默认函数
 
     /**
      * Returns a composed function that first applies the {@code before}
@@ -37,7 +38,7 @@ public interface Function<T, R> {
      * the caller of the composed function.
      * <p>
      * 返回一个before的组合函数，首先应用{@code before}函数到其输入参数，然后应用本函数到中间结果。
-     * (V -> T -> R)
+     * before -> this (V -> T -> R)
      *
      * @param <V> the type of input to the {@code before} function, and to the
      *           composed function {@code before} 函数的输入参数类型
@@ -60,7 +61,7 @@ public interface Function<T, R> {
      * the caller of the composed function.
      * <p>
      * 返回一个after的组合函数，首先应用本函数到其输入参数，然后应用{@code after}函数到中间结果。
-     * (T -> R -> V)
+     * this -> after (T -> R -> V)
      *
      * @param <V> the type of output of the {@code after} function, and of the
      *           composed function
@@ -77,10 +78,13 @@ public interface Function<T, R> {
     }
 
     // 等价函数
+    // 静态函数
 
     /**
      * Returns a function that always returns its input argument.
      * 返回一个始终返回其输入参数的函数。
+     *
+     * {@code Function::identity()}
      *
      * @param <T> the type of the input and output objects to the function 函数的输入和输出对象的类型
      * @return a function that always returns its input argument
