@@ -4,7 +4,7 @@ import java.util.Objects;
 
 /**
  * Represents a predicate (boolean-valued function) of one argument.
- * 表示具有一个参数的谓词(布尔值函数)。
+ * 布尔值函数，表示具有一个参数的谓词。
  *
  * <p>This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #test(Object)}.
