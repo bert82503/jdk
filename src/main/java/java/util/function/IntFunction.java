@@ -5,7 +5,7 @@ package java.util.function;
  * result.  This is the {@code int}-consuming primitive specialization for
  * {@link Function}.
  * 整数值函数，表示接受一个整数值参数并生成结果的函数。
- * 从int到对象类型R的一元函数。
+ * 从int到R类型的一元函数。
  *
  * <p>This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #apply(int)}.

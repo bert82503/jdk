@@ -5,7 +5,7 @@ package java.util.function;
  * result.  This is the {@code long}-consuming primitive specialization for
  * {@link Function}.
  * 长整数值函数，表示接受一个长整数值参数并生成结果的函数。
- * 从long到对象类型R的一元函数。
+ * 从long到R类型的一元函数。
  *
  * <p>This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #apply(long)}.

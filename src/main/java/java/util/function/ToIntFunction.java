@@ -4,7 +4,7 @@ package java.util.function;
  * Represents a function that produces an int-valued result.  This is the
  * {@code int}-producing primitive specialization for {@link Function}.
  * 表示生成整数值结果的函数。
- * 从对象类型T到int的一元函数。
+ * 从T类型到int的一元函数。
  *
  * <p>This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #applyAsInt(Object)}.

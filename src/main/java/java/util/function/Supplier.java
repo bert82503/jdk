@@ -2,7 +2,7 @@ package java.util.function;
 
 /**
  * Represents a supplier of results.
- * 表示结果的供应商，对象生产者。
+ * 结果生产者，表示返回结果的供应商。
  *
  * <p>There is no requirement that a new or distinct result be returned each
  * time the supplier is invoked.
@@ -11,12 +11,12 @@ package java.util.function;
  * <p>This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #get()}.
  *
- * @param <T> the type of results supplied by this supplier 本供应商提供的结果类型
+ * @param <R> the type of results supplied by this supplier 本供应商提供的结果类型
  *
  * @since 1.8
  */
 @FunctionalInterface
-public interface Supplier<T> {
+public interface Supplier<R> {
 
     /**
      * Gets a result.
@@ -24,5 +24,5 @@ public interface Supplier<T> {
      *
      * @return a result
      */
-    T get();
+    R get();
 }

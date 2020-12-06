@@ -4,7 +4,7 @@ package java.util.function;
  * Represents a function that produces a double-valued result.  This is the
  * {@code double}-producing primitive specialization for {@link Function}.
  * 表示生成浮点值结果的函数。
- * 从对象类型T到double的一元函数。
+ * 从T类型到double的一元函数。
  *
  * <p>This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #applyAsDouble(Object)}.
