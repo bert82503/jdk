@@ -8,6 +8,7 @@ import java.util.Comparator;
  * of the same type as the operands.  This is a specialization of
  * {@link BiFunction} for the case where the operands and the result are all of
  * the same type.
+ * 二元运算符，表示两个相同类型的操作数，生产与操作数类型相同的结果。
  *
  * <p>This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #apply(Object, Object)}.
@@ -18,10 +19,11 @@ import java.util.Comparator;
  * @see UnaryOperator
  * @since 1.8
  */
-// 二元运算符(两个相同类型的操作数，生产与操作数类型相同的结果)
 @FunctionalInterface
 public interface BinaryOperator<T> extends BiFunction<T, T, T> {
+
     // 最小值、最大值 比较
+
     /**
      * Returns a {@link BinaryOperator} which returns the lesser of two elements
      * according to the specified {@code Comparator}.
