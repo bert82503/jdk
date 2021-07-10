@@ -5,6 +5,7 @@ import java.util.Objects;
 /**
  * Represents a predicate (boolean-valued function) of two arguments.  This is
  * the two-arity specialization of {@link Predicate}.
+ * 表示两个参数的谓词(返回布尔值的函数)。
  *
  * <p>This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #test(Object, Object)}.
@@ -15,12 +16,12 @@ import java.util.Objects;
  * @see Predicate
  * @since 1.8
  */
-// 表示两个参数的谓词(返回布尔值的函数)
 @FunctionalInterface
 public interface BiPredicate<T, U> {
 
     /**
      * Evaluates this predicate on the given arguments.
+     * 对给定的参数计算本谓词。
      *
      * @param t the first input argument
      * @param u the second input argument
@@ -28,6 +29,9 @@ public interface BiPredicate<T, U> {
      * otherwise {@code false}
      */
     boolean test(T t, U u);
+
+    // 谓词函数：与、非、或
+    // 默认函数
 
     /**
      * Returns a composed predicate that represents a short-circuiting logical

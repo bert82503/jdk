@@ -7,6 +7,7 @@ import java.util.Objects;
  * result.  This is the two-arity specialization of {@link Consumer}.
  * Unlike most other functional interfaces, {@code BiConsumer} is expected
  * to operate via side-effects.
+ * 从T、U到void的二元函数，一个接受两个入参但不返回任何结果的操作。
  *
  * <p>This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #accept(Object, Object)}.
@@ -17,20 +18,21 @@ import java.util.Objects;
  * @see Consumer
  * @since 1.8
  */
-// 从T、U到void的二元函数，一个接受两个入参但不返回任何结果的操作
 @FunctionalInterface
 public interface BiConsumer<T, U> {
 
     /**
      * Performs this operation on the given arguments.
+     * 对所有给定的参数执行本操作。
      *
-     * @param t the first input argument
-     * @param u the second input argument
+     * @param t the first input argument 第一个函数参数
+     * @param u the second input argument 第二个函数参数
      */
-    // 对所有给定的参数执行本操作
     void accept(T t, U u);
 
-    // N多个消费者模式
+    // 使用场景：N个消费者模式，责任链模式
+    // 默认函数
+
     /**
      * Returns a composed {@code BiConsumer} that performs, in sequence, this
      * operation followed by the {@code after} operation. If performing either
