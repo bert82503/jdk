@@ -4,6 +4,7 @@ package java.util.function;
  * Represents an operation upon two {@code long}-valued operands and producing a
  * {@code long}-valued result.   This is the primitive type specialization of
  * {@link BinaryOperator} for {@code long}.
+ * 二元长整数运算符。
  *
  * <p>This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #applyAsLong(long, long)}.
@@ -12,12 +13,12 @@ package java.util.function;
  * @see LongUnaryOperator
  * @since 1.8
  */
-// 二元长整数运算符
 @FunctionalInterface
 public interface LongBinaryOperator {
 
     /**
      * Applies this operator to the given operands.
+     * 应用本运算符到所有给定的参数。
      *
      * @param left the first operand
      * @param right the second operand
