@@ -14,6 +14,7 @@ import java.util.function.Supplier;
  * @since 1.7
  */
 public final class Objects {
+
     private Objects() {
         // 不可实例化保护
         throw new AssertionError("No java.util.Objects instances for you!");
@@ -145,6 +146,9 @@ public final class Objects {
         return (o != null) ? o.toString() : nullDefault;
     }
 
+    // 值比较
+    // Comparator
+
     /**
      * Returns 0 if the arguments are identical and {@code
      * c.compare(a, b)} otherwise.
@@ -170,7 +174,8 @@ public final class Objects {
         return (a == b) ? 0 :  c.compare(a, b);
     }
 
-    // 状态检查
+    // 状态校验
+    // 参数校验
 
     /**
      * Checks that the specified object reference is not {@code null}. This
@@ -220,6 +225,8 @@ public final class Objects {
         return obj;
     }
 
+    // 过滤函数
+
     /**
      * Returns {@code true} if the provided reference is {@code null} otherwise
      * returns {@code false}.
@@ -260,6 +267,8 @@ public final class Objects {
     public static boolean nonNull(Object obj) {
         return obj != null;
     }
+
+    // 对象生产者
 
     /**
      * Checks that the specified object reference is not {@code null} and
