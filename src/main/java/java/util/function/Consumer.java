@@ -6,7 +6,7 @@ import java.util.Objects;
  * Represents an operation that accepts a single input argument and returns no
  * result. Unlike most other functional interfaces, {@code Consumer} is expected
  * to operate via side-effects.
- * 从T到void的一元函数，表示一个接受一个输入参数但不返回任何结果的操作。
+ * 从T到void的一元函数，表示接受一个输入参数但不返回任何结果的操作。
  * 对象消费者被期望通过副作用操作。
  *
  * <p>This is a <a href="package-summary.html">functional interface</a>
@@ -27,8 +27,8 @@ public interface Consumer<T> {
      */
     void accept(T t);
 
-    // 使用场景：N个消费者模式，责任链模式
     // 默认函数
+    // 使用场景：N个消费者模式，责任链模式
 
     /**
      * Returns a composed {@code Consumer} that performs, in sequence, this

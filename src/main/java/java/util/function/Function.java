@@ -27,8 +27,9 @@ public interface Function<T, R> {
      */
     R apply(T t);
 
-    // 连续的组合函数(before、after)
     // 默认函数
+    // 连续的组合函数(before、after)
+    // 使用场景：责任链模式
 
     /**
      * Returns a composed function that first applies the {@code before}
