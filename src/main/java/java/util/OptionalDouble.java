@@ -8,6 +8,7 @@ import java.util.function.Supplier;
  * A container object which may or may not contain a {@code double} value.
  * If a value is present, {@code isPresent()} will return {@code true} and
  * {@code getAsDouble()} will return the value.
+ * 可能包含浮点数的容器对象。
  *
  * <p>Additional methods that depend on the presence or absence of a contained
  * value are provided, such as {@link #orElse(double) orElse()}
@@ -23,8 +24,8 @@ import java.util.function.Supplier;
  * @since 1.8
  * @see java.util.Optional
  */
-// [函数式接口] 可能包含浮点数的容器对象
 public final class OptionalDouble {
+
     /**
      * Common instance for {@code empty()}.
      */
@@ -36,6 +37,9 @@ public final class OptionalDouble {
      * true表示值是存在的
      */
     private final boolean isPresent;
+    /**
+     * 有意义的值
+     */
     private final double value;
 
     /**
@@ -45,7 +49,8 @@ public final class OptionalDouble {
      * should exist per VM.
      */
     private OptionalDouble() {
-        this.isPresent = false; // 值不存在
+        // 值不存在
+        this.isPresent = false;
         this.value = Double.NaN;
     }
 
@@ -167,11 +172,13 @@ public final class OptionalDouble {
         if (isPresent) {
             return value;
         } else {
-            throw exceptionSupplier.get(); // 值不存在，则抛出异常(fail-fast，快速失败)
+            // 值不存在，则抛出异常(fail-fast，快速失败)
+            throw exceptionSupplier.get();
         }
     }
 
-    // ----------------- Object -----------------
+    // Object
+
     /**
      * Indicates whether some other object is "equal to" this OptionalDouble. The
      * other object is considered equal if:
@@ -196,8 +203,9 @@ public final class OptionalDouble {
         }
 
         OptionalDouble other = (OptionalDouble) obj;
+        // 注意：浮点数比较
         return (isPresent && other.isPresent)
-               ? Double.compare(value, other.value) == 0 // 注意：浮点数比较
+               ? Double.compare(value, other.value) == 0
                : isPresent == other.isPresent;
     }
 

@@ -8,6 +8,7 @@ import java.util.function.Supplier;
  * A container object which may or may not contain a {@code long} value.
  * If a value is present, {@code isPresent()} will return {@code true} and
  * {@code getAsLong()} will return the value.
+ * 可能包含长整数值的容器对象。
  *
  * <p>Additional methods that depend on the presence or absence of a contained
  * value are provided, such as {@link #orElse(long) orElse()}
@@ -22,8 +23,8 @@ import java.util.function.Supplier;
  *
  * @since 1.8
  */
-// [函数式接口] 可能包含长整数值的容器对象
 public final class OptionalLong {
+
     /**
      * Common instance for {@code empty()}.
      */
@@ -47,7 +48,8 @@ public final class OptionalLong {
      * should exist per VM.
      */
     private OptionalLong() {
-        this.isPresent = false; // 值不存在
+        // 值不存在
+        this.isPresent = false;
         this.value = 0;
     }
 
@@ -89,13 +91,13 @@ public final class OptionalLong {
     /**
      * If a value is present in this {@code OptionalLong}, returns the value,
      * otherwise throws {@code NoSuchElementException}.
+     * 如果值是存在的，则返回该值；否则，抛出没有这个元素异常。
      *
      * @return the value held by this {@code OptionalLong}
      * @throws NoSuchElementException if there is no value present
      *
      * @see OptionalLong#isPresent()
      */
-    // 核心方法 如果值是存在的，则返回该值；否则，抛出没有这个元素异常
     public long getAsLong() {
         if (!isPresent) {
             throw new NoSuchElementException("No value present");
@@ -170,11 +172,13 @@ public final class OptionalLong {
         if (isPresent) {
             return value;
         } else {
-            throw exceptionSupplier.get(); // 值不存在，则抛出异常(fail-fast，快速失败)
+            // 值不存在，则抛出异常(fail-fast，快速失败)
+            throw exceptionSupplier.get();
         }
     }
 
-    // ----------------- Object -----------------
+    // Object
+
     /**
      * Indicates whether some other object is "equal to" this OptionalLong. The
      * other object is considered equal if:

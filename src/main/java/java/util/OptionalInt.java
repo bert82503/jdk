@@ -8,6 +8,7 @@ import java.util.function.Supplier;
  * A container object which may or may not contain a {@code int} value.
  * If a value is present, {@code isPresent()} will return {@code true} and
  * {@code getAsInt()} will return the value.
+ * 可能包含整数值的容器对象。
  * 如果值是存在的，{@link #isPresent()} 返回true，{@link #getAsInt()} 返回该值。
  *
  * <p>Additional methods that depend on the presence or absence of a contained
@@ -24,8 +25,8 @@ import java.util.function.Supplier;
  * @since 1.8
  * @see java.util.Optional
  */
-// [函数式接口] 可能包含整数值的容器对象
 public final class OptionalInt {
+
     /**
      * Common instance for {@code empty()}.
      */
@@ -49,7 +50,8 @@ public final class OptionalInt {
      * should exist per VM.
      */
     private OptionalInt() {
-        this.isPresent = false; // 值不存在
+        // 值不存在
+        this.isPresent = false;
         this.value = 0;
     }
 
@@ -91,13 +93,13 @@ public final class OptionalInt {
     /**
      * If a value is present in this {@code OptionalInt}, returns the value,
      * otherwise throws {@code NoSuchElementException}.
+     * 如果值是存在的，则返回该值；否则，抛出没有这个元素异常。
      *
      * @return the value held by this {@code OptionalInt}
      * @throws NoSuchElementException if there is no value present
      *
      * @see OptionalInt#isPresent()
      */
-    // 核心方法 如果值是存在的，则返回该值；否则，抛出没有这个元素异常
     public int getAsInt() {
         if (!isPresent) {
             throw new NoSuchElementException("No value present");
@@ -148,7 +150,8 @@ public final class OptionalInt {
      * @throws NullPointerException if value is not present and {@code other} is
      * null
      */
-    public int orElseGet(IntSupplier other) { // 统一返回结果定义
+    public int orElseGet(IntSupplier other) {
+        // 统一返回结果定义
         return isPresent ? value : other.getAsInt();
     }
 
@@ -172,11 +175,13 @@ public final class OptionalInt {
         if (isPresent) {
             return value;
         } else {
-            throw exceptionSupplier.get(); // 值不存在，则抛出异常(fail-fast，快速失败)
+            // 值不存在，则抛出异常(fail-fast，快速失败)
+            throw exceptionSupplier.get();
         }
     }
 
-    // ----------------- Object -----------------
+    // Object
+
     /**
      * Indicates whether some other object is "equal to" this OptionalInt. The
      * other object is considered equal if:
