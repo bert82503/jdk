@@ -7,7 +7,7 @@ import java.util.Objects;
  * returns no result.  This is the primitive type specialization of
  * {@link Consumer} for {@code int}.  Unlike most other functional interfaces,
  * {@code IntConsumer} is expected to operate via side-effects.
- * 表示一个接受一个整数值参数但不返回任何结果的操作。
+ * 表示接受一个整数值参数但不返回任何结果的操作。
  * 对象消费者被期望通过副作用操作。
  *
  * <p>This is a <a href="package-summary.html">functional interface</a>
@@ -48,6 +48,9 @@ public interface IntConsumer {
      */
     default IntConsumer andThen(IntConsumer after) {
         Objects.requireNonNull(after);
-        return (int t) -> { accept(t); after.accept(t); };
+        return (int t) -> {
+            accept(t);
+            after.accept(t);
+        };
     }
 }
