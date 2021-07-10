@@ -6,6 +6,7 @@ import java.util.Objects;
 /**
  * Represents a function that accepts one argument and produces a result.
  * 从T到R的一元函数，表示接受一个参数并产生一个结果的一元函数。
+ * 类型转换体系
  *
  * <p>This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #apply(Object)}.
