@@ -27,8 +27,8 @@ public interface Consumer<T> {
      */
     void accept(T t);
 
-    // 默认函数
     // 使用场景：N个消费者模式，责任链模式
+    // 默认函数
 
     /**
      * Returns a composed {@code Consumer} that performs, in sequence, this
