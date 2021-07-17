@@ -1,27 +1,4 @@
-/*
- * Copyright (c) 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
+
 package java.util;
 
 import java.util.function.Consumer;
@@ -112,6 +89,7 @@ public final class Spliterators {
             new EmptySpliterator.OfDouble();
 
     // Array-based spliterators
+    // 基于数组的划分
 
     /**
      * Creates a {@code Spliterator} covering the elements of a given array,
@@ -396,6 +374,7 @@ public final class Spliterators {
     }
 
     // Iterator-based spliterators
+    // 基于迭代器的划分
 
     /**
      * Creates a {@code Spliterator} using the given collection's
@@ -832,6 +811,7 @@ public final class Spliterators {
     }
 
     // Implementations
+    // 实现类
 
     private static abstract class EmptySpliterator<T, S extends Spliterator<T>, C> {
 

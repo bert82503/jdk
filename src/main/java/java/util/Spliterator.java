@@ -1,27 +1,4 @@
-/*
- * Copyright (c) 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
+
 package java.util;
 
 import java.util.function.Consumer;
@@ -33,6 +10,7 @@ import java.util.function.LongConsumer;
  * An object for traversing and partitioning elements of a source.  The source
  * of elements covered by a Spliterator could be, for example, an array, a
  * {@link Collection}, an IO channel, or a generator function.
+ * 用于遍历和划分数据源元素的对象。
  *
  * <p>A Spliterator may traverse elements individually ({@link
  * #tryAdvance tryAdvance()}) or sequentially in bulk
@@ -294,6 +272,9 @@ import java.util.function.LongConsumer;
  * @since 1.8
  */
 public interface Spliterator<T> {
+
+    // 对象消费者
+
     /**
      * If a remaining element exists, performs the given action on it,
      * returning {@code true}; else returns {@code false}.  If this
@@ -325,6 +306,8 @@ public interface Spliterator<T> {
     default void forEachRemaining(Consumer<? super T> action) {
         do { } while (tryAdvance(action));
     }
+
+    // 遍历和划分
 
     /**
      * If this spliterator can be partitioned, returns a Spliterator
