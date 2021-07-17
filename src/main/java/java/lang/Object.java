@@ -1,3 +1,4 @@
+
 package java.lang;
 
 /**
@@ -12,10 +13,10 @@ package java.lang;
  * @see     java.lang.Class
  * @since   JDK1.0
  */
-// 核心类 类层次结构树的根
 public class Object {
 
     // 注册本地方法
+
     private static native void registerNatives();
     // 静态初始化块
     static {
@@ -23,13 +24,16 @@ public class Object {
     }
 
     // 类型
+
     /**
      * Returns the runtime class of this {@code Object}. The returned
      * {@code Class} object is the object that is locked by {@code
      * static synchronized} methods of the represented class.
      *
      * <p>返回对象的运行时类。
-     * 返回的{@code Class}对象是由所表示类的静态同步方法锁定的对象。</p>
+     * 返回的{@code Class}对象是由所表示类的静态同步方法锁定的对象。
+     *
+     * ?：泛型通配符，表示未知类型
      *
      * <p><b>The actual result type is {@code Class<? extends |X|>}
      * where {@code |X|} is the erasure of the static type of the
@@ -45,10 +49,11 @@ public class Object {
      *         class of this object.
      * @jls 15.8.2 Class Literals (类字面常量)
      */
-    // 核心方法 返回对象的运行时类
-    public final native Class<?> getClass(); // ?：泛型通配符，表示未知类型
+    public final native Class<?> getClass();
 
     // 等价性/散列映射
+    // 比较和散列
+
     /**
      * Returns a hash code value for the object. This method is
      * supported for the benefit of hash tables (散列表) such as those provided by
@@ -91,7 +96,6 @@ public class Object {
      * @see     #equals(Object)
      * @see     java.lang.System#identityHashCode
      */
-    // 核心方法 返回对象的散列码值
     public native int hashCode();
 
     /**
@@ -142,12 +146,13 @@ public class Object {
      * @see     #hashCode()
      * @see     java.util.HashMap
      */
-    // 核心方法 指出另一个对象是否"等于"这个对象
     public boolean equals(Object obj) {
-        return (this == obj); // 同一个对象
+        // 同一个对象，内存地址相同
+        return (this == obj);
     }
 
     // 复制
+
     /**
      * Creates and returns a copy of this object.  The precise meaning
      * of "copy" may depend on the class of the object. The general
@@ -213,6 +218,8 @@ public class Object {
     protected native Object clone() throws CloneNotSupportedException;
 
     // 字符串
+    // 使用场景：日志输出
+
     /**
      * Returns a string representation of the object. In general, the
      * {@code toString} method returns a string that
@@ -238,12 +245,13 @@ public class Object {
      *
      * @return  a string representation of the object.
      */
-    // 核心方法 返回对象的字符串表示
     public String toString() {
+        // 类名@散列的十六进制
         return getClass().getName() + "@" + Integer.toHexString(hashCode());
     }
 
     // 线程同步
+
     /**
      * Wakes up a single thread that is waiting on this object's
      * monitor. If any threads are waiting on this object, one of them
@@ -305,7 +313,6 @@ public class Object {
      * @see        java.lang.Object#notify()
      * @see        java.lang.Object#wait()
      */
-    // 核心方法 唤醒正在等待这个对象的监视器的所有线程
     public final native void notifyAll();
 
     /**
@@ -397,7 +404,6 @@ public class Object {
      * @see        java.lang.Object#notify()
      * @see        java.lang.Object#notifyAll()
      */
-    // 核心方法 使当前线程超时等待
     public final native void wait(long timeout) throws InterruptedException;
 
     /**
@@ -474,10 +480,12 @@ public class Object {
         }
 
         if (nanos > 0) {
-            timeout++; // +1
+            // +1
+            timeout++;
         }
 
-        wait(timeout); // 核心实现 超时等待
+        // 超时等待
+        wait(timeout);
     }
 
     /**
@@ -518,10 +526,11 @@ public class Object {
      * @see        java.lang.Object#notify()
      * @see        java.lang.Object#notifyAll()
      */
-    // 禁用 使当前线程无限等待
     public final void wait() throws InterruptedException {
         wait(0);
     }
+
+    // 垃圾回收
 
     /**
      * Called by the garbage collector on an object when garbage collection
