@@ -145,6 +145,7 @@ public final class Optional<T> {
     }
 
     // 函数式接口
+    // 函数式使用场景
 
     /**
      * If a value is present, invoke the specified consumer with the value,
@@ -188,6 +189,7 @@ public final class Optional<T> {
         }
     }
 
+    // 一元函数
     // 使用规则：flatMap(mapper) { map(mapper) }
 
     /**
@@ -273,6 +275,8 @@ public final class Optional<T> {
     /**
      * Return the value if present, otherwise return {@code other}.
      * 如果值存在，则返回该值；否则，返回默认值。
+     * <p>
+     * 注意：若other参数是方法调用返回结果，则每次都会被调用，当心！
      *
      * @param other the value to be returned if there is no value present, may
      * be null 可能为null
@@ -282,6 +286,9 @@ public final class Optional<T> {
 //        return value != null ? value : other;
         return isPresent() ? value : other;
     }
+
+    // 结果生产者
+    // 使用场景：数据延迟加载
 
     /**
      * Return the value if present, otherwise invoke {@code other} and return

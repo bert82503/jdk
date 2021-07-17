@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.util;
 
@@ -38,6 +14,7 @@ import java.util.stream.StreamSupport;
  * specific subinterfaces like <tt>Set</tt> and <tt>List</tt>.  This interface
  * is typically used to pass collections around and manipulate them where
  * maximum generality is desired.
+ * 集合层次结构中的根接口。
  *
  * <p><i>Bags</i> or <i>multisets</i> (unordered collections that may contain
  * duplicate elements) should implement this interface directly.
@@ -140,9 +117,10 @@ import java.util.stream.StreamSupport;
  * @see     AbstractCollection
  * @since 1.2
  */
-
 public interface Collection<E> extends Iterable<E> {
+
     // Query Operations
+    // 查询操作
 
     /**
      * Returns the number of elements in this collection.  If this collection
@@ -252,6 +230,7 @@ public interface Collection<E> extends Iterable<E> {
     <T> T[] toArray(T[] a);
 
     // Modification Operations
+    // 修改操作
 
     /**
      * Ensures that this collection contains the specified element (optional
@@ -312,6 +291,7 @@ public interface Collection<E> extends Iterable<E> {
 
 
     // Bulk Operations
+    // 批量操作
 
     /**
      * Returns <tt>true</tt> if this collection contains all of the elements
@@ -454,6 +434,8 @@ public interface Collection<E> extends Iterable<E> {
 
 
     // Comparison and hashing
+    // 比较和散列
+    // Object
 
     /**
      * Compares the specified object with this collection for equality. <p>
@@ -506,6 +488,10 @@ public interface Collection<E> extends Iterable<E> {
      * @see Object#equals(Object)
      */
     int hashCode();
+
+    // 默认函数
+
+    // 分而治之，分治思想
 
     /**
      * Creates a {@link Spliterator} over the elements in this collection.
@@ -561,6 +547,8 @@ public interface Collection<E> extends Iterable<E> {
     default Spliterator<E> spliterator() {
         return Spliterators.spliterator(this, 0);
     }
+
+    // 连续的数据流
 
     /**
      * Returns a sequential {@code Stream} with this collection as its source.
