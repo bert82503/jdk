@@ -1,27 +1,4 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
+
 package java.util.stream;
 
 import java.nio.charset.Charset;
@@ -60,6 +37,7 @@ import java.util.function.UnaryOperator;
  *                      .mapToInt(w -> w.getWeight())
  *                      .sum();
  * }</pre>
+ * 数据流，支持顺序和并行聚合操作的元素序列。
  *
  * In this example, {@code widgets} is a {@code Collection<Widget>}.  We create
  * a stream of {@code Widget} objects via {@link Collection#stream Collection.stream()},
@@ -83,6 +61,11 @@ import java.util.function.UnaryOperator;
  * Streams are lazy; computation on the source data is only performed when the
  * terminal operation is initiated, and source elements are consumed only
  * as needed.
+ * 为了执行计算，数据流操作被组成一个数据流管道。
+ * 数据流管道由数据源(可能是一个数组，一个集合，一个生成器函数，一个I/O通道等)组成，
+ * 零个或多个中间操作(变换数据流到另一个数据流，如谓词过滤器)，
+ * 和一个终结操作(产生结果或副作用，如计数器或对象消费者遍历器)。
+ * 数据流是懒惰的，源数据上的计算只在终结操作启动时执行，数据源元素只在需要时使用。
  *
  * <p>Collections and streams, while bearing some superficial similarities,
  * have different goals.  Collections are primarily concerned with the efficient
@@ -93,12 +76,16 @@ import java.util.function.UnaryOperator;
  * However, if the provided stream operations do not offer the desired
  * functionality, the {@link #iterator()} and {@link #spliterator()} operations
  * can be used to perform a controlled traversal.
+ * 集合和数据流虽然有一些表面上的相似之处，但具有不同的目标。
+ * 集合主要关注对其元素的有效管理和访问。
+ * 相反，数据流不提供直接访问或操作其元素的方法，而是关注于声明性地描述其数据源和将在该数据源上聚合执行的计算操作。
  *
  * <p>A stream pipeline, like the "widgets" example above, can be viewed as
  * a <em>query</em> on the stream source.  Unless the source was explicitly
  * designed for concurrent modification (such as a {@link ConcurrentHashMap}),
  * unpredictable or erroneous behavior may result from modifying the stream
  * source while it is being queried.
+ * 可以将数据流管道视为数据流源上的查询。
  *
  * <p>Most stream operations accept parameters that describe user-specified
  * behavior, such as the lambda expression {@code w -> w.getWeight()} passed to
@@ -125,6 +112,7 @@ import java.util.function.UnaryOperator;
  * if it detects that the stream is being reused. However, since some stream
  * operations may return their receiver rather than a new stream object, it may
  * not be possible to detect reuse in all cases.
+ * 对数据流(调用中间数据流或终结数据流操作)只能操作一次。
  *
  * <p>Streams have a {@link #close()} method and implement {@link AutoCloseable},
  * but nearly all stream instances do not actually need to be closed after use.
@@ -144,7 +132,7 @@ import java.util.function.UnaryOperator;
  * {@link #sequential()} or {@link #parallel()} methods, and may be queried with
  * the {@link #isParallel()} method.
  *
- * @param <T> the type of the stream elements
+ * @param <T> the type of the stream elements 数据流元素的类型
  * @since 1.8
  * @see IntStream
  * @see LongStream
@@ -153,12 +141,18 @@ import java.util.function.UnaryOperator;
  */
 public interface Stream<T> extends BaseStream<T, Stream<T>> {
 
+    // 中间操作
+
+    // 谓词过滤器
+
     /**
      * Returns a stream consisting of the elements of this stream that match
      * the given predicate.
+     * 返回一个数据流，由与给定谓词匹配的本数据流的元素组成。
      *
      * <p>This is an <a href="package-summary.html#StreamOps">intermediate
      * operation</a>.
+     * 这是一个中间操作。
      *
      * @param predicate a <a href="package-summary.html#NonInterference">non-interfering</a>,
      *                  <a href="package-summary.html#Statelessness">stateless</a>
@@ -168,12 +162,18 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      */
     Stream<T> filter(Predicate<? super T> predicate);
 
+    // 一元函数
+    // 类型映射转换
+    // 使用场景：一对一转换
+
     /**
      * Returns a stream consisting of the results of applying the given
      * function to the elements of this stream.
+     * 返回一个数据流，由将给定函数应用于本数据流的元素的结果组成。
      *
      * <p>This is an <a href="package-summary.html#StreamOps">intermediate
      * operation</a>.
+     * 这是一个中间操作。
      *
      * @param <R> The element type of the new stream
      * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
@@ -183,12 +183,15 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      */
     <R> Stream<R> map(Function<? super T, ? extends R> mapper);
 
+    // 一元函数 <-> 数据流
+
     /**
      * Returns an {@code IntStream} consisting of the results of applying the
      * given function to the elements of this stream.
      *
      * <p>This is an <a href="package-summary.html#StreamOps">
-     *     intermediate operation</a>.
+     * intermediate operation</a>.
+     * 这是一个中间操作。
      *
      * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
      *               <a href="package-summary.html#Statelessness">stateless</a>
@@ -203,6 +206,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *
      * <p>This is an <a href="package-summary.html#StreamOps">intermediate
      * operation</a>.
+     * 这是一个中间操作。
      *
      * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
      *               <a href="package-summary.html#Statelessness">stateless</a>
@@ -217,6 +221,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *
      * <p>This is an <a href="package-summary.html#StreamOps">intermediate
      * operation</a>.
+     * 这是一个中间操作。
      *
      * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
      *               <a href="package-summary.html#Statelessness">stateless</a>
@@ -225,6 +230,8 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      */
     DoubleStream mapToDouble(ToDoubleFunction<? super T> mapper);
 
+    // 使用场景：一对多转换
+
     /**
      * Returns a stream consisting of the results of replacing each element of
      * this stream with the contents of a mapped stream produced by applying
@@ -232,14 +239,17 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * {@link java.util.stream.BaseStream#close() closed} after its contents
      * have been placed into this stream.  (If a mapped stream is {@code null}
      * an empty stream is used, instead.)
+     * 返回一个数据流，由将提供的映射函数应用于每个元素而生成的映射数据流的内容替换本数据流中的每个元素的结果组成。
      *
      * <p>This is an <a href="package-summary.html#StreamOps">intermediate
      * operation</a>.
+     * 这是一个中间操作。
      *
      * @apiNote
      * The {@code flatMap()} operation has the effect of applying a one-to-many
      * transformation to the elements of the stream, and then flattening the
      * resulting elements into a new stream.
+     * 本操作的效果是对数据流的元素应用一对多转换，然后将生成的元素平展成一个新的数据流。
      *
      * <p><b>Examples.</b>
      *
@@ -269,6 +279,8 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      */
     <R> Stream<R> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper);
 
+    // 一元函数 <-> 数据流
+
     /**
      * Returns an {@code IntStream} consisting of the results of replacing each
      * element of this stream with the contents of a mapped stream produced by
@@ -279,6 +291,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *
      * <p>This is an <a href="package-summary.html#StreamOps">intermediate
      * operation</a>.
+     * 这是一个中间操作。
      *
      * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
      *               <a href="package-summary.html#Statelessness">stateless</a>
@@ -299,6 +312,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *
      * <p>This is an <a href="package-summary.html#StreamOps">intermediate
      * operation</a>.
+     * 这是一个中间操作。
      *
      * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
      *               <a href="package-summary.html#Statelessness">stateless</a>
@@ -319,6 +333,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *
      * <p>This is an <a href="package-summary.html#StreamOps">intermediate
      * operation</a>.
+     * 这是一个中间操作。
      *
      * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
      *               <a href="package-summary.html#Statelessness">stateless</a>
@@ -329,17 +344,23 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      */
     DoubleStream flatMapToDouble(Function<? super T, ? extends DoubleStream> mapper);
 
+    // 去重操作
+
     /**
      * Returns a stream consisting of the distinct elements (according to
      * {@link Object#equals(Object)}) of this stream.
+     * 返回一个数据流，由本数据流的不同元素组成，根据Object.equals(Object)。
      *
      * <p>For ordered streams, the selection of distinct elements is stable
      * (for duplicated elements, the element appearing first in the encounter
      * order is preserved.)  For unordered streams, no stability guarantees
      * are made.
+     * 对于有序数据流，不同元素的选择是稳定的(对于重复的元素，在相遇顺序中首先出现的元素将被保留)。
+     * 对于无序数据流，没有稳定性保证。
      *
      * <p>This is a <a href="package-summary.html#StreamOps">stateful
      * intermediate operation</a>.
+     * 这是一个中间操作。
      *
      * @apiNote
      * Preserving stability for {@code distinct()} in parallel pipelines is
@@ -358,17 +379,23 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      */
     Stream<T> distinct();
 
+    // 排序操作
+
     /**
      * Returns a stream consisting of the elements of this stream, sorted
      * according to natural order.  If the elements of this stream are not
      * {@code Comparable}, a {@code java.lang.ClassCastException} may be thrown
      * when the terminal operation is executed.
+     * 返回一个数据流，由本数据流中的元素组成，并按自然顺序排序。
+     * 本数据流的元素需要实现Comparable接口。
      *
      * <p>For ordered streams, the sort is stable.  For unordered streams, no
      * stability guarantees are made.
+     * 对于有序数据流，排序是稳定的。对于无序数据流，没有稳定性保证。
      *
      * <p>This is a <a href="package-summary.html#StreamOps">stateful
      * intermediate operation</a>.
+     * 这是一个中间操作。
      *
      * @return the new stream
      */
@@ -377,12 +404,16 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
     /**
      * Returns a stream consisting of the elements of this stream, sorted
      * according to the provided {@code Comparator}.
+     * 根据提供的比较器进行排序。
+     * 自定义的扩展
      *
      * <p>For ordered streams, the sort is stable.  For unordered streams, no
      * stability guarantees are made.
+     * 对于有序数据流，排序是稳定的。对于无序数据流，没有稳定性保证。
      *
      * <p>This is a <a href="package-summary.html#StreamOps">stateful
      * intermediate operation</a>.
+     * 这是一个中间操作。
      *
      * @param comparator a <a href="package-summary.html#NonInterference">non-interfering</a>,
      *                   <a href="package-summary.html#Statelessness">stateless</a>
@@ -391,18 +422,25 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      */
     Stream<T> sorted(Comparator<? super T> comparator);
 
+    // 对象消费者操作
+    // 使用场景：记录中间状态日志
+
     /**
      * Returns a stream consisting of the elements of this stream, additionally
      * performing the provided action on each element as elements are consumed
      * from the resulting stream.
+     * 返回一个由本数据流的元素组成的数据流，当从结果的数据流中使用元素时，对每个元素执行所提供的操作。
      *
      * <p>This is an <a href="package-summary.html#StreamOps">intermediate
      * operation</a>.
+     * 这是一个中间操作。
      *
      * <p>For parallel stream pipelines, the action may be called at
      * whatever time and in whatever thread the element is made available by the
      * upstream operation.  If the action modifies shared state,
      * it is responsible for providing the required synchronization.
+     * 对于并行的数据流管道，操作可以在上游操作提供元素的任何时间和线程中被调用。
+     * 如果操作修改了共享状态，则它负责提供所需的同步。
      *
      * @apiNote This method exists mainly to support debugging, where you want
      * to see the elements as they flow past a certain point in a pipeline:
@@ -422,12 +460,16 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      */
     Stream<T> peek(Consumer<? super T> action);
 
+    // 限制元素最大长度的操作
+
     /**
      * Returns a stream consisting of the elements of this stream, truncated
      * to be no longer than {@code maxSize} in length.
+     * 将其截断为长度不超过maxSize。
      *
      * <p>This is a <a href="package-summary.html#StreamOps">short-circuiting
      * stateful intermediate operation</a>.
+     * 这是一个短路状态的中间操作。
      *
      * @apiNote
      * While {@code limit()} is generally a cheap operation on sequential
@@ -449,6 +491,8 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      */
     Stream<T> limit(long maxSize);
 
+    // 忽略最前面N个元素的操作
+
     /**
      * Returns a stream consisting of the remaining elements of this stream
      * after discarding the first {@code n} elements of the stream.
@@ -457,6 +501,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *
      * <p>This is a <a href="package-summary.html#StreamOps">stateful
      * intermediate operation</a>.
+     * 这是一个有状态的中间操作。
      *
      * @apiNote
      * While {@code skip()} is generally a cheap operation on sequential
@@ -478,11 +523,18 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      */
     Stream<T> skip(long n);
 
+    // 终结操作
+
+    // 对象消费者操作
+    // for-each遍历元素
+
     /**
      * Performs an action for each element of this stream.
+     * 对本数据流的每个元素执行这个操作。
      *
      * <p>This is a <a href="package-summary.html#StreamOps">terminal
      * operation</a>.
+     * 这是一个终结操作。
      *
      * <p>The behavior of this operation is explicitly nondeterministic.
      * For parallel stream pipelines, this operation does <em>not</em>
@@ -500,9 +552,11 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
     /**
      * Performs an action for each element of this stream, in the encounter
      * order of the stream if the stream has a defined encounter order.
+     * 如果数据流有定义的遇到顺序，则按数据流的遇到顺序为给数据流的每个元素执行这个操作。
      *
      * <p>This is a <a href="package-summary.html#StreamOps">terminal
      * operation</a>.
+     * 这是一个终结操作。
      *
      * <p>This operation processes the elements one at a time, in encounter
      * order if one exists.  Performing the action for one element
@@ -516,15 +570,20 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      */
     void forEachOrdered(Consumer<? super T> action);
 
+    // 转换为数组操作
+
     /**
      * Returns an array containing the elements of this stream.
      *
      * <p>This is a <a href="package-summary.html#StreamOps">terminal
      * operation</a>.
+     * 这是一个终结操作。
      *
      * @return an array containing the elements of this stream
      */
     Object[] toArray();
+
+    // 对象数组生成器
 
     /**
      * Returns an array containing the elements of this stream, using the
@@ -534,6 +593,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *
      * <p>This is a <a href="package-summary.html#StreamOps">terminal
      * operation</a>.
+     * 这是一个终结操作。
      *
      * @apiNote
      * The generator function takes an integer, which is the size of the
@@ -555,6 +615,13 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      */
     <A> A[] toArray(IntFunction<A[]> generator);
 
+    // 切片-归约
+    // 分而治之策略
+    // MapReduce设计的一个理念就是“计算向数据靠拢”，而不是“数据向计算靠拢”，
+    // 原因是，移动数据需要大量的网络传输开销。
+    // 二元运算符
+    // 最小值、最大值 比较
+
     /**
      * Performs a <a href="package-summary.html#Reduction">reduction</a> on the
      * elements of this stream, using the provided identity value and an
@@ -567,6 +634,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *         result = accumulator.apply(result, element)
      *     return result;
      * }</pre>
+     * 使用提供的标识值和关联积累函数对本数据流的元素执行归约，并返回归约后的值。
      *
      * but is not constrained to execute sequentially.
      *
@@ -575,9 +643,11 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * {@code accumulator.apply(identity, t)} is equal to {@code t}.
      * The {@code accumulator} function must be an
      * <a href="package-summary.html#Associativity">associative</a> function.
+     * 积累函数必须是一个关联函数。
      *
      * <p>This is a <a href="package-summary.html#StreamOps">terminal
      * operation</a>.
+     * 这是一个终结操作。
      *
      * @apiNote Sum, min, max, average, and string concatenation are all special
      * cases of reduction. Summing a stream of numbers can be expressed as:
@@ -591,6 +661,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * <pre>{@code
      *     Integer sum = integers.reduce(0, Integer::sum);
      * }</pre>
+     * 求和、最小值、最大值，平均值和字符串连接都是归约的特殊情况。
      *
      * <p>While this may seem a more roundabout way to perform an aggregation
      * compared to simply mutating a running total in a loop, reduction
@@ -630,9 +701,11 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *
      * <p>The {@code accumulator} function must be an
      * <a href="package-summary.html#Associativity">associative</a> function.
+     * 积累函数必须是一个关联函数。
      *
      * <p>This is a <a href="package-summary.html#StreamOps">terminal
      * operation</a>.
+     * 这是一个终结操作。
      *
      * @param accumulator an <a href="package-summary.html#Associativity">associative</a>,
      *                    <a href="package-summary.html#NonInterference">non-interfering</a>,
@@ -645,6 +718,8 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * @see #max(Comparator)
      */
     Optional<T> reduce(BinaryOperator<T> accumulator);
+
+    // 二元函数 + 二元运算符
 
     /**
      * Performs a <a href="package-summary.html#Reduction">reduction</a> on the
@@ -670,6 +745,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *
      * <p>This is a <a href="package-summary.html#StreamOps">terminal
      * operation</a>.
+     * 这是一个终结操作。
      *
      * @apiNote Many reductions using this form can be represented more simply
      * by an explicit combination of {@code map} and {@code reduce} operations.
@@ -697,6 +773,9 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
                  BiFunction<U, ? super T, U> accumulator,
                  BinaryOperator<U> combiner);
 
+    // 收集元素操作
+    // 结果生产者 + 二元函数
+
     /**
      * Performs a <a href="package-summary.html#MutableReduction">mutable
      * reduction</a> operation on the elements of this stream.  A mutable
@@ -710,12 +789,14 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *         accumulator.accept(result, element);
      *     return result;
      * }</pre>
+     * 可变的归约操作
      *
      * <p>Like {@link #reduce(Object, BinaryOperator)}, {@code collect} operations
      * can be parallelized without requiring additional synchronization.
      *
      * <p>This is a <a href="package-summary.html#StreamOps">terminal
      * operation</a>.
+     * 这是一个终结操作。
      *
      * @apiNote There are many existing classes in the JDK whose signatures are
      * well-suited for use with method references as arguments to {@code collect()}.
@@ -752,6 +833,8 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
                   BiConsumer<R, ? super T> accumulator,
                   BiConsumer<R, R> combiner);
 
+    // 收集元素操作
+
     /**
      * Performs a <a href="package-summary.html#MutableReduction">mutable
      * reduction</a> operation on the elements of this stream using a
@@ -770,6 +853,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *
      * <p>This is a <a href="package-summary.html#StreamOps">terminal
      * operation</a>.
+     * 这是一个终结操作。
      *
      * <p>When executed in parallel, multiple intermediate results may be
      * instantiated, populated, and merged so as to maintain isolation of
@@ -806,12 +890,16 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      */
     <R, A> R collect(Collector<? super T, A, R> collector);
 
+    // 查找元素最小值的操作
+
     /**
      * Returns the minimum element of this stream according to the provided
      * {@code Comparator}.  This is a special case of a
      * <a href="package-summary.html#Reduction">reduction</a>.
+     * 根据提供的比较器
      *
      * <p>This is a <a href="package-summary.html#StreamOps">terminal operation</a>.
+     * 这是一个终结操作。
      *
      * @param comparator a <a href="package-summary.html#NonInterference">non-interfering</a>,
      *                   <a href="package-summary.html#Statelessness">stateless</a>
@@ -822,13 +910,17 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      */
     Optional<T> min(Comparator<? super T> comparator);
 
+    // 查找元素最大值的操作
+
     /**
      * Returns the maximum element of this stream according to the provided
      * {@code Comparator}.  This is a special case of a
      * <a href="package-summary.html#Reduction">reduction</a>.
+     * 根据提供的比较器
      *
      * <p>This is a <a href="package-summary.html#StreamOps">terminal
      * operation</a>.
+     * 这是一个终结操作。
      *
      * @param comparator a <a href="package-summary.html#NonInterference">non-interfering</a>,
      *                   <a href="package-summary.html#Statelessness">stateless</a>
@@ -846,21 +938,27 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * <pre>{@code
      *     return mapToLong(e -> 1L).sum();
      * }</pre>
+     * 返回本数据流中元素的计数。
      *
      * <p>This is a <a href="package-summary.html#StreamOps">terminal operation</a>.
+     * 这是一个终结操作。
      *
      * @return the count of elements in this stream
      */
     long count();
+
+    // 任意匹配操作
 
     /**
      * Returns whether any elements of this stream match the provided
      * predicate.  May not evaluate the predicate on all elements if not
      * necessary for determining the result.  If the stream is empty then
      * {@code false} is returned and the predicate is not evaluated.
+     * 返回本数据流的任何元素是否与提供的过滤器谓词函数匹配。
      *
      * <p>This is a <a href="package-summary.html#StreamOps">short-circuiting
      * terminal operation</a>.
+     * 这是一个短路的终结操作。
      *
      * @apiNote
      * This method evaluates the <em>existential quantification</em> of the
@@ -874,6 +972,8 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      */
     boolean anyMatch(Predicate<? super T> predicate);
 
+    // 所有都匹配操作
+
     /**
      * Returns whether all elements of this stream match the provided predicate.
      * May not evaluate the predicate on all elements if not necessary for
@@ -882,6 +982,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *
      * <p>This is a <a href="package-summary.html#StreamOps">short-circuiting
      * terminal operation</a>.
+     * 这是一个短路的终结操作。
      *
      * @apiNote
      * This method evaluates the <em>universal quantification</em> of the
@@ -897,6 +998,8 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      */
     boolean allMatch(Predicate<? super T> predicate);
 
+    // 所有都不匹配操作
+
     /**
      * Returns whether no elements of this stream match the provided predicate.
      * May not evaluate the predicate on all elements if not necessary for
@@ -905,6 +1008,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *
      * <p>This is a <a href="package-summary.html#StreamOps">short-circuiting
      * terminal operation</a>.
+     * 这是一个短路的终结操作。
      *
      * @apiNote
      * This method evaluates the <em>universal quantification</em> of the
@@ -920,6 +1024,8 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      */
     boolean noneMatch(Predicate<? super T> predicate);
 
+    // 查找第一个元素的操作
+
     /**
      * Returns an {@link Optional} describing the first element of this stream,
      * or an empty {@code Optional} if the stream is empty.  If the stream has
@@ -927,6 +1033,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *
      * <p>This is a <a href="package-summary.html#StreamOps">short-circuiting
      * terminal operation</a>.
+     * 这是一个短路的终结操作。
      *
      * @return an {@code Optional} describing the first element of this stream,
      * or an empty {@code Optional} if the stream is empty
@@ -934,12 +1041,15 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      */
     Optional<T> findFirst();
 
+    // 查找任意元素的操作
+
     /**
      * Returns an {@link Optional} describing some element of the stream, or an
      * empty {@code Optional} if the stream is empty.
      *
      * <p>This is a <a href="package-summary.html#StreamOps">short-circuiting
      * terminal operation</a>.
+     * 这是一个短路的终结操作。
      *
      * <p>The behavior of this operation is explicitly nondeterministic; it is
      * free to select any element in the stream.  This is to allow for maximal
@@ -955,6 +1065,9 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
     Optional<T> findAny();
 
     // Static factories
+    // 静态工厂方法
+
+    // 数据流的构建器
 
     /**
      * Returns a builder for a {@code Stream}.
@@ -966,8 +1079,11 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
         return new Streams.StreamBuilderImpl<>();
     }
 
+    // 空的数据流
+
     /**
      * Returns an empty sequential {@code Stream}.
+     * 返回一个空的有顺序的数据流。
      *
      * @param <T> the type of stream elements
      * @return an empty sequential stream
@@ -975,6 +1091,8 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
     public static<T> Stream<T> empty() {
         return StreamSupport.stream(Spliterators.<T>emptySpliterator(), false);
     }
+
+    // 构建新的数据流
 
     /**
      * Returns a sequential {@code Stream} containing a single element.
@@ -999,6 +1117,8 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
     public static<T> Stream<T> of(T... values) {
         return Arrays.stream(values);
     }
+
+    // 数据流迭代器
 
     /**
      * Returns an infinite sequential ordered {@code Stream} produced by iterative
@@ -1038,6 +1158,9 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
                 Spliterator.ORDERED | Spliterator.IMMUTABLE), false);
     }
 
+    // 数据流生成器
+    // 结果生产者
+
     /**
      * Returns an infinite sequential unordered stream where each element is
      * generated by the provided {@code Supplier}.  This is suitable for
@@ -1053,6 +1176,8 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
                 new StreamSpliterators.InfiniteSupplyingSpliterator.OfRef<>(Long.MAX_VALUE, s), false);
     }
 
+    // 数据流连接
+
     /**
      * Creates a lazily concatenated stream whose elements are all the
      * elements of the first stream followed by all the elements of the
@@ -1060,6 +1185,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * of the input streams are ordered, and parallel if either of the input
      * streams is parallel.  When the resulting stream is closed, the close
      * handlers for both input streams are invoked.
+     * 创建一个延迟连接的数据流，其元素是第一个数据流的所有元素，后面是第二个数据流的所有元素。
      *
      * @implNote
      * Use caution when constructing streams from repeated concatenation.
@@ -1087,6 +1213,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * {@code Stream} by generating elements individually and adding them to the
      * {@code Builder} (without the copying overhead that comes from using
      * an {@code ArrayList} as a temporary buffer.)
+     * 数据流的可变构建器。
      *
      * <p>A stream builder has a lifecycle, which starts in a building
      * phase, during which elements can be added, and then transitions to a built

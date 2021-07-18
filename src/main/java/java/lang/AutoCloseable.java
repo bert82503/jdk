@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 2009, 2011, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
@@ -29,12 +5,13 @@ package java.lang;
  * A resource that must be closed when it is no longer needed.
  * <p>
  * 资源在它不再被需要时，必须被关闭。
+ * [资源释放] 可自动关闭的资源（资源在不需要时必须关闭）
  *
  * @author Josh Bloch
  * @since 1.7
  */
-// 核心接口 [资源释放] 可自动关闭的资源（资源在不需要时必须关闭）
 public interface AutoCloseable {
+
     /**
      * Closes this resource, relinquishing any underlying resources.
      * This method is invoked automatically on objects managed by the
@@ -83,6 +60,5 @@ public interface AutoCloseable {
      *
      * @throws Exception if this resource cannot be closed (无法关闭此资源)
      */
-    // 核心方法 关闭此资源，放弃任何底层的资源(try-with-resources)
     void close() throws Exception;
 }

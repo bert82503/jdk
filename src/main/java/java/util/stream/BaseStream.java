@@ -1,38 +1,8 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
+
 package java.util.stream;
 
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Spliterator;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.IntConsumer;
-import java.util.function.Predicate;
 
 /**
  * Base interface for streams, which are sequences of elements supporting
@@ -46,14 +16,16 @@ import java.util.function.Predicate;
  *                      .mapToInt(w -> w.getWeight())
  *                      .sum();
  * }</pre>
+ * 数据流的基本接口，是支持顺序和并行聚合操作的元素序列。
  *
  * See the class documentation for {@link Stream} and the package documentation
  * for <a href="package-summary.html">java.util.stream</a> for additional
  * specification of streams, stream operations, stream pipelines, and
  * parallelism, which governs the behavior of all stream types.
+ * 数据流、数据流操作、数据流管道和并行性的附加规范，它们控制所有数据流类型的行为。
  *
- * @param <T> the type of the stream elements
- * @param <S> the type of of the stream implementing {@code BaseStream}
+ * @param <T> the type of the stream elements 数据流元素的类型
+ * @param <S> the type of of the stream implementing {@code BaseStream} 数据流的类型
  * @since 1.8
  * @see Stream
  * @see IntStream
@@ -63,8 +35,12 @@ import java.util.function.Predicate;
  */
 public interface BaseStream<T, S extends BaseStream<T, S>>
         extends AutoCloseable {
+
+    // 元素访问
+
     /**
      * Returns an iterator for the elements of this stream.
+     * 返回本数据流元素的迭代器。
      *
      * <p>This is a <a href="package-summary.html#StreamOps">terminal
      * operation</a>.
@@ -75,6 +51,7 @@ public interface BaseStream<T, S extends BaseStream<T, S>>
 
     /**
      * Returns a spliterator for the elements of this stream.
+     * 返回本数据流元素的划分器。
      *
      * <p>This is a <a href="package-summary.html#StreamOps">terminal
      * operation</a>.
@@ -92,10 +69,13 @@ public interface BaseStream<T, S extends BaseStream<T, S>>
      */
     boolean isParallel();
 
+    // 数据流
+
     /**
      * Returns an equivalent stream that is sequential.  May return
      * itself, either because the stream was already sequential, or because
      * the underlying stream state was modified to be sequential.
+     * 返回一个顺序的等效数据流。
      *
      * <p>This is an <a href="package-summary.html#StreamOps">intermediate
      * operation</a>.
@@ -108,6 +88,7 @@ public interface BaseStream<T, S extends BaseStream<T, S>>
      * Returns an equivalent stream that is parallel.  May return
      * itself, either because the stream was already parallel, or because
      * the underlying stream state was modified to be parallel.
+     * 返回并行的等效数据流。
      *
      * <p>This is an <a href="package-summary.html#StreamOps">intermediate
      * operation</a>.
@@ -152,6 +133,7 @@ public interface BaseStream<T, S extends BaseStream<T, S>>
     /**
      * Closes this stream, causing all close handlers for this stream pipeline
      * to be called.
+     * 关闭本数据流，从而调用本数据流管道的所有关闭处理程序。
      *
      * @see AutoCloseable#close()
      */
