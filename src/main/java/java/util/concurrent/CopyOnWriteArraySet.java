@@ -272,6 +272,7 @@ public class CopyOnWriteArraySet<E> extends AbstractSet<E>
      * @throws NullPointerException if the specified collection is null
      * @see #contains(Object)
      */
+    @Override
     public boolean containsAll(Collection<?> c) {
         return al.containsAll(c);
     }
@@ -289,6 +290,7 @@ public class CopyOnWriteArraySet<E> extends AbstractSet<E>
      * @throws NullPointerException if the specified collection is null
      * @see #add(Object)
      */
+    @Override
     public boolean addAll(Collection<? extends E> c) {
         return al.addAllAbsent(c) > 0;
     }
@@ -308,6 +310,7 @@ public class CopyOnWriteArraySet<E> extends AbstractSet<E>
      *         or if the specified collection is null
      * @see #remove(Object)
      */
+    @Override
     public boolean removeAll(Collection<?> c) {
         return al.removeAll(c);
     }
@@ -329,6 +332,7 @@ public class CopyOnWriteArraySet<E> extends AbstractSet<E>
      *         or if the specified collection is null
      * @see #remove(Object)
      */
+    @Override
     public boolean retainAll(Collection<?> c) {
         return al.retainAll(c);
     }

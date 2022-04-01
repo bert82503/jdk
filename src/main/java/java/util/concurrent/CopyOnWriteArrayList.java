@@ -652,6 +652,7 @@ public class CopyOnWriteArrayList<E>
      * @throws NullPointerException if the specified collection is null
      * @see #contains(Object)
      */
+    @Override
     public boolean containsAll(Collection<?> c) {
         Object[] elements = getArray();
         int len = elements.length;
@@ -678,6 +679,7 @@ public class CopyOnWriteArrayList<E>
      *         or if the specified collection is null
      * @see #remove(Object)
      */
+    @Override
     public boolean removeAll(Collection<?> c) {
         if (c == null) throw new NullPointerException();
         final ReentrantLock lock = this.lock;
@@ -721,6 +723,7 @@ public class CopyOnWriteArrayList<E>
      *         or if the specified collection is null
      * @see #remove(Object)
      */
+    @Override
     public boolean retainAll(Collection<?> c) {
         if (c == null) throw new NullPointerException();
         final ReentrantLock lock = this.lock;
@@ -811,6 +814,7 @@ public class CopyOnWriteArrayList<E>
      * @throws NullPointerException if the specified collection is null
      * @see #add(Object)
      */
+    @Override
     public boolean addAll(Collection<? extends E> c) {
         Object[] cs = (c.getClass() == CopyOnWriteArrayList.class) ?
             ((CopyOnWriteArrayList<?>)c).getArray() : c.toArray();
@@ -850,6 +854,7 @@ public class CopyOnWriteArrayList<E>
      * @throws NullPointerException if the specified collection is null
      * @see #add(int,Object)
      */
+    @Override
     public boolean addAll(int index, Collection<? extends E> c) {
         Object[] cs = c.toArray();
         final ReentrantLock lock = this.lock;
@@ -917,6 +922,7 @@ public class CopyOnWriteArrayList<E>
         }
     }
 
+    @Override
     public void replaceAll(UnaryOperator<E> operator) {
         if (operator == null) throw new NullPointerException();
         final ReentrantLock lock = this.lock;
@@ -935,6 +941,7 @@ public class CopyOnWriteArrayList<E>
         }
     }
 
+    @Override
     public void sort(Comparator<? super E> c) {
         final ReentrantLock lock = this.lock;
         lock.lock();
@@ -1282,6 +1289,7 @@ public class CopyOnWriteArrayList<E>
                                                     ",Size: "+size);
         }
 
+        @Override
         public E set(int index, E element) {
             final ReentrantLock lock = l.lock;
             lock.lock();
@@ -1319,6 +1327,7 @@ public class CopyOnWriteArrayList<E>
             }
         }
 
+        @Override
         public void add(int index, E element) {
             final ReentrantLock lock = l.lock;
             lock.lock();
@@ -1381,6 +1390,7 @@ public class CopyOnWriteArrayList<E>
             }
         }
 
+        @Override
         public ListIterator<E> listIterator(int index) {
             final ReentrantLock lock = l.lock;
             lock.lock();
@@ -1395,6 +1405,7 @@ public class CopyOnWriteArrayList<E>
             }
         }
 
+        @Override
         public List<E> subList(int fromIndex, int toIndex) {
             final ReentrantLock lock = l.lock;
             lock.lock();
@@ -1424,6 +1435,7 @@ public class CopyOnWriteArrayList<E>
             }
         }
 
+        @Override
         public void replaceAll(UnaryOperator<E> operator) {
             if (operator == null) throw new NullPointerException();
             final ReentrantLock lock = l.lock;
@@ -1448,6 +1460,7 @@ public class CopyOnWriteArrayList<E>
             }
         }
 
+        @Override
         public void sort(Comparator<? super E> c) {
             final ReentrantLock lock = l.lock;
             lock.lock();
@@ -1469,6 +1482,7 @@ public class CopyOnWriteArrayList<E>
             }
         }
 
+        @Override
         public boolean removeAll(Collection<?> c) {
             if (c == null) throw new NullPointerException();
             boolean removed = false;
@@ -1509,6 +1523,7 @@ public class CopyOnWriteArrayList<E>
             return removed;
         }
 
+        @Override
         public boolean retainAll(Collection<?> c) {
             if (c == null) throw new NullPointerException();
             boolean removed = false;
