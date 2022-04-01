@@ -12,6 +12,7 @@ import java.util.function.Supplier;
  * <p>
  * 可能包含null值的容器对象。
  * 如果值是存在的，{@link #isPresent()}会返回true，{@link #get()}会返回该值。
+ * 单个元素的容器，具有集合容器的函数式和数据流的操作能力。
  *
  * <p>Additional methods that depend on the presence or absence of a contained
  * value are provided, such as {@link #orElse(java.lang.Object) orElse()}
@@ -44,7 +45,7 @@ public final class Optional<T> {
     /**
      * If non-null, the value; if null, indicates no value is present
      * <p>
-     * null表示值不存在
+     * 可选的值，null表示值不存在
      */
     private final T value;
 
@@ -87,6 +88,8 @@ public final class Optional<T> {
         // 必须是非null值
         this.value = Objects.requireNonNull(value);
     }
+
+    // 静态工厂方法
 
     /**
      * Returns an {@code Optional} with the specified present non-null value.
@@ -134,6 +137,8 @@ public final class Optional<T> {
         return value;
     }
 
+    // 谓词函数
+
     /**
      * Return {@code true} if there is a value present, otherwise {@code false}.
      * 如果是存在的值，则返回true；否则，返回false。
@@ -146,6 +151,7 @@ public final class Optional<T> {
 
     // 函数式接口
     // 函数式使用场景
+    // 对象消费者-Consumer
 
     /**
      * If a value is present, invoke the specified consumer with the value,
@@ -166,6 +172,7 @@ public final class Optional<T> {
     }
 
     // 第一层：过滤
+    // 谓词函数-Predicate
 
     /**
      * If a value is present, and the value matches the given predicate,
@@ -189,7 +196,7 @@ public final class Optional<T> {
         }
     }
 
-    // 一元函数
+    // 一元函数-Function
     // 使用规则：flatMap(mapper) { map(mapper) }
 
     /**
@@ -287,15 +294,15 @@ public final class Optional<T> {
         return isPresent() ? value : other;
     }
 
-    // 结果生产者
+    // 结果对象生产者-Supplier
     // 使用场景：数据延迟加载
 
     /**
      * Return the value if present, otherwise invoke {@code other} and return
      * the result of that invocation.
      * 如果值存在，则返回该值；否则，调用结果提供者并返回调用的结果。
-     * 使用场景：数据多层保护设计，如 Cache + DB
-     * 数据延迟加载
+     * 使用场景：数据多层保护设计，如 Cache + DB。
+     * 数据延迟加载，数据获取成本较大。
      *
      * @param other a {@code Supplier} whose result is returned if no value
      * is present
@@ -307,6 +314,8 @@ public final class Optional<T> {
 //        return value != null ? value : other.get();
         return isPresent() ? value : other.get();
     }
+
+    // 异常对象提供者-Supplier
 
     /**
      * Return the contained value, if present, otherwise throw an exception
