@@ -110,6 +110,7 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
      * @throws IllegalArgumentException      {@inheritDoc}
      * @throws IndexOutOfBoundsException     {@inheritDoc}
      */
+    @Override
     public E set(int index, E element) {
         try {
             ListIterator<E> e = listIterator(index);
@@ -141,6 +142,7 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
      * @throws IllegalArgumentException      {@inheritDoc}
      * @throws IndexOutOfBoundsException     {@inheritDoc}
      */
+    @Override
     public void add(int index, E element) {
         try {
             listIterator(index).add(element);
@@ -209,6 +211,7 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
      * @throws IllegalArgumentException      {@inheritDoc}
      * @throws IndexOutOfBoundsException     {@inheritDoc}
      */
+    @Override
     public boolean addAll(int index, Collection<? extends E> c) {
         try {
             boolean modified = false;
@@ -249,5 +252,6 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
      *         sequence)
      * @throws IndexOutOfBoundsException {@inheritDoc}
      */
+    @Override
     public abstract ListIterator<E> listIterator(int index);
 }

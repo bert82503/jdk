@@ -223,6 +223,7 @@ public class TreeMap<K,V>
      *         and this map uses natural ordering, or its comparator
      *         does not permit null keys
      */
+    @Override
     public boolean containsKey(Object key) {
         return getEntry(key) != null;
     }
@@ -240,6 +241,7 @@ public class TreeMap<K,V>
      *         {@code false} otherwise
      * @since 1.2
      */
+    @Override
     public boolean containsValue(Object value) {
         for (Entry<K,V> e = getFirstEntry(); e != null; e = successor(e))
             if (valEquals(value, e.value))
@@ -304,6 +306,7 @@ public class TreeMap<K,V>
      *         the specified map contains a null key and this map does not
      *         permit null keys
      */
+    @Override
     public void putAll(Map<? extends K, ? extends V> map) {
         int mapSize = map.size();
         if (size==0 && mapSize!=0 && map instanceof SortedMap) {
@@ -794,6 +797,7 @@ public class TreeMap<K,V>
      * operations.  It does not support the {@code add} or {@code addAll}
      * operations.
      */
+    @Override
     public Set<K> keySet() {
         return navigableKeySet();
     }
@@ -828,6 +832,7 @@ public class TreeMap<K,V>
      * {@code retainAll} and {@code clear} operations.  It does not
      * support the {@code add} or {@code addAll} operations.
      */
+    @Override
     public Collection<V> values() {
         Collection<V> vs = values;
         return (vs != null) ? vs : (values = new Values());
@@ -848,6 +853,7 @@ public class TreeMap<K,V>
      * {@code clear} operations.  It does not support the
      * {@code add} or {@code addAll} operations.
      */
+    @Override
     public Set<Map.Entry<K,V>> entrySet() {
         EntrySet es = entrySet;
         return (es != null) ? es : (entrySet = new EntrySet());
@@ -1398,6 +1404,7 @@ public class TreeMap<K,V>
             return (fromStart && toEnd) ? m.size() : entrySet().size();
         }
 
+        @Override
         public final boolean containsKey(Object key) {
             return inRange(key) && m.containsKey(key);
         }
@@ -1491,6 +1498,7 @@ public class TreeMap<K,V>
                 (navigableKeySetView = new TreeMap.KeySet(this));
         }
 
+        @Override
         public final Set<K> keySet() {
             return navigableKeySet();
         }
@@ -1753,6 +1761,7 @@ public class TreeMap<K,V>
             }
         }
 
+        @Override
         public Set<Map.Entry<K,V>> entrySet() {
             EntrySetView es = entrySetView;
             return (es != null) ? es : new AscendingEntrySetView();
@@ -1834,6 +1843,7 @@ public class TreeMap<K,V>
             }
         }
 
+        @Override
         public Set<Map.Entry<K,V>> entrySet() {
             EntrySetView es = entrySetView;
             return (es != null) ? es : new DescendingEntrySetView();
@@ -1866,6 +1876,7 @@ public class TreeMap<K,V>
                                        fromStart, fromKey, true,
                                        toEnd, toKey, false);
         }
+        @Override
         public Set<Map.Entry<K,V>> entrySet() { throw new InternalError(); }
         public K lastKey() { throw new InternalError(); }
         public K firstKey() { throw new InternalError(); }

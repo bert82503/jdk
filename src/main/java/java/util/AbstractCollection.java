@@ -57,8 +57,8 @@ package java.util;
  * @see Collection
  * @since 1.2
  */
-
 public abstract class AbstractCollection<E> implements Collection<E> {
+
     /**
      * Sole constructor.  (For invocation by subclass constructors, typically
      * implicit.)
@@ -67,14 +67,17 @@ public abstract class AbstractCollection<E> implements Collection<E> {
     }
 
     // Query Operations
+    // 查询操作
 
     /**
      * Returns an iterator over the elements contained in this collection.
      *
      * @return an iterator over the elements contained in this collection
      */
+    @Override
     public abstract Iterator<E> iterator();
 
+    @Override
     public abstract int size();
 
     /**
@@ -82,6 +85,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      *
      * <p>This implementation returns <tt>size() == 0</tt>.
      */
+    @Override
     public boolean isEmpty() {
         return size() == 0;
     }
@@ -95,16 +99,21 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * @throws ClassCastException   {@inheritDoc}
      * @throws NullPointerException {@inheritDoc}
      */
+    @Override
     public boolean contains(Object o) {
         Iterator<E> it = iterator();
         if (o==null) {
-            while (it.hasNext())
-                if (it.next()==null)
+            while (it.hasNext()) {
+                if (it.next()==null) {
                     return true;
+                }
+            }
         } else {
-            while (it.hasNext())
-                if (o.equals(it.next()))
+            while (it.hasNext()) {
+                if (o.equals(it.next())) {
                     return true;
+                }
+            }
         }
         return false;
     }
@@ -131,13 +140,16 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * return list.toArray();
      * }</pre>
      */
+    @Override
     public Object[] toArray() {
         // Estimate size of array; be prepared to see more or fewer elements
         Object[] r = new Object[size()];
         Iterator<E> it = iterator();
         for (int i = 0; i < r.length; i++) {
             if (! it.hasNext()) // fewer elements than expected
+            {
                 return Arrays.copyOf(r, i);
+            }
             r[i] = it.next();
         }
         return it.hasNext() ? finishToArray(r, it) : r;
@@ -170,6 +182,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * @throws ArrayStoreException  {@inheritDoc}
      * @throws NullPointerException {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public <T> T[] toArray(T[] a) {
         // Estimate size of array; be prepared to see more or fewer elements
@@ -225,8 +238,9 @@ public abstract class AbstractCollection<E> implements Collection<E> {
             if (i == cap) {
                 int newCap = cap + (cap >> 1) + 1;
                 // overflow-conscious code
-                if (newCap - MAX_ARRAY_SIZE > 0)
+                if (newCap - MAX_ARRAY_SIZE > 0) {
                     newCap = hugeCapacity(cap + 1);
+                }
                 r = Arrays.copyOf(r, newCap);
             }
             r[i++] = (T)it.next();
@@ -237,14 +251,17 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 
     private static int hugeCapacity(int minCapacity) {
         if (minCapacity < 0) // overflow
+        {
             throw new OutOfMemoryError
                 ("Required array size too large");
+        }
         return (minCapacity > MAX_ARRAY_SIZE) ?
             Integer.MAX_VALUE :
             MAX_ARRAY_SIZE;
     }
 
     // Modification Operations
+    // 修改操作
 
     /**
      * {@inheritDoc}
@@ -258,6 +275,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * @throws IllegalArgumentException      {@inheritDoc}
      * @throws IllegalStateException         {@inheritDoc}
      */
+    @Override
     public boolean add(E e) {
         throw new UnsupportedOperationException();
     }
@@ -278,6 +296,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * @throws ClassCastException            {@inheritDoc}
      * @throws NullPointerException          {@inheritDoc}
      */
+    @Override
     public boolean remove(Object o) {
         Iterator<E> it = iterator();
         if (o==null) {
@@ -300,6 +319,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 
 
     // Bulk Operations
+    // 批量操作
 
     /**
      * {@inheritDoc}
@@ -313,10 +333,13 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * @throws NullPointerException          {@inheritDoc}
      * @see #contains(Object)
      */
+    @Override
     public boolean containsAll(Collection<?> c) {
-        for (Object e : c)
-            if (!contains(e))
+        for (Object e : c) {
+            if (!contains(e)) {
                 return false;
+            }
+        }
         return true;
     }
 
@@ -338,11 +361,14 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      *
      * @see #add(Object)
      */
+    @Override
     public boolean addAll(Collection<? extends E> c) {
         boolean modified = false;
-        for (E e : c)
-            if (add(e))
+        for (E e : c) {
+            if (add(e)) {
                 modified = true;
+            }
+        }
         return modified;
     }
 
@@ -367,6 +393,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * @see #remove(Object)
      * @see #contains(Object)
      */
+    @Override
     public boolean removeAll(Collection<?> c) {
         Objects.requireNonNull(c);
         boolean modified = false;
@@ -401,6 +428,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * @see #remove(Object)
      * @see #contains(Object)
      */
+    @Override
     public boolean retainAll(Collection<?> c) {
         Objects.requireNonNull(c);
         boolean modified = false;
@@ -429,6 +457,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      *
      * @throws UnsupportedOperationException {@inheritDoc}
      */
+    @Override
     public void clear() {
         Iterator<E> it = iterator();
         while (it.hasNext()) {
@@ -438,7 +467,8 @@ public abstract class AbstractCollection<E> implements Collection<E> {
     }
 
 
-    //  String conversion
+    // String conversion
+    // 字符串转换
 
     /**
      * Returns a string representation of this collection.  The string
@@ -450,18 +480,21 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      *
      * @return a string representation of this collection
      */
+    @Override
     public String toString() {
         Iterator<E> it = iterator();
-        if (! it.hasNext())
+        if (! it.hasNext()) {
             return "[]";
+        }
 
         StringBuilder sb = new StringBuilder();
         sb.append('[');
         for (;;) {
             E e = it.next();
             sb.append(e == this ? "(this Collection)" : e);
-            if (! it.hasNext())
+            if (! it.hasNext()) {
                 return sb.append(']').toString();
+            }
             sb.append(',').append(' ');
         }
     }

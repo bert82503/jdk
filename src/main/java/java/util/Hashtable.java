@@ -388,6 +388,7 @@ public class Hashtable<K,V>
      * @throws NullPointerException  if the value is <code>null</code>
      * @since 1.2
      */
+    @Override
     public boolean containsValue(Object value) {
         return contains(value);
     }
@@ -402,6 +403,7 @@ public class Hashtable<K,V>
      * @throws  NullPointerException  if the key is <code>null</code>
      * @see     #contains(Object)
      */
+    @Override
     public synchronized boolean containsKey(Object key) {
         Entry tab[] = table;
         int hash = hash(key);
@@ -582,6 +584,7 @@ public class Hashtable<K,V>
      * @throws NullPointerException if the specified map is null
      * @since 1.2
      */
+    @Override
     public synchronized void putAll(Map<? extends K, ? extends V> t) {
         for (Map.Entry<? extends K, ? extends V> e : t.entrySet())
             put(e.getKey(), e.getValue());
@@ -700,6 +703,7 @@ public class Hashtable<K,V>
      *
      * @since 1.2
      */
+    @Override
     public Set<K> keySet() {
         if (keySet == null)
             keySet = Collections.synchronizedSet(new KeySet(), this);
@@ -740,6 +744,7 @@ public class Hashtable<K,V>
      *
      * @since 1.2
      */
+    @Override
     public Set<Map.Entry<K,V>> entrySet() {
         if (entrySet==null)
             entrySet = Collections.synchronizedSet(new EntrySet(), this);
@@ -820,6 +825,7 @@ public class Hashtable<K,V>
      *
      * @since 1.2
      */
+    @Override
     public Collection<V> values() {
         if (values==null)
             values = Collections.synchronizedCollection(new ValueCollection(),

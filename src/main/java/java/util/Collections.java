@@ -1081,15 +1081,19 @@ public class Collections {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean containsAll(Collection<?> coll) {
             return c.containsAll(coll);
         }
+        @Override
         public boolean addAll(Collection<? extends E> coll) {
             throw new UnsupportedOperationException();
         }
+        @Override
         public boolean removeAll(Collection<?> coll) {
             throw new UnsupportedOperationException();
         }
+        @Override
         public boolean retainAll(Collection<?> coll) {
             throw new UnsupportedOperationException();
         }
@@ -1341,6 +1345,7 @@ public class Collections {
         }
         public int indexOf(Object o)            {return list.indexOf(o);}
         public int lastIndexOf(Object o)        {return list.lastIndexOf(o);}
+        @Override
         public boolean addAll(int index, Collection<? extends E> c) {
             throw new UnsupportedOperationException();
         }
@@ -1474,7 +1479,9 @@ public class Collections {
 
         public int size()                        {return m.size();}
         public boolean isEmpty()                 {return m.isEmpty();}
+        @Override
         public boolean containsKey(Object key)   {return m.containsKey(key);}
+        @Override
         public boolean containsValue(Object val) {return m.containsValue(val);}
         public V get(Object key)                 {return m.get(key);}
 
@@ -1484,6 +1491,7 @@ public class Collections {
         public V remove(Object key) {
             throw new UnsupportedOperationException();
         }
+        @Override
         public void putAll(Map<? extends K, ? extends V> m) {
             throw new UnsupportedOperationException();
         }
@@ -1495,18 +1503,21 @@ public class Collections {
         private transient Set<Map.Entry<K,V>> entrySet;
         private transient Collection<V> values;
 
+        @Override
         public Set<K> keySet() {
             if (keySet==null)
                 keySet = unmodifiableSet(m.keySet());
             return keySet;
         }
 
+        @Override
         public Set<Map.Entry<K,V>> entrySet() {
             if (entrySet==null)
                 entrySet = new UnmodifiableEntrySet<>(m.entrySet());
             return entrySet;
         }
 
+        @Override
         public Collection<V> values() {
             if (values==null)
                 values = unmodifiableCollection(m.values());
@@ -1736,6 +1747,7 @@ public class Collections {
              * an unscrupulous List whose contains(Object o) method senses
              * when o is a Map.Entry, and calls o.setValue.
              */
+            @Override
             public boolean containsAll(Collection<?> coll) {
                 for (Object e : coll) {
                     if (!contains(e)) // Invokes safe contains() above
@@ -2067,15 +2079,19 @@ public class Collections {
             synchronized (mutex) {return c.remove(o);}
         }
 
+        @Override
         public boolean containsAll(Collection<?> coll) {
             synchronized (mutex) {return c.containsAll(coll);}
         }
+        @Override
         public boolean addAll(Collection<? extends E> coll) {
             synchronized (mutex) {return c.addAll(coll);}
         }
+        @Override
         public boolean removeAll(Collection<?> coll) {
             synchronized (mutex) {return c.removeAll(coll);}
         }
+        @Override
         public boolean retainAll(Collection<?> coll) {
             synchronized (mutex) {return c.retainAll(coll);}
         }
@@ -2462,6 +2478,7 @@ public class Collections {
             synchronized (mutex) {return list.lastIndexOf(o);}
         }
 
+        @Override
         public boolean addAll(int index, Collection<? extends E> c) {
             synchronized (mutex) {return list.addAll(index, c);}
         }
@@ -2603,9 +2620,11 @@ public class Collections {
         public boolean isEmpty() {
             synchronized (mutex) {return m.isEmpty();}
         }
+        @Override
         public boolean containsKey(Object key) {
             synchronized (mutex) {return m.containsKey(key);}
         }
+        @Override
         public boolean containsValue(Object value) {
             synchronized (mutex) {return m.containsValue(value);}
         }
@@ -2619,6 +2638,7 @@ public class Collections {
         public V remove(Object key) {
             synchronized (mutex) {return m.remove(key);}
         }
+        @Override
         public void putAll(Map<? extends K, ? extends V> map) {
             synchronized (mutex) {m.putAll(map);}
         }
@@ -2630,6 +2650,7 @@ public class Collections {
         private transient Set<Map.Entry<K,V>> entrySet;
         private transient Collection<V> values;
 
+        @Override
         public Set<K> keySet() {
             synchronized (mutex) {
                 if (keySet==null)
@@ -2638,6 +2659,7 @@ public class Collections {
             }
         }
 
+        @Override
         public Set<Map.Entry<K,V>> entrySet() {
             synchronized (mutex) {
                 if (entrySet==null)
@@ -2646,6 +2668,7 @@ public class Collections {
             }
         }
 
+        @Override
         public Collection<V> values() {
             synchronized (mutex) {
                 if (values==null)
@@ -2922,6 +2945,7 @@ public class Collections {
             }
         }
 
+        @Override
         public NavigableSet<K> keySet() {
             return navigableKeySet();
         }
@@ -3087,12 +3111,15 @@ public class Collections {
         public boolean remove(Object o)   { return c.remove(o); }
         public void clear()               {        c.clear(); }
 
+        @Override
         public boolean containsAll(Collection<?> coll) {
             return c.containsAll(coll);
         }
+        @Override
         public boolean removeAll(Collection<?> coll) {
             return c.removeAll(coll);
         }
+        @Override
         public boolean retainAll(Collection<?> coll) {
             return c.retainAll(coll);
         }
@@ -3139,6 +3166,7 @@ public class Collections {
             return (Collection<E>) Arrays.asList(a);
         }
 
+        @Override
         public boolean addAll(Collection<? extends E> coll) {
             // Doing things this way insulates us from concurrent changes
             // in the contents of coll and provides all-or-nothing
@@ -3208,12 +3236,16 @@ public class Collections {
             this.queue = queue;
         }
 
+        @Override
         public E element()              {return queue.element();}
         public boolean equals(Object o) {return o == this || c.equals(o);}
         public int hashCode()           {return c.hashCode();}
+        @Override
         public E peek()                 {return queue.peek();}
+        @Override
         public E poll()                 {return queue.poll();}
         public E remove()               {return queue.remove();}
+        @Override
         public boolean offer(E e)       {return queue.offer(typeCheck(e));}
     }
 
@@ -3470,6 +3502,7 @@ public class Collections {
             list.add(index, typeCheck(element));
         }
 
+        @Override
         public boolean addAll(int index, Collection<? extends E> c) {
             return list.addAll(index, checkedCopyOf(c));
         }
@@ -3635,12 +3668,16 @@ public class Collections {
 
         public int size()                      { return m.size(); }
         public boolean isEmpty()               { return m.isEmpty(); }
+        @Override
         public boolean containsKey(Object key) { return m.containsKey(key); }
+        @Override
         public boolean containsValue(Object v) { return m.containsValue(v); }
         public V get(Object key)               { return m.get(key); }
         public V remove(Object key)            { return m.remove(key); }
         public void clear()                    { m.clear(); }
+        @Override
         public Set<K> keySet()                 { return m.keySet(); }
+        @Override
         public Collection<V> values()          { return m.values(); }
         public boolean equals(Object o)        { return o == this || m.equals(o); }
         public int hashCode()                  { return m.hashCode(); }
@@ -3651,6 +3688,7 @@ public class Collections {
             return m.put(key, value);
         }
 
+        @Override
         @SuppressWarnings("unchecked")
         public void putAll(Map<? extends K, ? extends V> t) {
             // Satisfy the following goals:
@@ -3674,6 +3712,7 @@ public class Collections {
 
         private transient Set<Map.Entry<K,V>> entrySet;
 
+        @Override
         public Set<Map.Entry<K,V>> entrySet() {
             if (entrySet==null)
                 entrySet = new CheckedEntrySet<>(m.entrySet(), valueType);
@@ -3774,6 +3813,7 @@ public class Collections {
             public boolean add(Map.Entry<K, V> e) {
                 throw new UnsupportedOperationException();
             }
+            @Override
             public boolean addAll(Collection<? extends Map.Entry<K, V>> coll) {
                 throw new UnsupportedOperationException();
             }
@@ -3848,6 +3888,7 @@ public class Collections {
              * against an unscrupulous collection whose contains(Object o)
              * method senses when o is a Map.Entry, and calls o.setValue.
              */
+            @Override
             public boolean containsAll(Collection<?> c) {
                 for (Object o : c)
                     if (!contains(o)) // Invokes safe contains() above
@@ -3862,9 +3903,11 @@ public class Collections {
                                 <>((Map.Entry<?,?>)o));
             }
 
+            @Override
             public boolean removeAll(Collection<?> c) {
                 return batchRemove(c, false);
             }
+            @Override
             public boolean retainAll(Collection<?> c) {
                 return batchRemove(c, true);
             }
@@ -4144,6 +4187,7 @@ public class Collections {
             return checkedNavigableMap(nm.descendingMap(), keyType, valueType);
         }
 
+        @Override
         public NavigableSet<K> keySet() {
             return navigableKeySet();
         }
@@ -4607,11 +4651,16 @@ public class Collections {
 
         public int size()                          {return 0;}
         public boolean isEmpty()                   {return true;}
+        @Override
         public boolean containsKey(Object key)     {return false;}
+        @Override
         public boolean containsValue(Object value) {return false;}
         public V get(Object key)                   {return null;}
+        @Override
         public Set<K> keySet()                     {return emptySet();}
+        @Override
         public Collection<V> values()              {return emptySet();}
+        @Override
         public Set<Map.Entry<K,V>> entrySet()      {return emptySet();}
 
         public boolean equals(Object o) {
@@ -4907,7 +4956,9 @@ public class Collections {
 
         public int size()                                           {return 1;}
         public boolean isEmpty()                                {return false;}
+        @Override
         public boolean containsKey(Object key)             {return eq(key, k);}
+        @Override
         public boolean containsValue(Object value)       {return eq(value, v);}
         public V get(Object key)              {return (eq(key, k) ? v : null);}
 
@@ -4915,12 +4966,14 @@ public class Collections {
         private transient Set<Map.Entry<K,V>> entrySet;
         private transient Collection<V> values;
 
+        @Override
         public Set<K> keySet() {
             if (keySet==null)
                 keySet = singleton(k);
             return keySet;
         }
 
+        @Override
         public Set<Map.Entry<K,V>> entrySet() {
             if (entrySet==null)
                 entrySet = Collections.<Map.Entry<K,V>>singleton(
@@ -4928,6 +4981,7 @@ public class Collections {
             return entrySet;
         }
 
+        @Override
         public Collection<V> values() {
             if (values==null)
                 values = singleton(v);
@@ -5571,10 +5625,14 @@ public class Collections {
         private final Deque<E> q;
         AsLIFOQueue(Deque<E> q)           { this.q = q; }
         public boolean add(E e)           { q.addFirst(e); return true; }
+        @Override
         public boolean offer(E e)         { return q.offerFirst(e); }
+        @Override
         public E poll()                   { return q.pollFirst(); }
         public E remove()                 { return q.removeFirst(); }
+        @Override
         public E peek()                   { return q.peekFirst(); }
+        @Override
         public E element()                { return q.getFirst(); }
         public void clear()               {        q.clear(); }
         public int size()                 { return q.size(); }

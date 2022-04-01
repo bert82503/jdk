@@ -268,6 +268,7 @@ public class LinkedHashMap<K,V>
      * @return <tt>true</tt> if this map maps one or more keys to the
      *         specified value
      */
+    @Override
     public boolean containsValue(Object value) {
         // Overridden to take advantage of faster iterator
         if (value==null) {

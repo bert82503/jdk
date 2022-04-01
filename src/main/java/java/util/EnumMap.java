@@ -199,6 +199,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V>
      * @param value the value whose presence in this map is to be tested
      * @return <tt>true</tt> if this map maps one or more keys to this value
      */
+    @Override
     public boolean containsValue(Object value) {
         value = maskNull(value);
 
@@ -217,6 +218,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V>
      * @return <tt>true</tt> if this map contains a mapping for the specified
      *            key
      */
+    @Override
     public boolean containsKey(Object key) {
         return isValidKey(key) && vals[((Enum)key).ordinal()] != null;
     }
@@ -329,6 +331,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V>
      * @throws NullPointerException the specified map is null, or if
      *     one or more keys in the specified map are null
      */
+    @Override
     public void putAll(Map<? extends K, ? extends V> m) {
         if (m instanceof EnumMap) {
             EnumMap<? extends K, ? extends V> em =
@@ -378,6 +381,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V>
      *
      * @return a set view of the keys contained in this enum map
      */
+    @Override
     public Set<K> keySet() {
         Set<K> ks = keySet;
         if (ks != null)
@@ -416,6 +420,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V>
      *
      * @return a collection view of the values contained in this map
      */
+    @Override
     public Collection<V> values() {
         Collection<V> vs = values;
         if (vs != null)
@@ -460,6 +465,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V>
      *
      * @return a set view of the mappings contained in this enum map
      */
+    @Override
     public Set<Map.Entry<K,V>> entrySet() {
         Set<Map.Entry<K,V>> es = entrySet;
         if (es != null)
