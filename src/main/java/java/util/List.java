@@ -107,9 +107,10 @@ import java.util.function.UnaryOperator;
  * @see AbstractSequentialList
  * @since 1.2
  */
-
 public interface List<E> extends Collection<E> {
+
     // Query Operations
+    // 查询操作
 
     /**
      * Returns the number of elements in this list.  If this list contains
@@ -118,6 +119,7 @@ public interface List<E> extends Collection<E> {
      *
      * @return the number of elements in this list
      */
+    @Override
     int size();
 
     /**
@@ -125,6 +127,7 @@ public interface List<E> extends Collection<E> {
      *
      * @return <tt>true</tt> if this list contains no elements
      */
+    @Override
     boolean isEmpty();
 
     /**
@@ -142,6 +145,7 @@ public interface List<E> extends Collection<E> {
      *         list does not permit null elements
      * (<a href="Collection.html#optional-restrictions">optional</a>)
      */
+    @Override
     boolean contains(Object o);
 
     /**
@@ -149,6 +153,7 @@ public interface List<E> extends Collection<E> {
      *
      * @return an iterator over the elements in this list in proper sequence
      */
+    @Override
     Iterator<E> iterator();
 
     /**
@@ -167,6 +172,7 @@ public interface List<E> extends Collection<E> {
      *         sequence
      * @see Arrays#asList(Object[])
      */
+    @Override
     Object[] toArray();
 
     /**
@@ -208,10 +214,12 @@ public interface List<E> extends Collection<E> {
      *         this list
      * @throws NullPointerException if the specified array is null
      */
+    @Override
     <T> T[] toArray(T[] a);
 
 
     // Modification Operations
+    // 修改操作
 
     /**
      * Appends the specified element to the end of this list (optional
@@ -235,6 +243,7 @@ public interface List<E> extends Collection<E> {
      * @throws IllegalArgumentException if some property of this element
      *         prevents it from being added to this list
      */
+    @Override
     boolean add(E e);
 
     /**
@@ -258,6 +267,7 @@ public interface List<E> extends Collection<E> {
      * @throws UnsupportedOperationException if the <tt>remove</tt> operation
      *         is not supported by this list
      */
+    @Override
     boolean remove(Object o);
 
 
@@ -281,6 +291,7 @@ public interface List<E> extends Collection<E> {
      *         or if the specified collection is null
      * @see #contains(Object)
      */
+    @Override
     boolean containsAll(Collection<?> c);
 
     /**
@@ -304,6 +315,7 @@ public interface List<E> extends Collection<E> {
      *         specified collection prevents it from being added to this list
      * @see #add(Object)
      */
+    @Override
     boolean addAll(Collection<? extends E> c);
 
     /**
@@ -353,6 +365,7 @@ public interface List<E> extends Collection<E> {
      * @see #remove(Object)
      * @see #contains(Object)
      */
+    @Override
     boolean removeAll(Collection<?> c);
 
     /**
@@ -375,6 +388,7 @@ public interface List<E> extends Collection<E> {
      * @see #remove(Object)
      * @see #contains(Object)
      */
+    @Override
     boolean retainAll(Collection<?> c);
 
     /**
@@ -490,6 +504,7 @@ public interface List<E> extends Collection<E> {
      * @throws UnsupportedOperationException if the <tt>clear</tt> operation
      *         is not supported by this list
      */
+    @Override
     void clear();
 
 
@@ -509,6 +524,7 @@ public interface List<E> extends Collection<E> {
      * @param o the object to be compared for equality with this list
      * @return <tt>true</tt> if the specified object is equal to this list
      */
+    @Override
     boolean equals(Object o);
 
     /**
@@ -528,6 +544,7 @@ public interface List<E> extends Collection<E> {
      * @see Object#equals(Object)
      * @see #equals(Object)
      */
+    @Override
     int hashCode();
 
 

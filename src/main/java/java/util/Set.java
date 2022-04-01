@@ -81,8 +81,8 @@ package java.util;
  * @see Collections#EMPTY_SET
  * @since 1.2
  */
-
 public interface Set<E> extends Collection<E> {
+
     // Query Operations
 
     /**
@@ -92,6 +92,7 @@ public interface Set<E> extends Collection<E> {
      *
      * @return the number of elements in this set (its cardinality)
      */
+    @Override
     int size();
 
     /**
@@ -99,6 +100,7 @@ public interface Set<E> extends Collection<E> {
      *
      * @return <tt>true</tt> if this set contains no elements
      */
+    @Override
     boolean isEmpty();
 
     /**
@@ -116,6 +118,7 @@ public interface Set<E> extends Collection<E> {
      *         set does not permit null elements
      * (<a href="Collection.html#optional-restrictions">optional</a>)
      */
+    @Override
     boolean contains(Object o);
 
     /**
@@ -125,6 +128,7 @@ public interface Set<E> extends Collection<E> {
      *
      * @return an iterator over the elements in this set
      */
+    @Override
     Iterator<E> iterator();
 
     /**
@@ -143,6 +147,7 @@ public interface Set<E> extends Collection<E> {
      *
      * @return an array containing all the elements in this set
      */
+    @Override
     Object[] toArray();
 
     /**
@@ -187,6 +192,7 @@ public interface Set<E> extends Collection<E> {
      *         set
      * @throws NullPointerException if the specified array is null
      */
+    @Override
     <T> T[] toArray(T[] a);
 
 
@@ -222,6 +228,7 @@ public interface Set<E> extends Collection<E> {
      * @throws IllegalArgumentException if some property of the specified element
      *         prevents it from being added to this set
      */
+    @Override
     boolean add(E e);
 
 
@@ -246,6 +253,7 @@ public interface Set<E> extends Collection<E> {
      * @throws UnsupportedOperationException if the <tt>remove</tt> operation
      *         is not supported by this set
      */
+    @Override
     boolean remove(Object o);
 
 
@@ -270,6 +278,7 @@ public interface Set<E> extends Collection<E> {
      *         or if the specified collection is null
      * @see    #contains(Object)
      */
+    @Override
     boolean containsAll(Collection<?> c);
 
     /**
@@ -294,6 +303,7 @@ public interface Set<E> extends Collection<E> {
      *         specified collection prevents it from being added to this set
      * @see #add(Object)
      */
+    @Override
     boolean addAll(Collection<? extends E> c);
 
     /**
@@ -317,6 +327,7 @@ public interface Set<E> extends Collection<E> {
      *         or if the specified collection is null
      * @see #remove(Object)
      */
+    @Override
     boolean retainAll(Collection<?> c);
 
     /**
@@ -340,6 +351,7 @@ public interface Set<E> extends Collection<E> {
      * @see #remove(Object)
      * @see #contains(Object)
      */
+    @Override
     boolean removeAll(Collection<?> c);
 
     /**
@@ -349,6 +361,7 @@ public interface Set<E> extends Collection<E> {
      * @throws UnsupportedOperationException if the <tt>clear</tt> method
      *         is not supported by this set
      */
+    @Override
     void clear();
 
 
@@ -366,6 +379,7 @@ public interface Set<E> extends Collection<E> {
      * @param o object to be compared for equality with this set
      * @return <tt>true</tt> if the specified object is equal to this set
      */
+    @Override
     boolean equals(Object o);
 
     /**
@@ -381,6 +395,7 @@ public interface Set<E> extends Collection<E> {
      * @see Object#equals(Object)
      * @see Set#equals(Object)
      */
+    @Override
     int hashCode();
 
     /**

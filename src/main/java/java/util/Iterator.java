@@ -29,7 +29,7 @@ package java.util;
  * An iterator over a collection.  {@code Iterator} takes the place of
  * {@link Enumeration} in the Java Collections Framework.  Iterators
  * differ from enumerations in two ways:
- * 迭代器取代枚举。
+ * 集合上的迭代器，迭代器取代枚举。
  * 迭代器与枚举的两个不同之处：
  *
  * <ul>
@@ -51,8 +51,8 @@ package java.util;
  * @see Iterable
  * @since 1.2
  */
-// 核心接口 [遍历] 集合上的迭代器
 public interface Iterator<E> {
+
     /**
      * Returns {@code true} if the iteration has more elements.
      * (In other words, returns {@code true} if {@link #next} would

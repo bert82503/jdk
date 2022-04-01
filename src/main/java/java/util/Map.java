@@ -127,6 +127,7 @@ import java.io.Serializable;
  * @since 1.2
  */
 public interface Map<K,V> {
+
     // Query Operations
 
     /**
@@ -435,6 +436,7 @@ public interface Map<K,V> {
          * @return <tt>true</tt> if the specified object is equal to this map
          *         entry
          */
+        @Override
         boolean equals(Object o);
 
         /**
@@ -453,6 +455,7 @@ public interface Map<K,V> {
          * @see Object#equals(Object)
          * @see #equals(Object)
          */
+        @Override
         int hashCode();
 
         /**
@@ -467,7 +470,7 @@ public interface Map<K,V> {
          * @see Comparable
          * @since 1.8
          */
-        public static <K extends Comparable<? super K>, V> Comparator<Map.Entry<K,V>> comparingByKey() {
+        static <K extends Comparable<? super K>, V> Comparator<Map.Entry<K,V>> comparingByKey() {
             return (Comparator<Map.Entry<K, V>> & Serializable)
                 (c1, c2) -> c1.getKey().compareTo(c2.getKey());
         }
@@ -484,7 +487,7 @@ public interface Map<K,V> {
          * @see Comparable
          * @since 1.8
          */
-        public static <K, V extends Comparable<? super V>> Comparator<Map.Entry<K,V>> comparingByValue() {
+        static <K, V extends Comparable<? super V>> Comparator<Map.Entry<K,V>> comparingByValue() {
             return (Comparator<Map.Entry<K, V>> & Serializable)
                 (c1, c2) -> c1.getValue().compareTo(c2.getValue());
         }
@@ -502,7 +505,7 @@ public interface Map<K,V> {
          * @return a comparator that compares {@link Map.Entry} by the key.
          * @since 1.8
          */
-        public static <K, V> Comparator<Map.Entry<K, V>> comparingByKey(Comparator<? super K> cmp) {
+        static <K, V> Comparator<Map.Entry<K, V>> comparingByKey(Comparator<? super K> cmp) {
             Objects.requireNonNull(cmp);
             return (Comparator<Map.Entry<K, V>> & Serializable)
                 (c1, c2) -> cmp.compare(c1.getKey(), c2.getKey());
@@ -521,7 +524,7 @@ public interface Map<K,V> {
          * @return a comparator that compares {@link Map.Entry} by the value.
          * @since 1.8
          */
-        public static <K, V> Comparator<Map.Entry<K, V>> comparingByValue(Comparator<? super V> cmp) {
+        static <K, V> Comparator<Map.Entry<K, V>> comparingByValue(Comparator<? super V> cmp) {
             Objects.requireNonNull(cmp);
             return (Comparator<Map.Entry<K, V>> & Serializable)
                 (c1, c2) -> cmp.compare(c1.getValue(), c2.getValue());
@@ -542,6 +545,7 @@ public interface Map<K,V> {
      * @param o object to be compared for equality with this map
      * @return <tt>true</tt> if the specified object is equal to this map
      */
+    @Override
     boolean equals(Object o);
 
     /**
@@ -557,9 +561,11 @@ public interface Map<K,V> {
      * @see Object#equals(Object)
      * @see #equals(Object)
      */
+    @Override
     int hashCode();
 
     // Defaultable methods
+    // 默认方法
 
     /**
      * Returns the value to which the specified key is mapped, or
@@ -589,6 +595,9 @@ public interface Map<K,V> {
             ? v
             : defaultValue;
     }
+
+    // 二元函数
+    // 对象消费者
 
     /**
      * Performs the given action for each entry in this map until all entries
@@ -791,6 +800,8 @@ public interface Map<K,V> {
         return true;
     }
 
+    // 替换
+
     /**
      * Replaces the entry for the specified key only if currently
      * mapped to the specified value.
@@ -888,6 +899,8 @@ public interface Map<K,V> {
         }
         return curValue;
     }
+
+    // 计算
 
     /**
      * If the specified key is not already associated with a value (or is mapped
@@ -1107,6 +1120,8 @@ public interface Map<K,V> {
             return newValue;
         }
     }
+
+    // 合并
 
     /**
      * If the specified key is not already associated with a value or is
