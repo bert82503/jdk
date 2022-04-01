@@ -107,7 +107,6 @@ package java.util;
  * @see java.io.Serializable
  * @since 1.2
  */
-// 核心接口 [排序] 比较函数
 public interface Comparator<T> {
     /**
      * Compares its two arguments for order.  Returns a negative integer,
@@ -153,7 +152,6 @@ public interface Comparator<T> {
      * @throws ClassCastException if the arguments' types prevent them from
      *         being compared by this comparator.
      */
-    // 核心方法 比较其两个参数的顺序
     int compare(T o1, T o2);
 
     /**
@@ -178,5 +176,6 @@ public interface Comparator<T> {
      * @see Object#equals(Object)
      * @see Object#hashCode()
      */
+    @Override
     boolean equals(Object obj);
 }
