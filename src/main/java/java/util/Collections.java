@@ -24,6 +24,7 @@
  */
 
 package java.util;
+
 import java.io.Serializable;
 import java.io.ObjectOutputStream;
 import java.io.IOException;
@@ -76,8 +77,8 @@ import java.util.stream.StreamSupport;
  * @see     Map
  * @since   1.2
  */
-
 public class Collections {
+
     // Suppresses default constructor, ensuring non-instantiability.
     private Collections() {
     }
@@ -106,6 +107,8 @@ public class Collections {
     private static final int COPY_THRESHOLD           =   10;
     private static final int REPLACEALL_THRESHOLD     =   11;
     private static final int INDEXOFSUBLIST_THRESHOLD =   35;
+
+    // 集合排序
 
     /**
      * Sorts the specified list into ascending order, according to the
@@ -175,6 +178,7 @@ public class Collections {
         list.sort(c);
     }
 
+    // 二分搜索
 
     /**
      * Searches the specified list for the specified object using the binary
@@ -361,6 +365,8 @@ public class Collections {
         return -(low + 1);  // key not found
     }
 
+    // 反序
+
     /**
      * Reverses the order of the elements in the specified list.<p>
      *
@@ -389,6 +395,8 @@ public class Collections {
             }
         }
     }
+
+    // 伪随机数洗牌
 
     /**
      * Randomly permutes the specified list using a default source of
@@ -475,6 +483,8 @@ public class Collections {
         }
     }
 
+    // 置换
+
     /**
      * Swaps the elements at the specified positions in the specified list.
      * (If the specified positions are equal, invoking this method leaves
@@ -506,6 +516,8 @@ public class Collections {
         arr[j] = tmp;
     }
 
+    // 填充
+
     /**
      * Replaces all of the elements of the specified list with the specified
      * element. <p>
@@ -532,6 +544,8 @@ public class Collections {
             }
         }
     }
+
+    // 拷贝
 
     /**
      * Copies all of the elements from one list into another.  After the
@@ -568,6 +582,8 @@ public class Collections {
             }
         }
     }
+
+    // 最小值
 
     /**
      * Returns the minimum element of the given collection, according to the
@@ -641,6 +657,8 @@ public class Collections {
         }
         return candidate;
     }
+
+    // 最大值
 
     /**
      * Returns the maximum element of the given collection, according to the
@@ -815,6 +833,8 @@ public class Collections {
         reverse(list);
     }
 
+    // 全局替换
+
     /**
      * Replaces all occurrences of one specified value in a list with another.
      * More formally, replaces with <tt>newVal</tt> each element <tt>e</tt>
@@ -873,6 +893,8 @@ public class Collections {
         }
         return result;
     }
+
+    // 子列表
 
     /**
      * Returns the starting position of the first occurrence of the specified
@@ -986,6 +1008,7 @@ public class Collections {
 
 
     // Unmodifiable Wrappers
+    // 不可变集合的包装类
 
     /**
      * Returns an unmodifiable view of the specified collection.  This method
@@ -1412,6 +1435,8 @@ public class Collections {
             return new UnmodifiableList<>(list);
         }
     }
+
+    // 不可变的映射表
 
     /**
      * Returns an unmodifiable view of the specified map.  This method
@@ -1950,6 +1975,7 @@ public class Collections {
     }
 
     // Synch Wrappers
+    // 同步集合的包装类
 
     /**
      * Returns a synchronized (thread-safe) collection backed by the specified
@@ -1999,6 +2025,9 @@ public class Collections {
         private static final long serialVersionUID = 3053995032091335093L;
 
         final Collection<E> c;  // Backing Collection
+        /**
+         * 同步对象
+         */
         final Object mutex;     // Object on which to synchronize
 
         SynchronizedCollection(Collection<E> c) {
@@ -2950,6 +2979,7 @@ public class Collections {
     }
 
     // Dynamically typesafe collection wrappers
+    // 动态地类型安全的集合的包装类
 
     /**
      * Returns a dynamically typesafe view of the specified collection.
@@ -4156,6 +4186,7 @@ public class Collections {
     }
 
     // Empty collections
+    // 空元素的集合
 
     /**
      * Returns an iterator that has no elements.  More precisely,
@@ -4298,7 +4329,7 @@ public class Collections {
      * @since 1.5
      */
     @SuppressWarnings("unchecked")
-    public static final <T> Set<T> emptySet() {
+    public static <T> Set<T> emptySet() {
         return (Set<T>) EMPTY_SET;
     }
 
@@ -4317,6 +4348,7 @@ public class Collections {
         public boolean isEmpty() {return true;}
 
         public boolean contains(Object obj) {return false;}
+        @Override
         public boolean containsAll(Collection<?> c) { return c.isEmpty(); }
 
         public Object[] toArray() { return new Object[0]; }
@@ -4417,7 +4449,7 @@ public class Collections {
      * @since 1.5
      */
     @SuppressWarnings("unchecked")
-    public static final <T> List<T> emptyList() {
+    public static <T> List<T> emptyList() {
         return (List<T>) EMPTY_LIST;
     }
 
@@ -4432,6 +4464,7 @@ public class Collections {
         public Iterator<E> iterator() {
             return emptyIterator();
         }
+        @Override
         public ListIterator<E> listIterator() {
             return emptyListIterator();
         }
@@ -4440,6 +4473,7 @@ public class Collections {
         public boolean isEmpty() {return true;}
 
         public boolean contains(Object obj) {return false;}
+        @Override
         public boolean containsAll(Collection<?> c) { return c.isEmpty(); }
 
         public Object[] toArray() { return new Object[0]; }
@@ -4516,7 +4550,7 @@ public class Collections {
      * @since 1.5
      */
     @SuppressWarnings("unchecked")
-    public static final <K,V> Map<K,V> emptyMap() {
+    public static <K,V> Map<K,V> emptyMap() {
         return (Map<K,V>) EMPTY_MAP;
     }
 
@@ -4537,7 +4571,7 @@ public class Collections {
      * @since 1.8
      */
     @SuppressWarnings("unchecked")
-    public static final <K,V> SortedMap<K,V> emptySortedMap() {
+    public static <K,V> SortedMap<K,V> emptySortedMap() {
         return (SortedMap<K,V>) UnmodifiableNavigableMap.EMPTY_NAVIGABLE_MAP;
     }
 
@@ -4558,7 +4592,7 @@ public class Collections {
      * @since 1.8
      */
     @SuppressWarnings("unchecked")
-    public static final <K,V> NavigableMap<K,V> emptyNavigableMap() {
+    public static <K,V> NavigableMap<K,V> emptyNavigableMap() {
         return (NavigableMap<K,V>) UnmodifiableNavigableMap.EMPTY_NAVIGABLE_MAP;
     }
 
@@ -4654,6 +4688,7 @@ public class Collections {
     }
 
     // Singleton collections
+    // 单个元素的集合
 
     /**
      * Returns an immutable set containing only the specified object.
@@ -5011,10 +5046,12 @@ public class Collections {
             return n != 0 && eq(obj, element);
         }
 
+        @Override
         public int indexOf(Object o) {
             return contains(o) ? 0 : -1;
         }
 
+        @Override
         public int lastIndexOf(Object o) {
             return contains(o) ? n - 1 : -1;
         }
@@ -5049,6 +5086,7 @@ public class Collections {
             return a;
         }
 
+        @Override
         public List<E> subList(int fromIndex, int toIndex) {
             if (fromIndex < 0)
                 throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
@@ -5076,6 +5114,8 @@ public class Collections {
             return stream().spliterator();
         }
     }
+
+    // 相反的顺序
 
     /**
      * Returns a comparator that imposes the reverse of the <em>natural
@@ -5465,8 +5505,11 @@ public class Collections {
         public String toString()          { return s.toString(); }
         public int hashCode()             { return s.hashCode(); }
         public boolean equals(Object o)   { return o == this || s.equals(o); }
+        @Override
         public boolean containsAll(Collection<?> c) {return s.containsAll(c);}
+        @Override
         public boolean removeAll(Collection<?> c)   {return s.removeAll(c);}
+        @Override
         public boolean retainAll(Collection<?> c)   {return s.retainAll(c);}
         // addAll is the only inherited implementation
 
@@ -5542,8 +5585,11 @@ public class Collections {
         public Object[] toArray()         { return q.toArray(); }
         public <T> T[] toArray(T[] a)     { return q.toArray(a); }
         public String toString()          { return q.toString(); }
+        @Override
         public boolean containsAll(Collection<?> c) {return q.containsAll(c);}
+        @Override
         public boolean removeAll(Collection<?> c)   {return q.removeAll(c);}
+        @Override
         public boolean retainAll(Collection<?> c)   {return q.retainAll(c);}
         // We use inherited addAll; forwarding addAll would be wrong
 

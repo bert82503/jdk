@@ -128,6 +128,7 @@ public class Arrays {
      * implementation methods residing in other package-private
      * classes (except for legacyMergeSort, included in this class).
      */
+    // 排序
 
     /**
      * Sorts the specified array into ascending numerical order.
@@ -440,6 +441,8 @@ public class Arrays {
         rangeCheck(a.length, fromIndex, toIndex);
         DualPivotQuicksort.sort(a, fromIndex, toIndex - 1, null, 0, 0);
     }
+
+    // 并行排序
 
     /**
      * Sorts the specified array into ascending numerical order.
@@ -1759,6 +1762,7 @@ public class Arrays {
     }
 
     // Searching
+    // 二分搜索
 
     /**
      * Searches the specified array of longs for the specified value using the
@@ -2554,6 +2558,7 @@ public class Arrays {
     }
 
     // Equality Testing
+    // 相等测试
 
     /**
      * Returns <tt>true</tt> if the two specified arrays of longs are
@@ -3827,12 +3832,14 @@ public class Arrays {
         @SuppressWarnings("unchecked")
         public <T> T[] toArray(T[] a) {
             int size = size();
-            if (a.length < size)
+            if (a.length < size) {
                 return Arrays.copyOf(this.a, size,
                                      (Class<? extends T[]>) a.getClass());
+            }
             System.arraycopy(this.a, 0, a, 0, size);
-            if (a.length > size)
+            if (a.length > size) {
                 a[size] = null;
+            }
             return a;
         }
 
@@ -3852,13 +3859,17 @@ public class Arrays {
         public int indexOf(Object o) {
             E[] a = this.a;
             if (o == null) {
-                for (int i = 0; i < a.length; i++)
-                    if (a[i] == null)
+                for (int i = 0; i < a.length; i++) {
+                    if (a[i] == null) {
                         return i;
+                    }
+                }
             } else {
-                for (int i = 0; i < a.length; i++)
-                    if (o.equals(a[i]))
+                for (int i = 0; i < a.length; i++) {
+                    if (o.equals(a[i])) {
                         return i;
+                    }
+                }
             }
             return -1;
         }
@@ -3896,6 +3907,8 @@ public class Arrays {
         }
     }
 
+    // 散列值-哈希值
+
     /**
      * Returns a hash code based on the contents of the specified array.
      * For any two <tt>long</tt> arrays <tt>a</tt> and <tt>b</tt>
@@ -3913,8 +3926,9 @@ public class Arrays {
      * @since 1.5
      */
     public static int hashCode(long a[]) {
-        if (a == null)
+        if (a == null) {
             return 0;
+        }
 
         int result = 1;
         for (long element : a) {
@@ -4299,6 +4313,8 @@ public class Arrays {
             eq = e1.equals(e2);
         return eq;
     }
+
+    // 字符串表示
 
     /**
      * Returns a string representation of the contents of the specified array.
@@ -4832,6 +4848,8 @@ public class Arrays {
         IntStream.range(0, array.length).parallel().forEach(i -> { array[i] = generator.applyAsDouble(i); });
     }
 
+    // 用于遍历和划分数据源元素的对象
+
     /**
      * Returns a {@link Spliterator} covering all of the specified array.
      *
@@ -4990,6 +5008,8 @@ public class Arrays {
         return Spliterators.spliterator(array, startInclusive, endExclusive,
                                         Spliterator.ORDERED | Spliterator.IMMUTABLE);
     }
+
+    // 不可变元素的数据流
 
     /**
      * Returns a sequential {@link Stream} with the specified array as its

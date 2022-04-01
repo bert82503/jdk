@@ -156,6 +156,8 @@ public interface Collection<E> extends Iterable<E> {
      */
     boolean contains(Object o);
 
+    // 遍历迭代器
+
     /**
      * Returns an iterator over the elements in this collection.  There are no
      * guarantees concerning the order in which the elements are returned
@@ -364,6 +366,10 @@ public interface Collection<E> extends Iterable<E> {
      */
     boolean removeAll(Collection<?> c);
 
+    // 满足条件地移除
+    // 过滤谓词函数-Predicate
+    // 默认方法
+
     /**
      * Removes all of the elements of this collection that satisfy the given
      * predicate.  Errors or runtime exceptions thrown during iteration or by
@@ -391,6 +397,7 @@ public interface Collection<E> extends Iterable<E> {
         boolean removed = false;
         final Iterator<E> each = iterator();
         while (each.hasNext()) {
+            // 有条件地移除元素
             if (filter.test(each.next())) {
                 each.remove();
                 removed = true;
@@ -490,11 +497,11 @@ public interface Collection<E> extends Iterable<E> {
     int hashCode();
 
     // 默认函数
-
     // 分而治之，分治思想
 
     /**
      * Creates a {@link Spliterator} over the elements in this collection.
+     * 用于遍历和划分数据源元素的对象。
      *
      * Implementations should document characteristic values reported by the
      * spliterator.  Such characteristic values are not required to be reported
@@ -548,7 +555,7 @@ public interface Collection<E> extends Iterable<E> {
         return Spliterators.spliterator(this, 0);
     }
 
-    // 连续的数据流
+    // 不可变元素的数据流-Stream
 
     /**
      * Returns a sequential {@code Stream} with this collection as its source.
