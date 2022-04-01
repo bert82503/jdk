@@ -11,6 +11,7 @@ import java.util.function.LongConsumer;
  * {@link Spliterator} and its primitive specializations
  * {@link Spliterator.OfInt}, {@link Spliterator.OfLong}, and
  * {@link Spliterator.OfDouble}.
+ * 用于遍历和划分数据源元素的对象。
  *
  * @see Spliterator
  * @since 1.8
@@ -629,6 +630,7 @@ public final class Spliterators {
     }
 
     // Iterators from Spliterators
+    // 划分迭代器
 
     /**
      * Creates an {@code Iterator} from a {@code Spliterator}.
@@ -1206,7 +1208,7 @@ public final class Spliterators {
         }
     }
 
-    //
+    // 抽象类
 
     /**
      * An abstract {@code Spliterator} that implements {@code trySplit} to

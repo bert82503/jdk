@@ -273,7 +273,7 @@ import java.util.function.LongConsumer;
  */
 public interface Spliterator<T> {
 
-    // 对象消费者
+    // 对象消费者-Consumer
 
     /**
      * If a remaining element exists, performs the given action on it,
@@ -430,6 +430,8 @@ public interface Spliterator<T> {
         return (characteristics() & characteristics) == characteristics;
     }
 
+    // 值比较器-Comparator
+
     /**
      * If this Spliterator's source is {@link #SORTED} by a {@link Comparator},
      * returns that {@code Comparator}. If the source is {@code SORTED} in
@@ -454,6 +456,7 @@ public interface Spliterator<T> {
      * {@link #trySplit} splits a strict prefix of elements, that method
      * {@link #tryAdvance} steps by one element in prefix order, and that
      * {@link #forEachRemaining} performs actions in encounter order.
+     * 元素有序
      *
      * <p>A {@link Collection} has an encounter order if the corresponding
      * {@link Collection#iterator} documents an order. If so, the encounter
@@ -472,6 +475,7 @@ public interface Spliterator<T> {
      * Characteristic value signifying that, for each pair of
      * encountered elements {@code x, y}, {@code !x.equals(y)}. This
      * applies for example, to a Spliterator based on a {@link Set}.
+     * 元素区别
      */
     public static final int DISTINCT   = 0x00000001;
 
@@ -480,6 +484,7 @@ public interface Spliterator<T> {
      * sort order. If so, method {@link #getComparator()} returns the associated
      * Comparator, or {@code null} if all elements are {@link Comparable} and
      * are sorted by their natural ordering.
+     * 元素排序
      *
      * <p>A Spliterator that reports {@code SORTED} must also report
      * {@code ORDERED}.
@@ -507,6 +512,7 @@ public interface Spliterator<T> {
      * Characteristic value signifying that the source guarantees that
      * encountered elements will not be {@code null}. (This applies,
      * for example, to most concurrent collections, queues, and maps.)
+     * 元素非null
      */
     public static final int NONNULL    = 0x00000100;
 
@@ -518,6 +524,7 @@ public interface Spliterator<T> {
      * to have a documented policy (for example throwing
      * {@link ConcurrentModificationException}) concerning structural
      * interference detected during traversal.
+     * 元素不可变
      */
     public static final int IMMUTABLE  = 0x00000400;
 
@@ -527,6 +534,7 @@ public interface Spliterator<T> {
      * by multiple threads without external synchronization. If so, the
      * Spliterator is expected to have a documented policy concerning the impact
      * of modifications during traversal.
+     * 元素并发
      *
      * <p>A top-level Spliterator should not report both {@code CONCURRENT} and
      * {@code SIZED}, since the finite size, if known, may change if the source
@@ -560,6 +568,8 @@ public interface Spliterator<T> {
      */
     public static final int SUBSIZED = 0x00004000;
 
+    // 基本类型
+
     /**
      * A Spliterator specialized for primitive values.
      *
@@ -579,7 +589,7 @@ public interface Spliterator<T> {
      * @see Spliterator.OfDouble
      * @since 1.8
      */
-    public interface OfPrimitive<T, T_CONS, T_SPLITR extends Spliterator.OfPrimitive<T, T_CONS, T_SPLITR>>
+    interface OfPrimitive<T, T_CONS, T_SPLITR extends Spliterator.OfPrimitive<T, T_CONS, T_SPLITR>>
             extends Spliterator<T> {
         @Override
         T_SPLITR trySplit();
@@ -624,7 +634,7 @@ public interface Spliterator<T> {
      * A Spliterator specialized for {@code int} values.
      * @since 1.8
      */
-    public interface OfInt extends OfPrimitive<Integer, IntConsumer, OfInt> {
+    interface OfInt extends OfPrimitive<Integer, IntConsumer, OfInt> {
 
         @Override
         OfInt trySplit();
@@ -688,7 +698,7 @@ public interface Spliterator<T> {
      * A Spliterator specialized for {@code long} values.
      * @since 1.8
      */
-    public interface OfLong extends OfPrimitive<Long, LongConsumer, OfLong> {
+    interface OfLong extends OfPrimitive<Long, LongConsumer, OfLong> {
 
         @Override
         OfLong trySplit();
@@ -752,7 +762,7 @@ public interface Spliterator<T> {
      * A Spliterator specialized for {@code double} values.
      * @since 1.8
      */
-    public interface OfDouble extends OfPrimitive<Double, DoubleConsumer, OfDouble> {
+    interface OfDouble extends OfPrimitive<Double, DoubleConsumer, OfDouble> {
 
         @Override
         OfDouble trySplit();
