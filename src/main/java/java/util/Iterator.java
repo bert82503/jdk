@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1997, 2010, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.util;
 
@@ -57,7 +33,6 @@ public interface Iterator<E> {
      * Returns {@code true} if the iteration has more elements.
      * (In other words, returns {@code true} if {@link #next} would
      * return an element rather than throwing an exception.)
-     * <p>
      * 如果迭代中还有元素，则返回{@code true}。
      *
      * @return {@code true} if the iteration has more elements
@@ -66,7 +41,6 @@ public interface Iterator<E> {
 
     /**
      * Returns the next element in the iteration.
-     * <p>
      * 返回迭代中的下一个元素。
      *
      * @return the next element in the iteration
@@ -81,7 +55,6 @@ public interface Iterator<E> {
      * is unspecified if the underlying collection is modified while the
      * iteration is in progress in any way other than by calling this
      * method.
-     * <p>
      * 从底层集合中移除此迭代器返回的最后一个元素（可选操作）。
      *
      * @throws UnsupportedOperationException if the {@code remove}
