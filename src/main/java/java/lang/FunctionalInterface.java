@@ -11,7 +11,6 @@ import java.lang.annotation.Target;
  * An informative annotation type used to indicate that an interface
  * type declaration is intended to be a <i>functional interface</i> as
  * defined by the Java Language Specification.
- * <p>
  * 信息注解类型，表示接口类型声明是一个<i>函数式接口</i>。
  *
  * <p>
@@ -23,13 +22,11 @@ import java.lang.annotation.Target;
  * <em>not</em> count toward the interface's abstract method count
  * since any implementation of the interface will have an
  * implementation from {@code java.lang.Object} or elsewhere.
- * <p>
  * 从概念上讲，函数式接口都只有一个抽象方法。
  * 因为{@linkplain java.lang.reflect.Method#isDefault() 默认方法}具有实现，他们不是抽象的。
  *
  * <p>Note that instances of functional interfaces can be created with
  * lambda expressions, method references, or constructor references.
- * <p>
  * 请注意，可以使用 Lambda表达式、方法引用和构造器引用 创建函数式接口的实例。
  *
  * <p>If a type is annotated with this annotation type, compilers are
@@ -46,7 +43,6 @@ import java.lang.annotation.Target;
  * definition of a functional interface as a functional interface
  * regardless of whether or not a {@code FunctionalInterface}
  * annotation is present on the interface declaration.
- * <p>
  * 即使接口未标注该注解，编译器也会处理任何满足函数式接口定义的接口作为函数式接口。
  *
  * @jls 4.3.2. The Class Object 类对象
