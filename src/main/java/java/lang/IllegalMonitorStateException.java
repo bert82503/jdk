@@ -1,10 +1,11 @@
+
 package java.lang;
 
 /**
  * Thrown to indicate that a thread has attempted to wait on an
  * object's monitor or to notify other threads waiting on an object's
  * monitor without owning the specified monitor.
- * <p>非法监视器状态异常：表示线程已尝试等待对象的监视器或者通知正在等待对象的监视器的其他线程，
+ * 非法监视器状态异常：表示线程已尝试等待对象的监视器或者通知正在等待对象的监视器的其他线程，
  * 而不是拥有指定的监视器。
  *
  * @author  unascribed

@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1995, 2011, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
@@ -67,6 +43,7 @@ public class RuntimeException extends Exception {
      * cause.  <p>Note that the detail message associated with
      * {@code cause} is <i>not</i> automatically incorporated in
      * this runtime exception's detail message.
+     * 构造一个新的异常对象。
      *
      * @param  message the detail message (which is saved for later retrieval
      *         by the {@link #getMessage()} method).

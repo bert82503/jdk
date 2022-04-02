@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1994, 2001, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
@@ -29,7 +5,6 @@ package java.lang;
  * Thrown to indicate that the application has attempted to convert
  * a string to one of the numeric types, but that the string does not
  * have the appropriate format.
- * <p>
  * 数字格式异常：该字符串不具有适当的数字类型格式。
  *
  * @author  unascribed
@@ -60,7 +35,6 @@ class NumberFormatException extends IllegalArgumentException {
     /**
      * Factory method for making a <code>NumberFormatException</code>
      * given the specified input which caused the error.
-     * <p>
      * 静态工厂方法
      *
      * @param   s   the input causing the error
