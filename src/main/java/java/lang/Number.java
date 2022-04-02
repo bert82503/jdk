@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1994, 2001, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
@@ -30,7 +6,6 @@ package java.lang;
  * <code>BigDecimal</code>, <code>BigInteger</code>,
  * <code>Byte</code>, <code>Double</code>, <code>Float</code>,
  * <code>Integer</code>, <code>Long</code>, and <code>Short</code>.
- * <p>
  * 数字抽象类，所有数字类的超类。
  * <p>
  * Subclasses of <code>Number</code> must provide methods to convert
@@ -48,7 +23,6 @@ package java.lang;
  * @see     java.lang.Short
  * @since   JDK1.0
  */
-// [数字] 数字抽象类，所有数字类的超类
 public abstract class Number implements java.io.Serializable {
     /**
      * Returns the value of the specified number as an <code>int</code>.
@@ -99,7 +73,8 @@ public abstract class Number implements java.io.Serializable {
      * @since   JDK1.1
      */
     public byte byteValue() {
-        return (byte)intValue(); // 基于整型值
+        // 基于整型值
+        return (byte)intValue();
     }
 
     /**

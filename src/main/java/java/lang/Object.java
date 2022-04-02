@@ -5,7 +5,6 @@ package java.lang;
  * Class {@code Object} is the root of the class hierarchy.
  * Every class has {@code Object} as a superclass. All objects,
  * including arrays, implement the methods of this class.
- *
  * {@code Object}类是类层次结构树的根。
  * 每个类型都以{@code Object}作为其超类，所有对象（包括数组）都实现该类的方法。
  *
@@ -29,11 +28,10 @@ public class Object {
      * Returns the runtime class of this {@code Object}. The returned
      * {@code Class} object is the object that is locked by {@code
      * static synchronized} methods of the represented class.
-     *
-     * <p>返回对象的运行时类。
+     * 返回对象的运行时类。
      * 返回的{@code Class}对象是由所表示类的静态同步方法锁定的对象。
      *
-     * ?：泛型通配符，表示未知类型
+     * ?：泛型通配符，表示未知类型。
      *
      * <p><b>The actual result type is {@code Class<? extends |X|>}
      * where {@code |X|} is the erasure of the static type of the
@@ -58,7 +56,6 @@ public class Object {
      * Returns a hash code value for the object. This method is
      * supported for the benefit of hash tables (散列表) such as those provided by
      * {@link java.util.HashMap}.
-     * <p>
      * 返回对象的散列码值。
      * <p>
      * The general contract of {@code hashCode} is:
@@ -170,7 +167,6 @@ public class Object {
      * <pre>
      * x.clone().equals(x)</pre></blockquote>
      * will be {@code true}, this is not an absolute requirement.
-     * <p>
      * 创建和返回这个对象的副本。
      * <p>
      * By convention, the returned object should be obtained by calling
@@ -227,7 +223,6 @@ public class Object {
      * be a concise but informative representation that is easy for a
      * person to read.
      * It is recommended that all subclasses override this method.
-     * <p>
      * 返回对象的字符串表示。
      * 结果应该是简明且易于人阅读的信息表示。
      * 建议所有子类覆盖此方法。
@@ -258,7 +253,6 @@ public class Object {
      * is chosen to be awakened. The choice is arbitrary and occurs at
      * the discretion of the implementation. A thread waits on an object's
      * monitor by calling one of the {@code wait} methods.
-     * <p>
      * 唤醒正在等待这个对象的监视器的单个线程。
      * <p>
      * The awakened thread will not be able to proceed until the current
@@ -293,7 +287,6 @@ public class Object {
      * Wakes up all threads that are waiting on this object's monitor. A
      * thread waits on an object's monitor by calling one of the
      * {@code wait} methods.
-     * <p>
      * 唤醒正在等待这个对象的监视器的所有线程。
      * <p>
      * The awakened threads will not be able to proceed until the current
@@ -320,7 +313,6 @@ public class Object {
      * {@link java.lang.Object#notify()} method or the
      * {@link java.lang.Object#notifyAll()} method for this object, or a
      * specified amount of time has elapsed.
-     * <p>
      * 使当前线程等待，直到另一个线程调用这个对象的{@link #notify()}或{@link #notifyAll()}方法，
      * 或者指定的时间已过。
      * <p>
@@ -583,5 +575,7 @@ public class Object {
      * @see java.lang.ref.PhantomReference
      * @jls 12.6 Finalization of Class Instances
      */
-    protected void finalize() throws Throwable { }
+    protected void finalize() throws Throwable {
+        // empty
+    }
 }
