@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1994, 2010, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
@@ -29,8 +5,8 @@ package java.lang;
  * The {@code Integer} class wraps a value of the primitive type
  * {@code int} in an object. An object of type {@code Integer}
  * contains a single field whose type is {@code int}. (包含 int 类型的单个字段)
- * <p>
  * {@code Integer} 类型将 int 基本类型的值包装到对象中。
+ * 整型：将int基本类型的值包装到对象中(不可变类)。
  *
  * <p>In addition, this class provides several methods for converting
  * an {@code int} to a {@code String} and a {@code String} to an
@@ -49,8 +25,6 @@ package java.lang;
  * @author  Joseph D. Darcy
  * @since JDK1.0
  */
-// [包装类] 整型：将int基本类型的值包装到对象中(不可变类)
-// final 修饰符来保证类不会被扩展
 public final class Integer extends Number implements Comparable<Integer> {
     /**
      * A constant holding the minimum value an {@code int} can
@@ -87,6 +61,7 @@ public final class Integer extends Number implements Comparable<Integer> {
     };
 
     // 转换为字符串
+
     /**
      * Returns a string representation of the first argument in the
      * radix specified by the second argument.
@@ -132,9 +107,9 @@ public final class Integer extends Number implements Comparable<Integer> {
      * @see     java.lang.Character#MIN_RADIX
      */
     public static String toString(int i, int radix) {
-
-        if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX)
+        if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX) {
             radix = 10;
+        }
 
         /* Use the faster version */
         if (radix == 10) {
@@ -325,18 +300,21 @@ public final class Integer extends Number implements Comparable<Integer> {
      * representation and returned as a string, exactly as if the
      * argument and radix 10 were given as arguments to the {@link
      * #toString(int, int)} method.
+     * 返回表示指定整数的字符串对象。
      *
      * @param   i   an integer to be converted.
      * @return  a string representation of the argument in base&nbsp;10.
      */
-    // 核心方法 返回表示指定整数的字符串对象
-    public static String toString(int i) { // 更快的版本
-        if (i == Integer.MIN_VALUE)
+    public static String toString(int i) {
+        // 更快的版本
+        if (i == Integer.MIN_VALUE) {
             return "-2147483648";
+        }
         int size = (i < 0) ? stringSize(-i) + 1 : stringSize(i);
         char[] buf = new char[size];
         getChars(i, size, buf);
-        return new String(buf, true); // 新建一个字符串
+        // 新建一个字符串
+        return new String(buf, true);
     }
 
     /**
@@ -375,7 +353,9 @@ public final class Integer extends Number implements Comparable<Integer> {
             r = i - ((q << 3) + (q << 1));  // r = i-(q*10) ...
             buf [--charPos] = digits [r];
             i = q;
-            if (i == 0) break;
+            if (i == 0) {
+                break;
+            }
         }
         if (sign != 0) {
             buf [--charPos] = sign;
@@ -393,6 +373,7 @@ public final class Integer extends Number implements Comparable<Integer> {
     }
 
     // 解析字符串
+
     /**
      * Parses the string argument as a signed integer in the radix
      * specified by the second argument. The characters in the string
@@ -403,6 +384,7 @@ public final class Integer extends Number implements Comparable<Integer> {
      * indicate a negative value or an ASCII plus sign {@code '+'}
      * (<code>'&#92;u002B'</code>) to indicate a positive value. The
      * resulting integer value is returned.
+     * 解析字符串参数为有符号的特定进制整数。
      *
      * <p>An exception of type {@code NumberFormatException} is
      * thrown if any of the following situations occurs:
@@ -448,7 +430,6 @@ public final class Integer extends Number implements Comparable<Integer> {
      * @exception  NumberFormatException if the {@code String}
      *             does not contain a parsable {@code int}.
      */
-    // 核心方法 解析字符串参数为有符号的特定进制整数
     public static int parseInt(String s, int radix)
                 throws NumberFormatException
     {
@@ -524,6 +505,7 @@ public final class Integer extends Number implements Comparable<Integer> {
      * returned, exactly as if the argument and the radix 10 were
      * given as arguments to the {@link #parseInt(java.lang.String,
      * int)} method.
+     * 解析字符串参数为有符号的十进制整数。
      *
      * @param s    a {@code String} containing the {@code int}
      *             representation to be parsed
@@ -531,7 +513,6 @@ public final class Integer extends Number implements Comparable<Integer> {
      * @exception  NumberFormatException  if the string does not contain a
      *               parsable integer.
      */
-    // 核心方法 解析字符串参数为有符号的十进制整数
     public static int parseInt(String s) throws NumberFormatException {
         return parseInt(s, 10);
     }
@@ -594,6 +575,8 @@ public final class Integer extends Number implements Comparable<Integer> {
     /**
      * Cache to support the object identity semantics of autoboxing for values between
      * -128 and 127 (inclusive) as required by JLS. (值介于[-128, 127])
+     * 支持自动装箱的对象标识语义的缓存。
+     * 内部数据结构
      *
      * The cache is initialized on first usage.  The size of the cache
      * may be controlled by the -XX:AutoBoxCacheMax=<size> option.
@@ -601,11 +584,13 @@ public final class Integer extends Number implements Comparable<Integer> {
      * may be set and saved in the private system properties in the
      * sun.misc.VM class.
      */
-    // 内部数据结构 支持自动装箱的对象标识语义的缓存
     private static class IntegerCache {
         static final int low = -128;
         static final int high;
-        static final Integer cache[]; // 把频繁被请求的实例缓存起来
+        /**
+         * 把频繁被请求的实例缓存起来
+         */
+        static final Integer cache[];
 
         // 静态类初始化
         static {
@@ -624,8 +609,11 @@ public final class Integer extends Number implements Comparable<Integer> {
             // 缓存数组
             cache = new Integer[(high - low) + 1];
             int j = low;
-            for(int k = 0; k < cache.length; k++) // 防止数组越界
-                cache[k] = new Integer(j++); // 缓存整型实例
+            // 防止数组越界
+            for (int k = 0; k < cache.length; k++) {
+                // 缓存整型实例
+                cache[k] = new Integer(j++);
+            }
         }
 
         private IntegerCache() {}
@@ -633,6 +621,7 @@ public final class Integer extends Number implements Comparable<Integer> {
 
     // 工厂实例化
     // 基本类型转换为包装类
+
     /**
      * Returns an {@code Integer} instance representing the specified
      * {@code int} value.  If a new {@code Integer} instance is not
@@ -640,6 +629,7 @@ public final class Integer extends Number implements Comparable<Integer> {
      * the constructor {@link #Integer(int)}, as this method is likely
      * to yield significantly better space and time performance by
      * caching frequently requested values.
+     * 返回一个表示指定的整数值的整型实例(选择用静态工厂代替公有的构造器可以让你以后有添加缓存的灵活性，而不必影响客户端)。
      *
      * This method will always cache values in the range -128 to 127,
      * inclusive, and may cache other values outside of this range.
@@ -648,32 +638,35 @@ public final class Integer extends Number implements Comparable<Integer> {
      * @return an {@code Integer} instance representing {@code i}.
      * @since  1.5
      */
-    // 核心方法 返回一个表示指定的整数值的整型实例(选择用静态工厂代替公有的构造器可以让你以后有添加缓存的灵活性，而不必影响客户端)
     public static Integer valueOf(int i) {
         assert IntegerCache.high >= 127;
-        if (i >= IntegerCache.low && i <= IntegerCache.high) // [-128, 127+]
-            return IntegerCache.cache[i + (-IntegerCache.low)]; // 缓存实例
-        return new Integer(i); // 新对象
+        // [-128, 127+]
+        if (i >= IntegerCache.low && i <= IntegerCache.high) {
+            // 缓存实例
+            return IntegerCache.cache[i + (-IntegerCache.low)];
+        }
+        // 新对象
+        return new Integer(i);
     }
 
 
     /**
      * The value of the {@code Integer}. (整型值)
+     * 使所有的域都是final的，初始化后就不能改变。
+     * 使所有的域都成为私有的
      *
      * @serial
      */
-    // 使所有的域都成为私有的
-    // 使所有的域都是 final 的
-    private final int value; // 初始化后就不能改变
+    private final int value;
 
     /**
      * Constructs a newly allocated {@code Integer} object that
      * represents the specified {@code int} value.
+     * 构造一个新分配的表示指定整数值的整型对象。
      *
      * @param   value   the value to be represented by the
      *                  {@code Integer} object.
      */
-    // 核心方法 构造一个新分配的表示指定整数值的整型对象
     public Integer(int value) {
         this.value = value;
     }
@@ -696,6 +689,7 @@ public final class Integer extends Number implements Comparable<Integer> {
     }
 
     // 数值转换
+
     /**
      * Returns the value of this {@code Integer} as a
      * {@code byte}.
@@ -767,14 +761,13 @@ public final class Integer extends Number implements Comparable<Integer> {
 
     /**
      * Returns a hash code for this {@code Integer}.
-     * <p>
      * 返回此整数的散列码。
+     * 散列码即为表示的整数值。
      *
      * @return  a hash code value for this object, equal to the
      *          primitive {@code int} value represented by this
      *          {@code Integer} object.
      */
-    // 核心方法 散列码即为表示的整数值
     @Override
     public int hashCode() {
         return value;
@@ -785,15 +778,16 @@ public final class Integer extends Number implements Comparable<Integer> {
      * {@code true} if and only if the argument is not
      * {@code null} and is an {@code Integer} object that
      * contains the same {@code int} value as this object.
+     * 整数值比较。
      *
      * @param   obj   the object to compare with.
      * @return  {@code true} if the objects are the same;
      *          {@code false} otherwise.
      */
-    // 核心方法 整数值比较
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Integer) { // 保护强制类型转换
+        if (obj instanceof Integer) {
+            // 保护强制类型转换
             return value == ((Integer)obj).intValue();
         }
         return false;
@@ -801,6 +795,7 @@ public final class Integer extends Number implements Comparable<Integer> {
 
 
     // 系统属性
+
     /**
      * Determines the integer value of the system property with the
      * specified name.
@@ -888,6 +883,7 @@ public final class Integer extends Number implements Comparable<Integer> {
      * integer value, as per the {@code Integer.decode} method,
      * and an {@code Integer} object representing this value is
      * returned.
+     * 返回具有指定名称的系统属性的整数值。
      *
      * <ul><li>If the property value begins with the two ASCII characters
      *         {@code 0x} or the ASCII character {@code #}, not
@@ -915,7 +911,6 @@ public final class Integer extends Number implements Comparable<Integer> {
      * @see java.lang.System#getProperty(java.lang.String, java.lang.String)
      * @see java.lang.Integer#decode
      */
-    // 核心方法 返回具有指定名称的系统属性的整数值
     public static Integer getInteger(String nm, Integer val) {
         String v = null;
         try {
@@ -937,6 +932,7 @@ public final class Integer extends Number implements Comparable<Integer> {
     }
 
     // 解码字符串
+
     /**
      * Decodes a {@code String} into an {@code Integer}.
      * Accepts decimal, hexadecimal, and octal numbers given
@@ -985,8 +981,9 @@ public final class Integer extends Number implements Comparable<Integer> {
         boolean negative = false;
         Integer result;
 
-        if (nm.length() == 0)
+        if (nm.length() == 0) {
             throw new NumberFormatException("Zero length string");
+        }
         char firstChar = nm.charAt(0);
         // Handle sign, if present
         if (firstChar == '-') {
@@ -1027,8 +1024,10 @@ public final class Integer extends Number implements Comparable<Integer> {
     }
 
     // 排序
+
     /**
      * Compares two {@code Integer} objects numerically.
+     * 比较两个整数值的对象。
      *
      * @param   anotherInteger   the {@code Integer} to be compared.
      * @return  the value {@code 0} if this {@code Integer} is
@@ -1040,14 +1039,15 @@ public final class Integer extends Number implements Comparable<Integer> {
      *           comparison).
      * @since   1.2
      */
-    // 核心方法 比较两个整数值的对象
     @Override
     public int compareTo(Integer anotherInteger) {
-        return compare(this.value, anotherInteger.value); // 比较整数值
+        // 比较整数值
+        return compare(this.value, anotherInteger.value);
     }
 
     /**
      * Compares two {@code int} values numerically.
+     * 比较两个整数值。
      * The value returned is identical to what would be returned by:
      * <pre>
      *    Integer.valueOf(x).compareTo(Integer.valueOf(y))
@@ -1061,10 +1061,10 @@ public final class Integer extends Number implements Comparable<Integer> {
      *         (x == y，则返回0；x < y，则返回负整数；x > y，则返回正整数。)
      * @since 1.7
      */
-    // 核心方法 比较两个整数值
     public static int compare(int x, int y) {
 //        return (x < y) ? -1 : ((x == y) ? 0 : 1);
-        return x - y; // 相减防溢出
+        // 相减防溢出
+        return x - y;
     }
 
 
@@ -1073,10 +1073,11 @@ public final class Integer extends Number implements Comparable<Integer> {
     /**
      * The number of bits used to represent an {@code int} value in two's
      * complement binary form.
+     * 32位比特数。
      *
      * @since 1.5
      */
-    public static final int SIZE = 32; // 32位比特数
+    public static final int SIZE = 32;
 
     /**
      * Returns an {@code int} value with at most a single one-bit, in the
@@ -1139,8 +1140,9 @@ public final class Integer extends Number implements Comparable<Integer> {
      */
     public static int numberOfLeadingZeros(int i) {
         // HD, Figure 5-6
-        if (i == 0)
+        if (i == 0) {
             return 32;
+        }
         int n = 1;
         if (i >>> 16 == 0) { n += 16; i <<= 16; }
         if (i >>> 24 == 0) { n +=  8; i <<=  8; }
@@ -1166,7 +1168,9 @@ public final class Integer extends Number implements Comparable<Integer> {
     public static int numberOfTrailingZeros(int i) {
         // HD, Figure 5-14
         int y;
-        if (i == 0) return 32;
+        if (i == 0) {
+            return 32;
+        }
         int n = 31;
         y = i <<16; if (y != 0) { n = n -16; i = y; }
         y = i << 8; if (y != 0) { n = n - 8; i = y; }
@@ -1242,12 +1246,12 @@ public final class Integer extends Number implements Comparable<Integer> {
      * Returns the value obtained by reversing the order of the bits in the
      * two's complement binary representation of the specified {@code int}
      * value.
+     * 反转基于位运算。
      *
      * @return the value obtained by reversing order of the bits in the
      *     specified {@code int} value.
      * @since 1.5
      */
-    // 反转基于位运算
     public static int reverse(int i) {
         // HD, Figure 7-1
         i = (i & 0x55555555) << 1 | (i >>> 1) & 0x55555555;
