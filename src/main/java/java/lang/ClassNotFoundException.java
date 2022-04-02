@@ -26,7 +26,7 @@ package java.lang;
  * construction time and accessed via the {@link #getException()} method is
  * now known as the <i>cause</i>, and may be accessed via the {@link
  * Throwable#getCause()} method, as well as the aforementioned "legacy method."
- * <p>通用的异常链机制
+ * 通用的异常链机制
  *
  * @author  unascribed
  * @see     java.lang.Class#forName(java.lang.String)
@@ -43,8 +43,8 @@ public class ClassNotFoundException extends ReflectiveOperationException {
     /**
      * This field holds the exception ex if the
      * ClassNotFoundException(String s, Throwable ex) constructor was
-     * used to instantiate the object
-     * (本字段持有异常实例)
+     * used to instantiate the object.
+     * 本字段持有异常实例
      * @serial
      * @since 1.2
      */
@@ -54,7 +54,8 @@ public class ClassNotFoundException extends ReflectiveOperationException {
      * Constructs a <code>ClassNotFoundException</code> with no detail message.
      */
     public ClassNotFoundException() {
-        super((Throwable)null);  // Disallow initCause
+        // Disallow initCause
+        super((Throwable)null);
     }
 
     /**
@@ -64,7 +65,8 @@ public class ClassNotFoundException extends ReflectiveOperationException {
      * @param   s   the detail message.
      */
     public ClassNotFoundException(String s) {
-        super(s, null);  //  Disallow initCause
+        // Disallow initCause
+        super(s, null);
     }
 
     /**
@@ -77,7 +79,8 @@ public class ClassNotFoundException extends ReflectiveOperationException {
      * @since 1.2
      */
     public ClassNotFoundException(String s, Throwable ex) {
-        super(s, null);  //  Disallow initCause
+        // Disallow initCause
+        super(s, null);
         this.ex = ex;
     }
 

@@ -62,14 +62,14 @@ import sun.security.util.SecurityConstants;
  * {@code int}, {@code long}, {@code float}, and
  * {@code double}), and the keyword {@code void} are also
  * represented as {@code Class} objects.
- * <p>表示运行应用中类型和接口的实例。
+ * 表示运行应用中类型和接口的实例。
  * 枚举是一种类型，注解是一种接口。
  *
  * <p> {@code Class} has no public constructor. Instead {@code Class}
  * objects are constructed automatically by the Java Virtual Machine as classes
  * are loaded and by calls to the {@code defineClass} method in the class
  * loader.
- * <p>{@code Class}没有公共构造函数，但类对象由Java虚拟机在加载类和
+ * {@code Class}没有公共构造函数，但类对象由Java虚拟机在加载类和
  * 调用类加载器中的{@code defineClass}方法时自动构建。
  *
  * <p> The following example uses a {@code Class} object to print the
@@ -100,13 +100,18 @@ import sun.security.util.SecurityConstants;
  * @see     java.lang.ClassLoader#defineClass(byte[], int, int)
  * @since   JDK1.0
  */
-// 核心类 表示运行应用中类型和接口的实例
 public final class Class<T> implements java.io.Serializable,
                               GenericDeclaration,
                               Type,
                               AnnotatedElement {
-    private static final int ANNOTATION= 0x00002000; // 注解
-    private static final int ENUM      = 0x00004000; // 枚举
+    /**
+     * 注解
+     */
+    private static final int ANNOTATION= 0x00002000;
+    /**
+     * 枚举
+     */
+    private static final int ENUM      = 0x00004000;
     private static final int SYNTHETIC = 0x00001000;
 
     // 注册本地方法
@@ -116,7 +121,7 @@ public final class Class<T> implements java.io.Serializable,
         registerNatives();
     }
 
-    /*
+    /**
      * Private constructor. Only the Java Virtual Machine creates Class objects.
      * This constructor is not used and prevents the default constructor being
      * generated.
@@ -129,6 +134,7 @@ public final class Class<T> implements java.io.Serializable,
     }
 
     // 字符串
+
     /**
      * Converts the object to a string. The string representation is the
      * string "class" or "interface", followed by a space, and then by the
@@ -137,7 +143,7 @@ public final class Class<T> implements java.io.Serializable,
      * primitive type, this method returns the name of the primitive type.  If
      * this {@code Class} object represents void this method returns
      * "void".
-     * <p>将对象转换为字符串。
+     * 将对象转换为字符串。
      *
      * @return a string representation of this class object. (类对象的字符串表示)
      */
@@ -150,7 +156,7 @@ public final class Class<T> implements java.io.Serializable,
     /**
      * Returns a string describing this {@code Class}, including
      * information about modifiers and type parameters.
-     * <p>返回描述类型的字符串，包括修饰符和类型参数的相关信息。
+     * 返回描述类型的字符串，包括修饰符和类型参数的相关信息。
      *
      * The string is formatted as a list of type modifiers, if any,
      * followed by the kind of type (empty string for primitive types
@@ -174,42 +180,53 @@ public final class Class<T> implements java.io.Serializable,
      *
      * @since 1.8
      */
-    // 核心方法 返回描述类型的字符串
     public String toGenericString() {
-        if (isPrimitive()) { // 基本数据类型
+        if (isPrimitive()) {
+            // 基本数据类型
             return toString();
         } else {
-            StringBuilder sb = new StringBuilder(); // 多行字符串追加
+            StringBuilder sb = new StringBuilder();
 
             // Class modifiers are a superset of interface modifiers
             int modifiers = getModifiers() & Modifier.classModifiers();
             if (modifiers != 0) {
-                sb.append(Modifier.toString(modifiers)); // 访问修饰符
+                // 访问修饰符
+                sb.append(Modifier.toString(modifiers));
                 sb.append(' ');
             }
 
-            if (isAnnotation()) { // 注解
+            if (isAnnotation()) {
+                // 注解
                 sb.append('@');
             }
-            if (isInterface()) { // Note: all annotation types are interfaces (注意：所有注解类型都是接口)
+            if (isInterface()) {
+                // Note: all annotation types are interfaces (注意：所有注解类型都是接口)
                 sb.append("interface");
-            } else { // 类型
-                if (isEnum()) // 枚举
+            } else {
+                if (isEnum()) {
+                    // 枚举
                     sb.append("enum");
-                else
+                } else {
+                    // 类型
                     sb.append("class");
+                }
             }
             sb.append(' ');
-            sb.append(getName()); // 类名
+            // 类名
+            sb.append(getName());
 
-            TypeVariable<?>[] typeParams = getTypeParameters(); // 泛型：类型参数
+            // 泛型：类型参数
+            TypeVariable<?>[] typeParams = getTypeParameters();
             if (typeParams.length > 0) {
-                boolean first = true; // 第一个标记
+                // 第一个标记
+                boolean first = true;
                 sb.append('<');
                 for (TypeVariable<?> typeParam : typeParams) {
-                    if (!first)
+                    if (!first) {
                         sb.append(',');
-                    sb.append(typeParam.getTypeName()); // 类型名称
+                    }
+                    // 类型名称
+                    sb.append(typeParam.getTypeName());
                     first = false;
                 }
                 sb.append('>');
@@ -220,7 +237,9 @@ public final class Class<T> implements java.io.Serializable,
     }
 
     // 类对象实例化
+
     /**
+     * 返回与给定字符串名称的类型或接口关联的类对象。
      * Returns the {@code Class} object associated with the class or
      * interface with the given string name.  Invoking this method is
      * equivalent to:
@@ -252,10 +271,10 @@ public final class Class<T> implements java.io.Serializable,
      *            by this method fails
      * @exception ClassNotFoundException if the class cannot be located (如果类不能被定位)
      */
-    // 核心方法 返回与给定字符串名称的类型或接口关联的类对象
     @CallerSensitive
     public static Class<?> forName(String className)
             throws ClassNotFoundException {
+        // 调用者类对象
         Class<?> caller = Reflection.getCallerClass();
         return forName0(className, true, ClassLoader.getClassLoader(caller), caller);
     }
@@ -326,36 +345,44 @@ public final class Class<T> implements java.io.Serializable,
                                    ClassLoader loader)
             throws ClassNotFoundException {
         Class<?> caller = null;
-        SecurityManager sm = System.getSecurityManager(); // 安全管理器
+        // 安全管理器
+        SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
             // Reflective call to get caller class is only needed if a security manager
             // is present.  Avoid the overhead of making this call otherwise.
-            caller = Reflection.getCallerClass(); // 调用者类对象
-            if (sun.misc.VM.isSystemDomainLoader(loader)) { // 系统域类加载器
-                ClassLoader ccl = ClassLoader.getClassLoader(caller); // 调用者类加载器
+            // 调用者类对象
+            caller = Reflection.getCallerClass();
+            // 系统域类加载器
+            if (sun.misc.VM.isSystemDomainLoader(loader)) {
+                // 调用者类加载器
+                ClassLoader ccl = ClassLoader.getClassLoader(caller);
                 if (!sun.misc.VM.isSystemDomainLoader(ccl)) {
+                    // 检查获取类加载器的权限
                     sm.checkPermission(
-                        SecurityConstants.GET_CLASSLOADER_PERMISSION); // 检查获取类加载器的权限
+                        SecurityConstants.GET_CLASSLOADER_PERMISSION);
                 }
             }
         }
         return forName0(name, initialize, loader, caller);
     }
 
-    /** Called after security check for system loader access checks have been made. */
-    // 核心实现 在进行系统类加载器访问检查的安全检查后调用
+    /**
+     * Called after security check for system loader access checks have been made.
+     * 在进行系统类加载器访问检查的安全检查后调用。
+     */
     private static native Class<?> forName0(String name, boolean initialize,
                                             ClassLoader loader,
                                             Class<?> caller)
             throws ClassNotFoundException;
 
     // 对象实例化
+
     /**
      * Creates a new instance of the class represented by this {@code Class}
      * object.  The class is instantiated as if by a {@code new}
      * expression with an empty argument list.  The class is initialized if it
      * has not already been initialized.
-     * <p>创建由{@code Class}对象表示的类型的新实例。
+     * 创建由{@code Class}对象表示的类型的新实例。
      *
      * <p>Note that this method propagates any exception thrown by the
      * nullary constructor, including a checked exception.  Use of
@@ -386,12 +413,13 @@ public final class Class<T> implements java.io.Serializable,
      *          s.checkPackageAccess()} denies access to the package
      *          of this class.
      */
-    // 核心方法 创建由Class对象表示的类型的新实例
     @CallerSensitive
     public T newInstance()
             throws InstantiationException, IllegalAccessException {
-        if (System.getSecurityManager() != null) { // 安全管理器
-            checkMemberAccess(Member.PUBLIC, Reflection.getCallerClass(), false); // 公开成员
+        // 安全管理器
+        if (System.getSecurityManager() != null) {
+            // 公开成员
+            checkMemberAccess(Member.PUBLIC, Reflection.getCallerClass(), false);
         }
 
         // NOTE: the following code may not be strictly correct under
@@ -413,6 +441,7 @@ public final class Class<T> implements java.io.Serializable,
                 // security check to work)
                 java.security.AccessController.doPrivileged(
                     new java.security.PrivilegedAction<Void>() {
+                        @Override
                         public Void run() {
                                 c.setAccessible(true);
                                 return null;
@@ -436,6 +465,7 @@ public final class Class<T> implements java.io.Serializable,
         }
         // Run constructor
         try {
+            // 运行构造器
             return tmpConstructor.newInstance((Object[])null);
         } catch (InvocationTargetException e) {
             Unsafe.getUnsafe().throwException(e.getTargetException());
@@ -443,9 +473,17 @@ public final class Class<T> implements java.io.Serializable,
             return null;
         }
     }
+
+    /**
+     * 缓存的构造器对象
+     */
     private volatile transient Constructor<T> cachedConstructor;
+    /**
+     * 新的实例的调用者类对象缓存
+     */
     private volatile transient Class<?>       newInstanceCallerCache;
 
+    // 类型判别体系
 
     /**
      * Determines if the specified {@code Object} is assignment-compatible
@@ -582,6 +620,8 @@ public final class Class<T> implements java.io.Serializable,
         return (getModifiers() & SYNTHETIC) != 0;
     }
 
+    // 类型名称
+
     /**
      * Returns the  name of the entity (class, interface, array class,
      * primitive type, or void) represented by this {@code Class} object,
@@ -634,11 +674,11 @@ public final class Class<T> implements java.io.Serializable,
      * @return  the name of the class or interface
      *          represented by this object. (由对象表示的类型或接口的名称)
      */
-    // 核心方法 返回实体的名称
     public String getName() {
         String name = this.name;
-        if (name == null)
+        if (name == null) {
             this.name = name = getName0();
+        }
         return name;
     }
 
@@ -649,6 +689,8 @@ public final class Class<T> implements java.io.Serializable,
      */
     private transient String name;
     private native String getName0();
+
+    // 类加载器
 
     /**
      * Returns the class loader for the class.  Some implementations may use
@@ -679,8 +721,9 @@ public final class Class<T> implements java.io.Serializable,
     @CallerSensitive
     public ClassLoader getClassLoader() {
         ClassLoader cl = getClassLoader0();
-        if (cl == null)
+        if (cl == null) {
             return null;
+        }
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
             ClassLoader.checkClassLoaderPermission(cl, Reflection.getCallerClass());
@@ -694,6 +737,9 @@ public final class Class<T> implements java.io.Serializable,
     // Initialized in JVM not by private constructor
     // This field is filtered from reflection access, i.e. getDeclaredField
     // will throw NoSuchFieldException
+    /**
+     * 类加载器对象缓存
+     */
     private final ClassLoader classLoader;
 
     /**
@@ -711,15 +757,19 @@ public final class Class<T> implements java.io.Serializable,
      *     <cite>The Java&trade; Virtual Machine Specification</cite>
      * @since 1.5
      */
+    @Override
     @SuppressWarnings("unchecked")
     public TypeVariable<Class<T>>[] getTypeParameters() {
         ClassRepository info = getGenericInfo();
-        if (info != null)
+        if (info != null) {
             return (TypeVariable<Class<T>>[])info.getTypeParameters();
-        else
+        } else {
             return (TypeVariable<Class<T>>[])new TypeVariable<?>[0];
+        }
     }
 
+    // 超类
+    // 类型层次化体系
 
     /**
      * Returns the {@code Class} representing the superclass of the entity
@@ -780,6 +830,8 @@ public final class Class<T> implements java.io.Serializable,
         return info.getSuperclass();
     }
 
+    // 归属的包信息
+
     /**
      * Gets the package for this class.  The class loader of this class is used
      * to find the package.  If the class was loaded by the bootstrap class
@@ -799,6 +851,7 @@ public final class Class<T> implements java.io.Serializable,
         return Package.getPackage(this);
     }
 
+    // 实现的接口列表
 
     /**
      * Determines the interfaces implemented by the class or interface
@@ -929,6 +982,7 @@ public final class Class<T> implements java.io.Serializable,
      */
     public native Class<?> getComponentType();
 
+    // 修饰符
 
     /**
      * Returns the Java language modifiers for this class or interface, encoded
@@ -1017,11 +1071,12 @@ public final class Class<T> implements java.io.Serializable,
     public Method getEnclosingMethod() throws SecurityException {
         EnclosingMethodInfo enclosingInfo = getEnclosingMethodInfo();
 
-        if (enclosingInfo == null)
+        if (enclosingInfo == null) {
             return null;
-        else {
-            if (!enclosingInfo.isMethod())
+        } else {
+            if (!enclosingInfo.isMethod()) {
                 return null;
+            }
 
             MethodRepository typeInfo = MethodRepository.make(enclosingInfo.getDescriptor(),
                                                               getFactory());
@@ -1032,8 +1087,9 @@ public final class Class<T> implements java.io.Serializable,
             // Convert Types to Classes; returned types *should*
             // be class objects since the methodDescriptor's used
             // don't have generics information
-            for(int i = 0; i < parameterClasses.length; i++)
+            for (int i = 0; i < parameterClasses.length; i++) {
                 parameterClasses[i] = toClass(parameterTypes[i]);
+            }
 
             // Perform access check
             Class<?> enclosingCandidate = enclosingInfo.getEnclosingClass();
@@ -1058,8 +1114,9 @@ public final class Class<T> implements java.io.Serializable,
                         }
 
                         if (matches) { // finally, check return type
-                            if (m.getReturnType().equals(returnType) )
+                            if (m.getReturnType().equals(returnType) ) {
                                 return m;
+                            }
                         }
                     }
                 }
@@ -1125,10 +1182,11 @@ public final class Class<T> implements java.io.Serializable,
     }
 
     private static Class<?> toClass(Type o) {
-        if (o instanceof GenericArrayType)
+        if (o instanceof GenericArrayType) {
             return Array.newInstance(toClass(((GenericArrayType)o).getGenericComponentType()),
                                      0)
                 .getClass();
+        }
         return (Class<?>)o;
      }
 
@@ -1170,11 +1228,12 @@ public final class Class<T> implements java.io.Serializable,
     public Constructor<?> getEnclosingConstructor() throws SecurityException {
         EnclosingMethodInfo enclosingInfo = getEnclosingMethodInfo();
 
-        if (enclosingInfo == null)
+        if (enclosingInfo == null) {
             return null;
-        else {
-            if (!enclosingInfo.isConstructor())
+        } else {
+            if (!enclosingInfo.isConstructor()) {
                 return null;
+            }
 
             ConstructorRepository typeInfo = ConstructorRepository.make(enclosingInfo.getDescriptor(),
                                                                         getFactory());
@@ -1184,8 +1243,9 @@ public final class Class<T> implements java.io.Serializable,
             // Convert Types to Classes; returned types *should*
             // be class objects since the methodDescriptor's used
             // don't have generics information
-            for(int i = 0; i < parameterClasses.length; i++)
+            for (int i = 0; i < parameterClasses.length; i++) {
                 parameterClasses[i] = toClass(parameterTypes[i]);
+            }
 
             // Perform access check
             Class<?> enclosingCandidate = enclosingInfo.getEnclosingClass();
@@ -1206,8 +1266,9 @@ public final class Class<T> implements java.io.Serializable,
                         }
                     }
 
-                    if (matches)
+                    if (matches) {
                         return c;
+                    }
                 }
             }
 
@@ -1237,9 +1298,10 @@ public final class Class<T> implements java.io.Serializable,
     public Class<?> getDeclaringClass() throws SecurityException {
         final Class<?> candidate = getDeclaringClass0();
 
-        if (candidate != null)
+        if (candidate != null) {
             candidate.checkPackageAccess(
                     ClassLoader.getClassLoader(Reflection.getCallerClass()), true);
+        }
         return candidate;
     }
 
@@ -1281,17 +1343,21 @@ public final class Class<T> implements java.io.Serializable,
         } else {
             Class<?> enclosingClass = enclosingInfo.getEnclosingClass();
             // This is a local class or an anonymous class (d or e)
-            if (enclosingClass == this || enclosingClass == null)
+            if (enclosingClass == this || enclosingClass == null) {
                 throw new InternalError("Malformed enclosing method information");
-            else
+            } else {
                 enclosingCandidate = enclosingClass;
+            }
         }
 
-        if (enclosingCandidate != null)
+        if (enclosingCandidate != null) {
             enclosingCandidate.checkPackageAccess(
                     ClassLoader.getClassLoader(Reflection.getCallerClass()), true);
+        }
         return enclosingCandidate;
     }
+
+    // 类型名称
 
     /**
      * Returns the simple name of the underlying class as given in the
@@ -1306,8 +1372,9 @@ public final class Class<T> implements java.io.Serializable,
      * @since 1.5
      */
     public String getSimpleName() {
-        if (isArray())
-            return getComponentType().getSimpleName()+"[]";
+        if (isArray()) {
+            return getComponentType().getSimpleName() + "[]";
+        }
 
         String simpleName = getSimpleBinaryName();
         if (simpleName == null) { // top level class
@@ -1329,11 +1396,13 @@ public final class Class<T> implements java.io.Serializable,
 
         // Remove leading "\$[0-9]*" from the name
         int length = simpleName.length();
-        if (length < 1 || simpleName.charAt(0) != '$')
+        if (length < 1 || simpleName.charAt(0) != '$') {
             throw new InternalError("Malformed class name");
+        }
         int index = 1;
-        while (index < length && isAsciiDigit(simpleName.charAt(index)))
+        while (index < length && isAsciiDigit(simpleName.charAt(index))) {
             index++;
+        }
         // Eventually, this is the empty string iff this is an anonymous class
         return simpleName.substring(index);
     }
@@ -1385,23 +1454,28 @@ public final class Class<T> implements java.io.Serializable,
     public String getCanonicalName() {
         if (isArray()) {
             String canonicalName = getComponentType().getCanonicalName();
-            if (canonicalName != null)
+            if (canonicalName != null) {
                 return canonicalName + "[]";
-            else
+            } else {
                 return null;
+            }
         }
-        if (isLocalOrAnonymousClass())
+        if (isLocalOrAnonymousClass()) {
             return null;
+        }
         Class<?> enclosingClass = getEnclosingClass();
         if (enclosingClass == null) { // top level class
             return getName();
         } else {
             String enclosingName = enclosingClass.getCanonicalName();
-            if (enclosingName == null)
+            if (enclosingName == null) {
                 return null;
+            }
             return enclosingName + "." + getSimpleName();
         }
     }
+
+    // 匿名类
 
     /**
      * Returns {@code true} if and only if the underlying class
@@ -1465,6 +1539,8 @@ public final class Class<T> implements java.io.Serializable,
         return getEnclosingMethodInfo() != null;
     }
 
+    // 成员类型、字段、方法、构造函数
+
     /**
      * Returns an array containing {@code Class} objects representing all
      * the public classes and interfaces that are members of the class
@@ -1500,6 +1576,7 @@ public final class Class<T> implements java.io.Serializable,
 
         return java.security.AccessController.doPrivileged(
             new java.security.PrivilegedAction<Class<?>[]>() {
+                @Override
                 public Class<?>[] run() {
                     List<Class<?>> list = new ArrayList<>();
                     Class<?> currentClass = Class.this;
@@ -1618,6 +1695,7 @@ public final class Class<T> implements java.io.Serializable,
         return copyMethods(privateGetPublicMethods());
     }
 
+    // 构造函数、字段、方法对象获取
 
     /**
      * Returns an array containing {@code Constructor} objects reflecting
@@ -1828,6 +1906,7 @@ public final class Class<T> implements java.io.Serializable,
         return getConstructor0(parameterTypes, Member.PUBLIC);
     }
 
+    // 声明的成员
 
     /**
      * Returns an array of {@code Class} objects reflecting all the
@@ -2181,6 +2260,8 @@ public final class Class<T> implements java.io.Serializable,
         return getConstructor0(parameterTypes, Member.DECLARED);
     }
 
+    // 数据流资源对象
+
     /**
      * Finds a resource with a given name.  The rules for searching resources
      * associated with a given class are implemented by the defining
@@ -2402,7 +2483,7 @@ public final class Class<T> implements java.io.Serializable,
             int index = baseName.lastIndexOf('.');
             if (index != -1) {
                 name = baseName.substring(0, index).replace('.', '/')
-                    +"/"+name;
+                        + "/" + name;
             }
         } else {
             name = name.substring(1);
@@ -2412,6 +2493,7 @@ public final class Class<T> implements java.io.Serializable,
 
     /**
      * Atomic operations support.
+     * 原子操作支持。
      */
     private static class Atomic {
         // initialize Unsafe machinery here, since we need to call Class.class instance method
@@ -2510,7 +2592,9 @@ public final class Class<T> implements java.io.Serializable,
 
     private ReflectionData<T> newReflectionData(SoftReference<ReflectionData<T>> oldReflectionData,
                                                 int classRedefinedCount) {
-        if (!useCaches) return null;
+        if (!useCaches) {
+            return null;
+        }
 
         while (true) {
             ReflectionData<T> rd = new ReflectionData<>(classRedefinedCount);
@@ -2665,7 +2749,9 @@ public final class Class<T> implements java.io.Serializable,
         ReflectionData<T> rd = reflectionData();
         if (rd != null) {
             res = publicOnly ? rd.publicConstructors : rd.declaredConstructors;
-            if (res != null) return res;
+            if (res != null) {
+                return res;
+            }
         }
         // No cached value available; request value from VM
         if (isInterface()) {
@@ -2700,7 +2786,9 @@ public final class Class<T> implements java.io.Serializable,
         ReflectionData<T> rd = reflectionData();
         if (rd != null) {
             res = publicOnly ? rd.declaredPublicMethods : rd.declaredMethods;
-            if (res != null) return res;
+            if (res != null) {
+                return res;
+            }
         }
         // No cached value available; request value from VM
         res = Reflection.filterMethods(this, getDeclaredMethods0(publicOnly));
@@ -2725,8 +2813,9 @@ public final class Class<T> implements java.io.Serializable,
         }
 
         MethodArray(int initialSize) {
-            if (initialSize < 2)
+            if (initialSize < 2) {
                 throw new IllegalArgumentException("Size should be 2 or more");
+            }
 
             methods = new Method[initialSize];
             length = 0;
@@ -2743,8 +2832,9 @@ public final class Class<T> implements java.io.Serializable,
             }
             methods[length++] = m;
 
-            if (m != null && m.isDefault())
+            if (m != null && m.isDefault()) {
                 defaults++;
+            }
         }
 
         void addAll(Method[] ma) {
@@ -2798,9 +2888,11 @@ public final class Class<T> implements java.io.Serializable,
         }
 
         Method getFirst() {
-            for (Method m : methods)
-                if (m != null)
+            for (Method m : methods) {
+                if (m != null) {
                     return m;
+                }
+            }
             return null;
         }
 
@@ -2814,8 +2906,9 @@ public final class Class<T> implements java.io.Serializable,
         }
 
         private void remove(int i) {
-            if (methods[i] != null && methods[i].isDefault())
+            if (methods[i] != null && methods[i].isDefault()) {
                 defaults--;
+            }
             methods[i] = null;
         }
 
@@ -3260,6 +3353,7 @@ public final class Class<T> implements java.io.Serializable,
     private static void checkInitted() {
         if (initted) return;
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                @Override
                 public Void run() {
                     // Tests to ensure the system properties table is fully
                     // initialized. This is needed because reflection code is
@@ -3316,6 +3410,7 @@ public final class Class<T> implements java.io.Serializable,
                 final Method values = getMethod("values");
                 java.security.AccessController.doPrivileged(
                     new java.security.PrivilegedAction<Void>() {
+                        @Override
                         public Void run() {
                                 values.setAccessible(true);
                                 return null;
@@ -3370,8 +3465,9 @@ public final class Class<T> implements java.io.Serializable,
      */
     @SuppressWarnings("unchecked")
     public T cast(Object obj) {
-        if (obj != null && !isInstance(obj))
+        if (obj != null && !isInstance(obj)) {
             throw new ClassCastException(cannotCastMsg(obj));
+        }
         return (T) obj;
     }
 
@@ -3403,16 +3499,18 @@ public final class Class<T> implements java.io.Serializable,
      */
     @SuppressWarnings("unchecked")
     public <U> Class<? extends U> asSubclass(Class<U> clazz) {
-        if (clazz.isAssignableFrom(this))
+        if (clazz.isAssignableFrom(this)) {
             return (Class<? extends U>) this;
-        else
+        } else {
             throw new ClassCastException(this.toString());
+        }
     }
 
     /**
      * @throws NullPointerException {@inheritDoc}
      * @since 1.5
      */
+    @Override
     @SuppressWarnings("unchecked")
     public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
         Objects.requireNonNull(annotationClass);
@@ -3447,6 +3545,7 @@ public final class Class<T> implements java.io.Serializable,
     /**
      * @since 1.5
      */
+    @Override
     public Annotation[] getAnnotations() {
         return AnnotationParser.toArray(annotationData().annotations);
     }
@@ -3478,6 +3577,7 @@ public final class Class<T> implements java.io.Serializable,
     /**
      * @since 1.5
      */
+    @Override
     public Annotation[] getDeclaredAnnotations()  {
         return AnnotationParser.toArray(annotationData().declaredAnnotations);
     }
