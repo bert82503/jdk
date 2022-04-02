@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 2003, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
@@ -31,11 +7,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 /**
  * This class is used to create operating system processes.
+ * 本类用于创建操作系统进程。
  *
  * <p>Each {@code ProcessBuilder} instance manages a collection
  * of process attributes.  The {@link #start()} method creates a new
@@ -174,13 +152,24 @@ import java.util.Map;
  * @author Martin Buchholz
  * @since 1.5
  */
-
 public final class ProcessBuilder
 {
+    /**
+     * 命令列表
+     */
     private List<String> command;
+    /**
+     * 工作目录
+     */
     private File directory;
-    private Map<String,String> environment;
+    /**
+     * 环境变量
+     */
+    private Map<String, String> environment;
     private boolean redirectErrorStream;
+    /**
+     * 输入/输出重定向
+     */
     private Redirect[] redirects;
 
     /**
@@ -196,8 +185,9 @@ public final class ProcessBuilder
      * @throws NullPointerException if the argument is null
      */
     public ProcessBuilder(List<String> command) {
-        if (command == null)
+        if (command == null) {
             throw new NullPointerException();
+        }
         this.command = command;
     }
 
@@ -214,9 +204,10 @@ public final class ProcessBuilder
      */
     public ProcessBuilder(String... command) {
         this.command = new ArrayList<>(command.length);
-        for (String arg : command)
-            this.command.add(arg);
+        Collections.addAll(this.command, command);
     }
+
+    // 命令列表
 
     /**
      * Sets this process builder's operating system program and
@@ -232,8 +223,9 @@ public final class ProcessBuilder
      * @throws NullPointerException if the argument is null
      */
     public ProcessBuilder command(List<String> command) {
-        if (command == null)
+        if (command == null) {
             throw new NullPointerException();
+        }
         this.command = command;
         return this;
     }
@@ -251,8 +243,7 @@ public final class ProcessBuilder
      */
     public ProcessBuilder command(String... command) {
         this.command = new ArrayList<>(command.length);
-        for (String arg : command)
-            this.command.add(arg);
+        Collections.addAll(this.command, command);
         return this;
     }
 
@@ -267,6 +258,8 @@ public final class ProcessBuilder
     public List<String> command() {
         return command;
     }
+
+    // 环境变量
 
     /**
      * Returns a string map view of this process builder's environment.
@@ -336,13 +329,15 @@ public final class ProcessBuilder
      * @see    Runtime#exec(String[],String[], File)
      * @see    System#getenv()
      */
-    public Map<String,String> environment() {
+    public Map<String, String> environment() {
         SecurityManager security = System.getSecurityManager();
-        if (security != null)
+        if (security != null) {
             security.checkPermission(new RuntimePermission("getenv.*"));
+        }
 
-        if (environment == null)
+        if (environment == null) {
             environment = ProcessEnvironment.environment();
+        }
 
         assert environment != null;
 
@@ -376,6 +371,8 @@ public final class ProcessBuilder
         }
         return this;
     }
+
+    // 工作目录
 
     /**
      * Returns this process builder's working directory.
@@ -412,6 +409,7 @@ public final class ProcessBuilder
     }
 
     // ---------------- I/O Redirection ----------------
+    // I/O重定向
 
     /**
      * Implements a <a href="#redirect-output">null input stream</a>.
@@ -419,7 +417,9 @@ public final class ProcessBuilder
     static class NullInputStream extends InputStream {
         static final NullInputStream INSTANCE = new NullInputStream();
         private NullInputStream() {}
+        @Override
         public int read()      { return -1; }
+        @Override
         public int available() { return 0; }
     }
 
@@ -429,6 +429,7 @@ public final class ProcessBuilder
     static class NullOutputStream extends OutputStream {
         static final NullOutputStream INSTANCE = new NullOutputStream();
         private NullOutputStream() {}
+        @Override
         public void write(int b) throws IOException {
             throw new IOException("Stream closed");
         }
@@ -488,7 +489,7 @@ public final class ProcessBuilder
              * {@link Redirect#appendTo Redirect.appendTo(File)}.
              */
             APPEND
-        };
+        }
 
         /**
          * Returns the type of this {@code Redirect}.
@@ -499,6 +500,7 @@ public final class ProcessBuilder
         /**
          * Indicates that subprocess I/O will be connected to the
          * current Java process over a pipe.
+         * 管道。
          *
          * This is the default handling of subprocess standard I/O.
          *
@@ -509,7 +511,9 @@ public final class ProcessBuilder
          * }</pre>
          */
         public static final Redirect PIPE = new Redirect() {
+                @Override
                 public Type type() { return Type.PIPE; }
+                @Override
                 public String toString() { return type().toString(); }};
 
         /**
@@ -524,7 +528,9 @@ public final class ProcessBuilder
          * }</pre>
          */
         public static final Redirect INHERIT = new Redirect() {
+                @Override
                 public Type type() { return Type.INHERIT; }
+                @Override
                 public String toString() { return type().toString(); }};
 
         /**
@@ -561,8 +567,11 @@ public final class ProcessBuilder
             if (file == null)
                 throw new NullPointerException();
             return new Redirect() {
+                    @Override
                     public Type type() { return Type.READ; }
+                    @Override
                     public File file() { return file; }
+                    @Override
                     public String toString() {
                         return "redirect to read from file \"" + file + "\"";
                     }
@@ -588,11 +597,15 @@ public final class ProcessBuilder
             if (file == null)
                 throw new NullPointerException();
             return new Redirect() {
+                    @Override
                     public Type type() { return Type.WRITE; }
+                    @Override
                     public File file() { return file; }
+                    @Override
                     public String toString() {
                         return "redirect to write to file \"" + file + "\"";
                     }
+                    @Override
                     boolean append() { return false; }
                 };
         }
@@ -619,11 +632,15 @@ public final class ProcessBuilder
             if (file == null)
                 throw new NullPointerException();
             return new Redirect() {
+                    @Override
                     public Type type() { return Type.APPEND; }
+                    @Override
                     public File file() { return file; }
+                    @Override
                     public String toString() {
                         return "redirect to append to file \"" + file + "\"";
                     }
+                    @Override
                     boolean append() { return true; }
                 };
         }
@@ -635,14 +652,18 @@ public final class ProcessBuilder
          * instances of the same type associated with non-null equal
          * {@code File} instances.
          */
+        @Override
         public boolean equals(Object obj) {
-            if (obj == this)
+            if (obj == this) {
                 return true;
-            if (! (obj instanceof Redirect))
+            }
+            if (! (obj instanceof Redirect)) {
                 return false;
+            }
             Redirect r = (Redirect) obj;
-            if (r.type() != this.type())
+            if (r.type() != this.type()) {
                 return false;
+            }
             assert this.file() != null;
             return this.file().equals(r.file());
         }
@@ -651,12 +672,14 @@ public final class ProcessBuilder
          * Returns a hash code value for this {@code Redirect}.
          * @return a hash code value for this {@code Redirect}
          */
+        @Override
         public int hashCode() {
             File file = file();
-            if (file == null)
+            if (file == null) {
                 return super.hashCode();
-            else
+            } else {
                 return file.hashCode();
+            }
         }
 
         /**
@@ -667,10 +690,11 @@ public final class ProcessBuilder
     }
 
     private Redirect[] redirects() {
-        if (redirects == null)
+        if (redirects == null) {
             redirects = new Redirect[] {
                 Redirect.PIPE, Redirect.PIPE, Redirect.PIPE
             };
+        }
         return redirects;
     }
 
@@ -699,9 +723,10 @@ public final class ProcessBuilder
      */
     public ProcessBuilder redirectInput(Redirect source) {
         if (source.type() == Redirect.Type.WRITE ||
-            source.type() == Redirect.Type.APPEND)
+            source.type() == Redirect.Type.APPEND) {
             throw new IllegalArgumentException(
                 "Redirect invalid for reading: " + source);
+        }
         redirects()[0] = source;
         return this;
     }
@@ -729,9 +754,10 @@ public final class ProcessBuilder
      * @since  1.7
      */
     public ProcessBuilder redirectOutput(Redirect destination) {
-        if (destination.type() == Redirect.Type.READ)
+        if (destination.type() == Redirect.Type.READ) {
             throw new IllegalArgumentException(
                 "Redirect invalid for writing: " + destination);
+        }
         redirects()[1] = destination;
         return this;
     }
@@ -763,9 +789,10 @@ public final class ProcessBuilder
      * @since  1.7
      */
     public ProcessBuilder redirectError(Redirect destination) {
-        if (destination.type() == Redirect.Type.READ)
+        if (destination.type() == Redirect.Type.READ) {
             throw new IllegalArgumentException(
                 "Redirect invalid for writing: " + destination);
+        }
         redirects()[2] = destination;
         return this;
     }
@@ -927,8 +954,11 @@ public final class ProcessBuilder
         return this;
     }
 
+    // 新进程
+
     /**
      * Starts a new process using the attributes of this process builder.
+     * 使用这个进程构建器的属性启动一个新进程。
      *
      * <p>The new process will
      * invoke the command and arguments given by {@link #command()},
@@ -1007,15 +1037,18 @@ public final class ProcessBuilder
         String[] cmdarray = command.toArray(new String[command.size()]);
         cmdarray = cmdarray.clone();
 
-        for (String arg : cmdarray)
-            if (arg == null)
+        for (String arg : cmdarray) {
+            if (arg == null) {
                 throw new NullPointerException();
+            }
+        }
         // Throws IndexOutOfBoundsException if command is empty
         String prog = cmdarray[0];
 
         SecurityManager security = System.getSecurityManager();
-        if (security != null)
+        if (security != null) {
             security.checkExec(prog);
+        }
 
         String dir = directory == null ? null : directory.toString();
 

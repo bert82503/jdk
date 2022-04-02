@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1995, 2012, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
@@ -38,6 +14,8 @@ import java.util.concurrent.TimeUnit;
  * output to the process, waiting for the process to complete,
  * checking the exit status of the process, and destroying (killing)
  * the process.
+ * 进程。
+ * 创建一个原生进程并返回一个实例。
  *
  * <p>The methods that create processes may not work well for special
  * processes on certain native platforms, such as native windowing
@@ -75,6 +53,8 @@ import java.util.concurrent.TimeUnit;
  * @since   JDK1.0
  */
 public abstract class Process {
+    // 数据流
+
     /**
      * Returns the output stream connected to the normal input of the
      * subprocess.  Output to the stream is piped into the standard
@@ -141,6 +121,8 @@ public abstract class Process {
      */
     public abstract InputStream getErrorStream();
 
+    // 等待
+
     /**
      * Causes the current thread to wait, if necessary, until the
      * process represented by this {@code Process} object has
@@ -203,6 +185,8 @@ public abstract class Process {
         return false;
     }
 
+    // 退出
+
     /**
      * Returns the exit value for the subprocess.
      *
@@ -213,6 +197,8 @@ public abstract class Process {
      *         by this {@code Process} object has not yet terminated
      */
     public abstract int exitValue();
+
+    // 销毁释放资源
 
     /**
      * Kills the subprocess. Whether the subprocess represented by this
@@ -249,6 +235,7 @@ public abstract class Process {
     /**
      * Tests whether the subprocess represented by this {@code Process} is
      * alive.
+     * 检测进程是否存活。
      *
      * @return {@code true} if the subprocess represented by this
      *         {@code Process} object has not yet terminated.

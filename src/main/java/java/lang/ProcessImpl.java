@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 2003, 2010, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
@@ -29,24 +5,28 @@ import java.io.IOException;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.lang.ProcessBuilder.Redirect;
-import java.lang.ProcessBuilder.Redirect;
 
 /**
  * This class is for the exclusive use of ProcessBuilder.start() to
  * create new processes.
+ * 创建一个新的进程。
  *
  * @author Martin Buchholz
  * @since   1.5
  */
 final class ProcessImpl {
+    /**
+     * 文件描述符的访问对象
+     */
     private static final sun.misc.JavaIOFileDescriptorAccess fdAccess
         = sun.misc.SharedSecrets.getJavaIOFileDescriptorAccess();
 
     private ProcessImpl() {}    // Not instantiable
 
     private static byte[] toCString(String s) {
-        if (s == null)
+        if (s == null) {
             return null;
+        }
         byte[] bytes = s.getBytes();
         byte[] result = new byte[bytes.length + 1];
         System.arraycopy(bytes, 0,
@@ -97,36 +77,37 @@ final class ProcessImpl {
             } else {
                 std_fds = new int[3];
 
-                if (redirects[0] == Redirect.PIPE)
+                if (redirects[0] == Redirect.PIPE) {
                     std_fds[0] = -1;
-                else if (redirects[0] == Redirect.INHERIT)
+                } else if (redirects[0] == Redirect.INHERIT) {
                     std_fds[0] = 0;
-                else {
+                } else {
                     f0 = new FileInputStream(redirects[0].file());
                     std_fds[0] = fdAccess.get(f0.getFD());
                 }
 
-                if (redirects[1] == Redirect.PIPE)
+                if (redirects[1] == Redirect.PIPE) {
                     std_fds[1] = -1;
-                else if (redirects[1] == Redirect.INHERIT)
+                } else if (redirects[1] == Redirect.INHERIT) {
                     std_fds[1] = 1;
-                else {
+                } else {
                     f1 = new FileOutputStream(redirects[1].file(),
                                               redirects[1].append());
                     std_fds[1] = fdAccess.get(f1.getFD());
                 }
 
-                if (redirects[2] == Redirect.PIPE)
+                if (redirects[2] == Redirect.PIPE) {
                     std_fds[2] = -1;
-                else if (redirects[2] == Redirect.INHERIT)
+                } else if (redirects[2] == Redirect.INHERIT) {
                     std_fds[2] = 2;
-                else {
+                } else {
                     f2 = new FileOutputStream(redirects[2].file(),
                                               redirects[2].append());
                     std_fds[2] = fdAccess.get(f2.getFD());
                 }
             }
 
+            // unix进程
         return new UNIXProcess
             (toCString(cmdarray[0]),
              argBlock, args.length,
@@ -137,10 +118,19 @@ final class ProcessImpl {
         } finally {
             // In theory, close() can throw IOException
             // (although it is rather unlikely to happen here)
-            try { if (f0 != null) f0.close(); }
+            try { if (f0 != null) {
+                f0.close();
+            }
+            }
             finally {
-                try { if (f1 != null) f1.close(); }
-                finally { if (f2 != null) f2.close(); }
+                try { if (f1 != null) {
+                    f1.close();
+                }
+                }
+                finally { if (f2 != null) {
+                    f2.close();
+                }
+                }
             }
         }
     }

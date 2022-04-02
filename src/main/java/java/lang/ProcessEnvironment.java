@@ -1,66 +1,20 @@
-/*
- * Copyright (c) 2003, 2011, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
-
-/* We use APIs that access the standard Unix environ array, which
- * is defined by UNIX98 to look like:
- *
- *    char **environ;
- *
- * These are unsorted, case-sensitive, null-terminated arrays of bytes
- * of the form FOO=BAR\000 which are usually encoded in the user's
- * default encoding (file.encoding is an excellent choice for
- * encoding/decoding these).  However, even though the user cannot
- * directly access the underlying byte representation, we take pains
- * to pass on the child the exact byte representation we inherit from
- * the parent process for any environment name or value not created by
- * Javaland.  So we keep track of all the byte representations.
- *
- * Internally, we define the types Variable and Value that exhibit
- * String/byteArray duality.  The internal representation of the
- * environment then looks like a Map<Variable,Value>.  But we don't
- * expose this to the user -- we only provide a Map<String,String>
- * view, although we could also provide a Map<byte[],byte[]> view.
- *
- * The non-private methods in this class are not for general use even
- * within this package.  Instead, they are the system-dependent parts
- * of the system-independent method of the same name.  Don't even
- * think of using this class unless your method's name appears below.
- *
- * @author  Martin Buchholz
- * @since   1.5
- */
 
 package java.lang;
 
-import java.io.*;
 import java.util.*;
 
-
+/**
+ * 进程环境。
+ */
 final class ProcessEnvironment
 {
+    /**
+     * 环境变量
+     */
     private static final HashMap<Variable,Value> theEnvironment;
+    /**
+     * 不可变的环境变量
+     */
     private static final Map<String,String> theUnmodifiableEnvironment;
     static final int MIN_NAME_LENGTH = 0;
 
@@ -71,14 +25,15 @@ final class ProcessEnvironment
         theEnvironment = new HashMap<>(environ.length/2 + 3);
         // Read environment variables back to front,
         // so that earlier variables override later ones.
-        for (int i = environ.length-1; i > 0; i-=2)
+        for (int i = environ.length-1; i > 0; i-=2) {
             theEnvironment.put(Variable.valueOf(environ[i-1]),
                                Value.valueOf(environ[i]));
+        }
 
-        theUnmodifiableEnvironment
-            = Collections.unmodifiableMap
-            (new StringEnvironment(theEnvironment));
+        theUnmodifiableEnvironment = Collections.unmodifiableMap(new StringEnvironment(theEnvironment));
     }
+
+    // 进程环境变量
 
     /* Only for use by System.getenv(String) */
     static String getenv(String name) {
@@ -110,16 +65,18 @@ final class ProcessEnvironment
     // Check that name is suitable for insertion into Environment map
     private static void validateVariable(String name) {
         if (name.indexOf('=')      != -1 ||
-            name.indexOf('\u0000') != -1)
+            name.indexOf('\u0000') != -1) {
             throw new IllegalArgumentException
                 ("Invalid environment variable name: \"" + name + "\"");
+        }
     }
 
     // Check that value is suitable for insertion into Environment map
     private static void validateValue(String value) {
-        if (value.indexOf('\u0000') != -1)
+        if (value.indexOf('\u0000') != -1) {
             throw new IllegalArgumentException
                 ("Invalid environment variable value: \"" + value + "\"");
+        }
     }
 
     // A class hiding the byteArray-String duality of
@@ -137,15 +94,18 @@ final class ProcessEnvironment
             return bytes;
         }
 
+        @Override
         public String toString() {
             return str;
         }
 
+        @Override
         public boolean equals(Object o) {
             return o instanceof ExternalData
                 && arrayEquals(getBytes(), ((ExternalData) o).getBytes());
         }
 
+        @Override
         public int hashCode() {
             return arrayHash(getBytes());
         }
@@ -175,10 +135,12 @@ final class ProcessEnvironment
             return new Variable(new String(bytes), bytes);
         }
 
+        @Override
         public int compareTo(Variable variable) {
             return arrayCompare(getBytes(), variable.getBytes());
         }
 
+        @Override
         public boolean equals(Object o) {
             return o instanceof Variable && super.equals(o);
         }
@@ -208,10 +170,12 @@ final class ProcessEnvironment
             return new Value(new String(bytes), bytes);
         }
 
+        @Override
         public int compareTo(Value value) {
             return arrayCompare(getBytes(), value.getBytes());
         }
 
+        @Override
         public boolean equals(Object o) {
             return o instanceof Value && super.equals(o);
         }
@@ -413,27 +377,33 @@ final class ProcessEnvironment
     // Replace with general purpose method someday
     private static int arrayCompare(byte[]x, byte[] y) {
         int min = x.length < y.length ? x.length : y.length;
-        for (int i = 0; i < min; i++)
-            if (x[i] != y[i])
+        for (int i = 0; i < min; i++) {
+            if (x[i] != y[i]) {
                 return x[i] - y[i];
+            }
+        }
         return x.length - y.length;
     }
 
     // Replace with general purpose method someday
     private static boolean arrayEquals(byte[] x, byte[] y) {
-        if (x.length != y.length)
+        if (x.length != y.length) {
             return false;
-        for (int i = 0; i < x.length; i++)
-            if (x[i] != y[i])
+        }
+        for (int i = 0; i < x.length; i++) {
+            if (x[i] != y[i]) {
                 return false;
+            }
+        }
         return true;
     }
 
     // Replace with general purpose method someday
     private static int arrayHash(byte[] x) {
         int hash = 0;
-        for (int i = 0; i < x.length; i++)
+        for (int i = 0; i < x.length; i++) {
             hash = 31 * hash + x[i];
+        }
         return hash;
     }
 

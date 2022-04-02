@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1995, 2014, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
@@ -50,6 +26,7 @@ import java.security.PrivilegedExceptionAction;
 
 /**
  * java.lang.Process subclass in the UNIX environment.
+ * unix环境的进程。
  *
  * @author Mario Wolczko and Ross Knippel.
  * @author Konstantin Kladko (ported to Linux and Bsd)
@@ -57,15 +34,33 @@ import java.security.PrivilegedExceptionAction;
  * @author Volker Simonis (ported to AIX)
  */
 final class UNIXProcess extends Process {
+    /**
+     * 文件描述符的访问对象
+     */
     private static final sun.misc.JavaIOFileDescriptorAccess fdAccess
         = sun.misc.SharedSecrets.getJavaIOFileDescriptorAccess();
 
+    /**
+     * 进程id
+     */
     private final int pid;
+    /**
+     * 退出码
+     */
     private int exitcode;
     private boolean hasExited;
 
+    /**
+     * 标准输入
+     */
     private /* final */ OutputStream stdin;
+    /**
+     * 标准输出
+     */
     private /* final */ InputStream  stdout;
+    /**
+     * 标准错误
+     */
     private /* final */ InputStream  stderr;
 
     // only used on Solaris
@@ -78,8 +73,11 @@ final class UNIXProcess extends Process {
         VFORK
     }
 
-    private static enum Platform {
+    private enum Platform {
 
+        /**
+         * linux操作系统
+         */
         LINUX(LaunchMechanism.VFORK, LaunchMechanism.FORK),
 
         BSD(LaunchMechanism.POSIX_SPAWN, LaunchMechanism.FORK),
@@ -88,7 +86,13 @@ final class UNIXProcess extends Process {
 
         AIX(LaunchMechanism.POSIX_SPAWN, LaunchMechanism.FORK);
 
+        /**
+         * 默认的运行机制
+         */
         final LaunchMechanism defaultLaunchMechanism;
+        /**
+         * 有效的运行机制
+         */
         final Set<LaunchMechanism> validLaunchMechanisms;
 
         Platform(LaunchMechanism ... launchMechanisms) {
@@ -165,13 +169,20 @@ final class UNIXProcess extends Process {
         }
     }
 
+    /**
+     * 平台枚举
+     */
     private static final Platform platform = Platform.get();
+    /**
+     * 平台的运行机制
+     */
     private static final LaunchMechanism launchMechanism = platform.launchMechanism();
     private static final byte[] helperpath = toCString(platform.helperPath());
 
     private static byte[] toCString(String s) {
-        if (s == null)
+        if (s == null) {
             return null;
+        }
         byte[] bytes = s.getBytes();
         byte[] result = new byte[bytes.length + 1];
         System.arraycopy(bytes, 0,
@@ -221,7 +232,9 @@ final class UNIXProcess extends Process {
         doPrivileged((PrivilegedAction<Executor>) () -> {
 
             ThreadGroup tg = Thread.currentThread().getThreadGroup();
-            while (tg.getParent() != null) tg = tg.getParent();
+            while (tg.getParent() != null) {
+                tg = tg.getParent();
+            }
             ThreadGroup systemThreadGroup = tg;
 
             ThreadFactory threadFactory = grimReaper -> {
@@ -294,14 +307,17 @@ final class UNIXProcess extends Process {
                         this.notifyAll();
                     }
 
-                    if (stdout instanceof ProcessPipeInputStream)
+                    if (stdout instanceof ProcessPipeInputStream) {
                         ((ProcessPipeInputStream) stdout).processExited();
+                    }
 
-                    if (stderr instanceof ProcessPipeInputStream)
+                    if (stderr instanceof ProcessPipeInputStream) {
                         ((ProcessPipeInputStream) stderr).processExited();
+                    }
 
-                    if (stdin instanceof ProcessPipeOutputStream)
+                    if (stdin instanceof ProcessPipeOutputStream) {
                         ((ProcessPipeOutputStream) stdin).processExited();
+                    }
                 });
                 break;
 
@@ -363,14 +379,17 @@ final class UNIXProcess extends Process {
                         this.notifyAll();
                     }
 
-                    if (stdout instanceof DeferredCloseProcessPipeInputStream)
+                    if (stdout instanceof DeferredCloseProcessPipeInputStream) {
                         ((DeferredCloseProcessPipeInputStream) stdout).processExited();
+                    }
 
-                    if (stderr instanceof DeferredCloseProcessPipeInputStream)
+                    if (stderr instanceof DeferredCloseProcessPipeInputStream) {
                         ((DeferredCloseProcessPipeInputStream) stderr).processExited();
+                    }
 
-                    if (stdin instanceof ProcessPipeOutputStream)
+                    if (stdin instanceof ProcessPipeOutputStream) {
                         ((ProcessPipeOutputStream) stdin).processExited();
+                    }
                 });
                 break;
 
@@ -378,18 +397,22 @@ final class UNIXProcess extends Process {
         }
     }
 
+    @Override
     public OutputStream getOutputStream() {
         return stdin;
     }
 
+    @Override
     public InputStream getInputStream() {
         return stdout;
     }
 
+    @Override
     public InputStream getErrorStream() {
         return stderr;
     }
 
+    @Override
     public synchronized int waitFor() throws InterruptedException {
         while (!hasExited) {
             wait();
@@ -401,8 +424,12 @@ final class UNIXProcess extends Process {
     public synchronized boolean waitFor(long timeout, TimeUnit unit)
         throws InterruptedException
     {
-        if (hasExited) return true;
-        if (timeout <= 0) return false;
+        if (hasExited) {
+            return true;
+        }
+        if (timeout <= 0) {
+            return false;
+        }
 
         long remainingNanos = unit.toNanos(timeout);
         long deadline = System.nanoTime() + remainingNanos;
@@ -418,12 +445,15 @@ final class UNIXProcess extends Process {
         return hasExited;
     }
 
+    @Override
     public synchronized int exitValue() {
         if (!hasExited) {
             throw new IllegalThreadStateException("process hasn't exited");
         }
         return exitcode;
     }
+
+    // 销毁进程，释放资源
 
     private static native void destroyProcess(int pid, boolean force);
 
@@ -439,8 +469,9 @@ final class UNIXProcess extends Process {
                 // is very small, and OSes try hard to not recycle pids too
                 // soon, so this is quite safe.
                 synchronized (this) {
-                    if (!hasExited)
+                    if (!hasExited) {
                         destroyProcess(pid, force);
+                    }
                 }
                 try { stdin.close();  } catch (IOException ignored) {}
                 try { stdout.close(); } catch (IOException ignored) {}
@@ -459,11 +490,13 @@ final class UNIXProcess extends Process {
                         destroyProcess(pid, force);
                     try {
                         stdin.close();
-                        if (stdout_inner_stream != null)
+                        if (stdout_inner_stream != null) {
                             stdout_inner_stream.closeDeferred(stdout);
-                        if (stderr instanceof DeferredCloseInputStream)
+                        }
+                        if (stderr instanceof DeferredCloseInputStream) {
                             ((DeferredCloseInputStream) stderr)
                                 .closeDeferred(stderr);
+                        }
                     } catch (IOException e) {
                         // ignore
                     }
@@ -474,6 +507,7 @@ final class UNIXProcess extends Process {
         }
     }
 
+    @Override
     public void destroy() {
         destroy(false);
     }
@@ -492,6 +526,7 @@ final class UNIXProcess extends Process {
     private static native void init();
 
     static {
+        // 初始化
         init();
     }
 
@@ -624,6 +659,7 @@ final class UNIXProcess extends Process {
             }
         }
 
+        @Override
         public void close() throws IOException {
             synchronized (lock) {
                 useCount = 0;
@@ -632,6 +668,7 @@ final class UNIXProcess extends Process {
             super.close();
         }
 
+        @Override
         public int read() throws IOException {
             raise();
             try {
@@ -641,6 +678,7 @@ final class UNIXProcess extends Process {
             }
         }
 
+        @Override
         public int read(byte[] b) throws IOException {
             raise();
             try {
@@ -650,6 +688,7 @@ final class UNIXProcess extends Process {
             }
         }
 
+        @Override
         public int read(byte[] b, int off, int len) throws IOException {
             raise();
             try {
@@ -659,6 +698,7 @@ final class UNIXProcess extends Process {
             }
         }
 
+        @Override
         public long skip(long n) throws IOException {
             raise();
             try {
@@ -668,6 +708,7 @@ final class UNIXProcess extends Process {
             }
         }
 
+        @Override
         public int available() throws IOException {
             raise();
             try {
@@ -697,7 +738,6 @@ final class UNIXProcess extends Process {
      * finishes. The 'close()' operation will only be executed if there are
      * no pending operations. Otherwise it is deferred after the last pending
      * operation has finished.
-     *
      */
     private static class DeferredCloseProcessPipeInputStream
         extends BufferedInputStream {
