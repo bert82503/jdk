@@ -30,7 +30,7 @@ public interface BiPredicate<T, U> {
      */
     boolean test(T t, U u);
 
-    // 谓词函数：与、非、或
+    // 谓词组合函数：与、非、或
     // 默认函数
 
     /**
