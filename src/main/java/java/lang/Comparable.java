@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1997, 2007, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
@@ -37,7 +13,7 @@ import java.util.SortedSet;
  * implements it.  This ordering is referred to as the class's <i>natural
  * ordering</i>, and the class's <tt>compareTo</tt> method is referred to as
  * its <i>natural comparison method</i>.<p>
- *
+ * [排序] 可比较的类型（对象的自然顺序）。
  * 本接口对每一个实现该接口的类型的对象都进行整体排序。
  * 这个排序称之为类型的自然顺序，<tt>compareTo</tt> 方法称之为 <i>自然比较法</i>。
  * <p>
@@ -111,13 +87,11 @@ import java.util.SortedSet;
  * @see java.util.Comparator
  * @since 1.2
  */
-// 核心接口 [排序] 可比较的类型（对象的自然顺序）
 public interface Comparable<T> {
     /**
      * Compares this object with the specified object for order.  Returns a
      * negative integer, zero, or a positive integer as this object is less
      * than, equal to, or greater than the specified object.
-     * <p>
      * 比较该对象与指定对象的顺序，返回一个负整数、零或正整数作为本对象小于、等于或大于指定的对象。
      *
      * <p>The implementor must ensure <tt>sgn(x.compareTo(y)) ==
@@ -128,7 +102,6 @@ public interface Comparable<T> {
      * <p>The implementor must also ensure that the relation is transitive:
      * <tt>(x.compareTo(y)&gt;0 &amp;&amp; y.compareTo(z)&gt;0)</tt> implies
      * <tt>x.compareTo(z)&gt;0</tt>.
-     * <p>
      * 实现者还必须确保关系是可传递的：
      *
      * <p>Finally, the implementor must ensure that <tt>x.compareTo(y)==0</tt>
@@ -156,6 +129,5 @@ public interface Comparable<T> {
      * @throws ClassCastException if the specified object's type prevents it
      *         from being compared to this object.
      */
-    // 核心方法 比较该对象与指定对象的顺序
     int compareTo(T o);
 }
