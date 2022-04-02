@@ -5,6 +5,7 @@ package java.lang;
  * The class {@code Exception} and its subclasses are a form of
  * {@code Throwable} that indicates conditions that a reasonable
  * application might want to catch.
+ * [链式异常设施] 所有异常的超类。
  *
  * <p>The class {@code Exception} and any subclasses that are not also
  * subclasses of {@link RuntimeException} are <em>checked
@@ -18,7 +19,6 @@ package java.lang;
  * @jls 11.2 Compile-Time Checking of Exceptions
  * @since   JDK1.0
  */
-// 核心类 [链式异常设施] 所有异常的超类
 public class Exception extends Throwable {
     static final long serialVersionUID = -3387516993124229948L;
 
@@ -48,6 +48,7 @@ public class Exception extends Throwable {
      * cause.  <p>Note that the detail message associated with
      * {@code cause} is <i>not</i> automatically incorporated in
      * this exception's detail message.
+     * 构造一个新的异常对象。
      *
      * @param  message the detail message (which is saved for later retrieval
      *         by the {@link #getMessage()} method).
