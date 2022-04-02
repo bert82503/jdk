@@ -107,6 +107,7 @@ public abstract class AbstractInterruptibleChannel
      * @throws  IOException
      *          If an I/O error occurs
      */
+    @Override
     public final void close() throws IOException {
         synchronized (closeLock) {
             if (!open)

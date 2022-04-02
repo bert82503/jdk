@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.nio.channels.spi;
 
@@ -32,7 +8,6 @@ import java.util.HashSet;
 import java.util.Set;
 import sun.nio.ch.Interruptible;
 import java.util.concurrent.atomic.AtomicBoolean;
-
 
 /**
  * Base implementation class for selectors.
@@ -65,10 +40,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author JSR-51 Expert Group
  * @since 1.4
  */
-
-public abstract class AbstractSelector
-    extends Selector
-{
+public abstract class AbstractSelector extends Selector {
 
     private AtomicBoolean selectorOpen = new AtomicBoolean(true);
 
@@ -104,10 +76,12 @@ public abstract class AbstractSelector
      * @throws  IOException
      *          If an I/O error occurs
      */
+    @Override
     public final void close() throws IOException {
         boolean open = selectorOpen.getAndSet(false);
-        if (!open)
+        if (!open) {
             return;
+        }
         implCloseSelector();
     }
 

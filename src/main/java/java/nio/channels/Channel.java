@@ -79,6 +79,7 @@ public interface Channel extends Closeable {
      *
      * @throws  IOException  If an I/O error occurs
      */
+    @Override
     public void close() throws IOException;
 
 }

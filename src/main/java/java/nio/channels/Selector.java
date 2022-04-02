@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.nio.channels;
 
@@ -29,7 +5,6 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.Set;
-
 
 /**
  * A multiplexor of {@link SelectableChannel} objects.
@@ -202,7 +177,6 @@ import java.util.Set;
  * @see SelectableChannel
  * @see SelectionKey
  */
-
 public abstract class Selector implements Closeable {
 
     /**
@@ -391,6 +365,7 @@ public abstract class Selector implements Closeable {
      * @throws  IOException
      *          If an I/O error occurs
      */
+    @Override
     public abstract void close() throws IOException;
 
 }
