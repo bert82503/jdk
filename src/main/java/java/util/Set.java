@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.util;
 
@@ -30,6 +6,9 @@ package java.util;
  * contain no pair of elements <code>e1</code> and <code>e2</code> such that
  * <code>e1.equals(e2)</code>, and at most one null element.  As implied by
  * its name, this interface models the mathematical <i>set</i> abstraction.
+ * 不包含重复元素的集合。
+ * 更正式的说法是，集合不包含一对e1和e2元素，使得e1.equals(e2)，并且最多包含一个空元素(null)。
+ * 顾名思义，这个接口为数学集合的抽象建模。
  *
  * <p>The <tt>Set</tt> interface places additional stipulations, beyond those
  * inherited from the <tt>Collection</tt> interface, on the contracts of all
@@ -84,6 +63,7 @@ package java.util;
 public interface Set<E> extends Collection<E> {
 
     // Query Operations
+    // 查询操作
 
     /**
      * Returns the number of elements in this set (its cardinality).  If this
@@ -197,6 +177,7 @@ public interface Set<E> extends Collection<E> {
 
 
     // Modification Operations
+    // 修改操作
 
     /**
      * Adds the specified element to this set if it is not already present
@@ -258,6 +239,7 @@ public interface Set<E> extends Collection<E> {
 
 
     // Bulk Operations
+    // 批量操作
 
     /**
      * Returns <tt>true</tt> if this set contains all of the elements of the
@@ -366,6 +348,7 @@ public interface Set<E> extends Collection<E> {
 
 
     // Comparison and hashing
+    // 比较和哈希
 
     /**
      * Compares the specified object with this set for equality.  Returns
@@ -397,6 +380,10 @@ public interface Set<E> extends Collection<E> {
      */
     @Override
     int hashCode();
+
+    // 默认函数
+    // 分而治之，分治思想
+    // 元素集合与数据流的桥接
 
     /**
      * Creates a {@code Spliterator} over the elements in this set.

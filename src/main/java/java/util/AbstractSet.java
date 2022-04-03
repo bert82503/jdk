@@ -1,34 +1,12 @@
-/*
- * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.util;
 
 /**
  * This class provides a skeletal implementation of the <tt>Set</tt>
  * interface to minimize the effort required to implement this
- * interface. <p>
+ * interface.
+ * 这个类提供了Set接口的框架实现，以最大限度地减少实现这个接口所需的工作。
+ * <p>
  *
  * The process of implementing a set by extending this class is identical
  * to that of implementing a Collection by extending AbstractCollection,
@@ -54,16 +32,19 @@ package java.util;
  * @see Set
  * @since 1.2
  */
-
 public abstract class AbstractSet<E> extends AbstractCollection<E> implements Set<E> {
+
     /**
      * Sole constructor.  (For invocation by subclass constructors, typically
      * implicit.)
+     * 唯一的构造函数。
+     * 用于子类构造函数的调用，通常是隐式的。
      */
     protected AbstractSet() {
     }
 
     // Comparison and hashing
+    // 比较和哈希
 
     /**
      * Compares the specified object with this set for equality.  Returns
@@ -82,20 +63,23 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
      * @param o object to be compared for equality with this set
      * @return <tt>true</tt> if the specified object is equal to this set
      */
+    @Override
     public boolean equals(Object o) {
-        if (o == this)
+        if (o == this) {
             return true;
+        }
+        if (!(o instanceof Set)) {
+            return false;
+        }
 
-        if (!(o instanceof Set))
-            return false;
         Collection<?> c = (Collection<?>) o;
-        if (c.size() != size())
+        // 元素数量是否相等，优化措施
+        if (c.size() != size()) {
             return false;
+        }
         try {
             return containsAll(c);
-        } catch (ClassCastException unused)   {
-            return false;
-        } catch (NullPointerException unused) {
+        } catch (ClassCastException | NullPointerException unused)   {
             return false;
         }
     }
@@ -117,13 +101,16 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
      * @see Object#equals(Object)
      * @see Set#equals(Object)
      */
+    @Override
     public int hashCode() {
         int h = 0;
+        // 迭代器
         Iterator<E> i = iterator();
         while (i.hasNext()) {
             E obj = i.next();
-            if (obj != null)
+            if (obj != null) {
                 h += obj.hashCode();
+            }
         }
         return h;
     }
@@ -171,8 +158,9 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
         boolean modified = false;
 
         if (size() > c.size()) {
-            for (Iterator<?> i = c.iterator(); i.hasNext(); )
+            for (Iterator<?> i = c.iterator(); i.hasNext(); ) {
                 modified |= remove(i.next());
+            }
         } else {
             for (Iterator<?> i = iterator(); i.hasNext(); ) {
                 if (c.contains(i.next())) {
