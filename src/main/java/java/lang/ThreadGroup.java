@@ -10,6 +10,9 @@ import sun.misc.VM;
  * group can also include other thread groups. The thread groups form
  * a tree in which every thread group except the initial thread group
  * has a parent.
+ * 线程组表示一组线程。
+ * 此外，线程组还可以包括其他线程组。(父子模型)
+ * 线程组形成一棵树，其中除了初始线程组之外的每个线程组都有一个父线程组。
  * <p>
  * A thread is allowed to access information about its own thread
  * group, but not to access information about its thread group's
@@ -31,18 +34,42 @@ import sun.misc.VM;
  */
 public class ThreadGroup implements Thread.UncaughtExceptionHandler {
 
+    /**
+     * 父线程组
+     */
     private final ThreadGroup parent;
+    /**
+     * 线程组的名称
+     */
     String name;
     int maxPriority;
+    /**
+     * 是否已销毁
+     */
     boolean destroyed;
+    /**
+     * 是否为守护线程
+     */
     boolean daemon;
     boolean vmAllowSuspension;
 
     int nUnstartedThreads = 0;
+    /**
+     * 线程数量
+     */
     int nthreads;
+    /**
+     * 一组线程
+     */
     Thread threads[];
 
+    /**
+     * 线程组数量
+     */
     int ngroups;
+    /**
+     * 一组线程组
+     */
     ThreadGroup groups[];
 
     /**
@@ -139,8 +166,9 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
      * @since   JDK1.0
      */
     public final ThreadGroup getParent() {
-        if (parent != null)
+        if (parent != null) {
             parent.checkAccess();
+        }
         return parent;
     }
 
@@ -200,6 +228,7 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
      * @since      JDK1.0
      */
     public final void setDaemon(boolean daemon) {
+        // 检查访问权限
         checkAccess();
         this.daemon = daemon;
     }
@@ -234,7 +263,9 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
      */
     public final void setMaxPriority(int pri) {
         int ngroupsSnapshot;
+        // 一组线程组的快照
         ThreadGroup[] groupsSnapshot;
+        // 这个对象同步
         synchronized (this) {
             checkAccess();
             if (pri < Thread.MIN_PRIORITY || pri > Thread.MAX_PRIORITY) {
@@ -296,6 +327,8 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
      * Returns an estimate of the number of active threads in this thread
      * group and its subgroups. Recursively iterates over all subgroups in
      * this thread group.
+     * 返回这个线程组及其子线程组中活动线程数量的计数。
+     * 递归地遍历这个线程组中的所有子线程组。
      *
      * <p> The value returned is only an estimate because the number of
      * threads may change dynamically while this method traverses internal
@@ -566,6 +599,7 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
 
     /**
      * Stops all threads in this thread group.
+     * 停止这个线程组中的所有线程。
      * <p>
      * First, the <code>checkAccess</code> method of this thread group is
      * called with no arguments; this may result in a security exception.
@@ -585,12 +619,14 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
      */
     @Deprecated
     public final void stop() {
-        if (stopOrSuspend(false))
+        if (stopOrSuspend(false)) {
             Thread.currentThread().stop();
+        }
     }
 
     /**
      * Interrupts all threads in this thread group.
+     * 中断这个线程组中的所有线程。
      * <p>
      * First, the <code>checkAccess</code> method of this thread group is
      * called with no arguments; this may result in a security exception.
@@ -628,6 +664,7 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
 
     /**
      * Suspends all threads in this thread group.
+     * 挂起这个线程组中的所有线程。
      * <p>
      * First, the <code>checkAccess</code> method of this thread group is
      * called with no arguments; this may result in a security exception.
@@ -734,6 +771,7 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
      * Destroys this thread group and all of its subgroups. This thread
      * group must be empty, indicating that all threads that had been in
      * this thread group have since stopped.
+     * 销毁这个线程组及其所有子线程组。
      * <p>
      * First, the <code>checkAccess</code> method of this thread group is
      * called with no arguments; this may result in a security exception.
@@ -780,7 +818,7 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
      * @param g the specified Thread group to be added
      * @exception IllegalThreadStateException If the Thread group has been destroyed.
      */
-    private final void add(ThreadGroup g){
+    private void add(ThreadGroup g){
         synchronized (this) {
             if (destroyed) {
                 throw new IllegalThreadStateException();
@@ -848,6 +886,7 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
 
     /**
      * Adds the specified thread to this thread group.
+     * 将指定的线程添加到这个线程组。
      *
      * <p> Note: This method is called from both library code
      * and the Virtual Machine. It is called from VM to add
@@ -886,6 +925,7 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
     /**
      * Notifies the group that the thread {@code t} has failed
      * an attempt to start.
+     * 通知这个线程组，线程t尝试启动失败。
      *
      * <p> The state of this thread group is rolled back as if the
      * attempt to start the thread has never occurred. The thread is again
@@ -904,6 +944,7 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
 
     /**
      * Notifies the group that the thread {@code t} has terminated.
+     * 通知这个线程组，线程t已经终止。
      *
      * <p> Destroy the group if all of the following conditions are
      * true: this is a daemon thread group; there are no more alive
@@ -1023,6 +1064,7 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
      * @param   e   the uncaught exception.
      * @since   JDK1.0
      */
+    @Override
     public void uncaughtException(Thread t, Throwable e) {
         if (parent != null) {
             parent.uncaughtException(t, e);
@@ -1032,6 +1074,7 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
             if (ueh != null) {
                 ueh.uncaughtException(t, e);
             } else if (!(e instanceof ThreadDeath)) {
+                // 线程中发生异常
                 System.err.print("Exception in thread \""
                                  + t.getName() + "\" ");
                 e.printStackTrace(System.err);
@@ -1040,7 +1083,7 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
     }
 
     /**
-     * Used by VM to control lowmem implicit suspension.
+     * Used by VM to control low-mem implicit suspension.
      *
      * @param b boolean to allow or disallow suspension
      * @return true on success
@@ -1064,6 +1107,7 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
      * @return  a string representation of this thread group.
      * @since   JDK1.0
      */
+    @Override
     public String toString() {
         return getClass().getName() + "[name=" + getName() + ",maxpri=" + maxPriority + "]";
     }
