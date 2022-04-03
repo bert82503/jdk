@@ -1,34 +1,10 @@
-/*
- * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.util;
-import java.util.Map.Entry;
 
 /**
  * This class provides a skeletal implementation of the <tt>Map</tt>
  * interface, to minimize the effort required to implement this interface.
+ * 这个类提供了Map接口的框架实现，以最小化实现这个接口所需的工作。
  *
  * <p>To implement an unmodifiable map, the programmer needs only to extend this
  * class and provide an implementation for the <tt>entrySet</tt> method, which
@@ -64,16 +40,19 @@ import java.util.Map.Entry;
  * @see Collection
  * @since 1.2
  */
+public abstract class AbstractMap<K, V> implements Map<K, V> {
 
-public abstract class AbstractMap<K,V> implements Map<K,V> {
     /**
      * Sole constructor.  (For invocation by subclass constructors, typically
      * implicit.)
+     * 唯一的构造函数。
+     * 用于子类构造函数的调用，通常是隐式的。
      */
     protected AbstractMap() {
     }
 
     // Query Operations
+    // 查询操作
 
     /**
      * {@inheritDoc}
@@ -81,7 +60,9 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * @implSpec
      * This implementation returns <tt>entrySet().size()</tt>.
      */
+    @Override
     public int size() {
+        // 映射条目集合视图的数量
         return entrySet().size();
     }
 
@@ -91,6 +72,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * @implSpec
      * This implementation returns <tt>size() == 0</tt>.
      */
+    @Override
     public boolean isEmpty() {
         return size() == 0;
     }
@@ -110,18 +92,21 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      */
     @Override
     public boolean containsValue(Object value) {
-        Iterator<Entry<K,V>> i = entrySet().iterator();
-        if (value==null) {
+        // 映射条目集合视图的迭代器
+        Iterator<Entry<K, V>> i = entrySet().iterator();
+        if (value == null) {
             while (i.hasNext()) {
-                Entry<K,V> e = i.next();
-                if (e.getValue()==null)
+                Entry<K, V> e = i.next();
+                if (e.getValue() == null) {
                     return true;
+                }
             }
         } else {
             while (i.hasNext()) {
-                Entry<K,V> e = i.next();
-                if (value.equals(e.getValue()))
+                Entry<K, V> e = i.next();
+                if (value.equals(e.getValue())) {
                     return true;
+                }
             }
         }
         return false;
@@ -143,18 +128,21 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      */
     @Override
     public boolean containsKey(Object key) {
-        Iterator<Map.Entry<K,V>> i = entrySet().iterator();
-        if (key==null) {
+        // 映射条目集合视图的迭代器
+        Iterator<Map.Entry<K, V>> i = entrySet().iterator();
+        if (key == null) {
             while (i.hasNext()) {
-                Entry<K,V> e = i.next();
-                if (e.getKey()==null)
+                Entry<K, V> e = i.next();
+                if (e.getKey() == null) {
                     return true;
+                }
             }
         } else {
             while (i.hasNext()) {
-                Entry<K,V> e = i.next();
-                if (key.equals(e.getKey()))
+                Entry<K, V> e = i.next();
+                if (key.equals(e.getKey())) {
                     return true;
+                }
             }
         }
         return false;
@@ -174,19 +162,23 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * @throws ClassCastException            {@inheritDoc}
      * @throws NullPointerException          {@inheritDoc}
      */
+    @Override
     public V get(Object key) {
-        Iterator<Entry<K,V>> i = entrySet().iterator();
-        if (key==null) {
+        // 映射条目集合视图的迭代器
+        Iterator<Entry<K, V>> i = entrySet().iterator();
+        if (key == null) {
             while (i.hasNext()) {
-                Entry<K,V> e = i.next();
-                if (e.getKey()==null)
+                Entry<K, V> e = i.next();
+                if (e.getKey() == null) {
                     return e.getValue();
+                }
             }
         } else {
             while (i.hasNext()) {
-                Entry<K,V> e = i.next();
-                if (key.equals(e.getKey()))
+                Entry<K, V> e = i.next();
+                if (key.equals(e.getKey())) {
                     return e.getValue();
+                }
             }
         }
         return null;
@@ -194,6 +186,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
 
 
     // Modification Operations
+    // 修改操作
 
     /**
      * {@inheritDoc}
@@ -207,6 +200,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * @throws NullPointerException          {@inheritDoc}
      * @throws IllegalArgumentException      {@inheritDoc}
      */
+    @Override
     public V put(K key, V value) {
         throw new UnsupportedOperationException();
     }
@@ -233,25 +227,29 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * @throws ClassCastException            {@inheritDoc}
      * @throws NullPointerException          {@inheritDoc}
      */
+    @Override
     public V remove(Object key) {
-        Iterator<Entry<K,V>> i = entrySet().iterator();
-        Entry<K,V> correctEntry = null;
-        if (key==null) {
-            while (correctEntry==null && i.hasNext()) {
-                Entry<K,V> e = i.next();
-                if (e.getKey()==null)
+        // 映射条目集合视图的迭代器
+        Iterator<Entry<K, V>> i = entrySet().iterator();
+        Entry<K, V> correctEntry = null;
+        if (key == null) {
+            while (correctEntry == null && i.hasNext()) {
+                Entry<K, V> e = i.next();
+                if (e.getKey() == null) {
                     correctEntry = e;
+                }
             }
         } else {
-            while (correctEntry==null && i.hasNext()) {
-                Entry<K,V> e = i.next();
-                if (key.equals(e.getKey()))
+            while (correctEntry == null && i.hasNext()) {
+                Entry<K, V> e = i.next();
+                if (key.equals(e.getKey())) {
                     correctEntry = e;
+                }
             }
         }
 
         V oldValue = null;
-        if (correctEntry !=null) {
+        if (correctEntry != null) {
             oldValue = correctEntry.getValue();
             i.remove();
         }
@@ -260,6 +258,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
 
 
     // Bulk Operations
+    // 批量操作
 
     /**
      * {@inheritDoc}
@@ -280,8 +279,11 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      */
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
-        for (Map.Entry<? extends K, ? extends V> e : m.entrySet())
+        // 遍历映射条目集合视图
+        for (Map.Entry<? extends K, ? extends V> e : m.entrySet()) {
+            // 设置每个映射条目
             put(e.getKey(), e.getValue());
+        }
     }
 
     /**
@@ -296,17 +298,21 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      *
      * @throws UnsupportedOperationException {@inheritDoc}
      */
+    @Override
     public void clear() {
+        // 映射条目集合视图
         entrySet().clear();
     }
 
 
     // Views
+    // 视图
 
     /**
      * Each of these fields are initialized to contain an instance of the
      * appropriate view the first time this view is requested.  The views are
      * stateless, so there's no reason to create more than one of each.
+     * 键的集合视图
      *
      * <p>Since there is no synchronization performed while accessing these fields,
      * it is expected that java.util.Map view classes using these fields have
@@ -328,6 +334,9 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      *}</pre>
      */
     transient Set<K>        keySet;
+    /**
+     * 值的集合视图
+     */
     transient Collection<V> values;
 
     /**
@@ -351,36 +360,44 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
         Set<K> ks = keySet;
         if (ks == null) {
             ks = new AbstractSet<K>() {
+                @Override
                 public Iterator<K> iterator() {
                     return new Iterator<K>() {
                         private Iterator<Entry<K,V>> i = entrySet().iterator();
 
+                        @Override
                         public boolean hasNext() {
                             return i.hasNext();
                         }
 
+                        @Override
                         public K next() {
                             return i.next().getKey();
                         }
 
+                        @Override
                         public void remove() {
                             i.remove();
                         }
                     };
                 }
 
+                @Override
                 public int size() {
                     return AbstractMap.this.size();
                 }
 
+                @Override
                 public boolean isEmpty() {
                     return AbstractMap.this.isEmpty();
                 }
 
+                @Override
                 public void clear() {
                     AbstractMap.this.clear();
                 }
 
+                @Override
                 public boolean contains(Object k) {
                     return AbstractMap.this.containsKey(k);
                 }
@@ -411,36 +428,44 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
         Collection<V> vals = values;
         if (vals == null) {
             vals = new AbstractCollection<V>() {
+                @Override
                 public Iterator<V> iterator() {
                     return new Iterator<V>() {
                         private Iterator<Entry<K,V>> i = entrySet().iterator();
 
+                        @Override
                         public boolean hasNext() {
                             return i.hasNext();
                         }
 
+                        @Override
                         public V next() {
                             return i.next().getValue();
                         }
 
+                        @Override
                         public void remove() {
                             i.remove();
                         }
                     };
                 }
 
+                @Override
                 public int size() {
                     return AbstractMap.this.size();
                 }
 
+                @Override
                 public boolean isEmpty() {
                     return AbstractMap.this.isEmpty();
                 }
 
+                @Override
                 public void clear() {
                     AbstractMap.this.clear();
                 }
 
+                @Override
                 public boolean contains(Object v) {
                     return AbstractMap.this.containsValue(v);
                 }
@@ -455,6 +480,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
 
 
     // Comparison and hashing
+    // 比较和哈希
 
     /**
      * Compares the specified object with this map for equality.  Returns
@@ -478,15 +504,19 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * @param o object to be compared for equality with this map
      * @return <tt>true</tt> if the specified object is equal to this map
      */
+    @Override
     public boolean equals(Object o) {
-        if (o == this)
+        if (o == this) {
             return true;
+        }
+        if (!(o instanceof Map)) {
+            return false;
+        }
 
-        if (!(o instanceof Map))
-            return false;
         Map<?,?> m = (Map<?,?>) o;
-        if (m.size() != size())
+        if (m.size() != size()) {
             return false;
+        }
 
         try {
             Iterator<Entry<K,V>> i = entrySet().iterator();
@@ -495,16 +525,16 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
                 K key = e.getKey();
                 V value = e.getValue();
                 if (value == null) {
-                    if (!(m.get(key)==null && m.containsKey(key)))
+                    if (!(m.get(key)==null && m.containsKey(key))) {
                         return false;
+                    }
                 } else {
-                    if (!value.equals(m.get(key)))
+                    if (!value.equals(m.get(key))) {
                         return false;
+                    }
                 }
             }
-        } catch (ClassCastException unused) {
-            return false;
-        } catch (NullPointerException unused) {
+        } catch (ClassCastException | NullPointerException unused) {
             return false;
         }
 
@@ -529,11 +559,14 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * @see Object#equals(Object)
      * @see Set#equals(Object)
      */
+    @Override
     public int hashCode() {
         int h = 0;
+        // 映射条目集合视图的迭代器
         Iterator<Entry<K,V>> i = entrySet().iterator();
-        while (i.hasNext())
+        while (i.hasNext()) {
             h += i.next().hashCode();
+        }
         return h;
     }
 
@@ -549,10 +582,13 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      *
      * @return a string representation of this map
      */
+    @Override
     public String toString() {
+        // 映射条目集合视图的迭代器
         Iterator<Entry<K,V>> i = entrySet().iterator();
-        if (! i.hasNext())
+        if (! i.hasNext()) {
             return "{}";
+        }
 
         StringBuilder sb = new StringBuilder();
         sb.append('{');
@@ -563,8 +599,9 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
             sb.append(key   == this ? "(this Map)" : key);
             sb.append('=');
             sb.append(value == this ? "(this Map)" : value);
-            if (! i.hasNext())
+            if (! i.hasNext()) {
                 return sb.append('}').toString();
+            }
             sb.append(',').append(' ');
         }
     }
@@ -575,6 +612,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      *
      * @return a shallow copy of this map
      */
+    @Override
     protected Object clone() throws CloneNotSupportedException {
         AbstractMap<?,?> result = (AbstractMap<?,?>)super.clone();
         result.keySet = null;
@@ -646,6 +684,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
          *
          * @return the key corresponding to this entry
          */
+        @Override
         public K getKey() {
             return key;
         }
@@ -655,6 +694,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
          *
          * @return the value corresponding to this entry
          */
+        @Override
         public V getValue() {
             return value;
         }
@@ -666,6 +706,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
          * @param value new value to be stored in this entry
          * @return the old value corresponding to the entry
          */
+        @Override
         public V setValue(V value) {
             V oldValue = this.value;
             this.value = value;
@@ -693,9 +734,11 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
          *         entry
          * @see    #hashCode
          */
+        @Override
         public boolean equals(Object o) {
-            if (!(o instanceof Map.Entry))
+            if (!(o instanceof Map.Entry)) {
                 return false;
+            }
             Map.Entry<?,?> e = (Map.Entry<?,?>)o;
             return eq(key, e.getKey()) && eq(value, e.getValue());
         }
@@ -713,6 +756,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
          * @return the hash code value for this map entry
          * @see    #equals
          */
+        @Override
         public int hashCode() {
             return (key   == null ? 0 :   key.hashCode()) ^
                    (value == null ? 0 : value.hashCode());
@@ -726,6 +770,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
          *
          * @return a String representation of this map entry
          */
+        @Override
         public String toString() {
             return key + "=" + value;
         }
@@ -776,6 +821,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
          *
          * @return the key corresponding to this entry
          */
+        @Override
         public K getKey() {
             return key;
         }
@@ -785,6 +831,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
          *
          * @return the value corresponding to this entry
          */
+        @Override
         public V getValue() {
             return value;
         }
@@ -799,6 +846,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
          * @return (Does not return)
          * @throws UnsupportedOperationException always
          */
+        @Override
         public V setValue(V value) {
             throw new UnsupportedOperationException();
         }
@@ -824,9 +872,11 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
          *         entry
          * @see    #hashCode
          */
+        @Override
         public boolean equals(Object o) {
-            if (!(o instanceof Map.Entry))
+            if (!(o instanceof Map.Entry)) {
                 return false;
+            }
             Map.Entry<?,?> e = (Map.Entry<?,?>)o;
             return eq(key, e.getKey()) && eq(value, e.getValue());
         }
@@ -844,6 +894,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
          * @return the hash code value for this map entry
          * @see    #equals
          */
+        @Override
         public int hashCode() {
             return (key   == null ? 0 :   key.hashCode()) ^
                    (value == null ? 0 : value.hashCode());
@@ -857,6 +908,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
          *
          * @return a String representation of this map entry
          */
+        @Override
         public String toString() {
             return key + "=" + value;
         }

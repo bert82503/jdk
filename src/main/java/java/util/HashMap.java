@@ -777,6 +777,7 @@ public class HashMap<K,V>
      *
      * @return a shallow copy of this map
      */
+    @Override
     public Object clone() {
         HashMap<K,V> result = null;
         try {

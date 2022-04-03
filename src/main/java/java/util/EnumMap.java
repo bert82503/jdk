@@ -727,6 +727,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V>
      *
      * @return a shallow copy of this enum map
      */
+    @Override
     public EnumMap<K, V> clone() {
         EnumMap<K, V> result = null;
         try {

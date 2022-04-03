@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.util;
 
@@ -33,9 +9,12 @@ import java.io.Serializable;
 /**
  * An object that maps keys to values.  A map cannot contain duplicate keys;
  * each key can map to at most one value.
+ * 一个将键映射到值的对象。
+ * 映射不能包含重复的键，每个键最多只能映射到一个值。
  *
  * <p>This interface takes the place of the <tt>Dictionary</tt> class, which
  * was a totally abstract class rather than an interface.
+ * 这个接口取代了Dictionary字典类，字典类是一个完全抽象的类，而不是接口。
  *
  * <p>The <tt>Map</tt> interface provides three <i>collection views</i>, which
  * allow a map's contents to be viewed as a set of keys, collection of values,
@@ -44,6 +23,10 @@ import java.io.Serializable;
  * elements.  Some map implementations, like the <tt>TreeMap</tt> class, make
  * specific guarantees as to their order; others, like the <tt>HashMap</tt>
  * class, do not.
+ * Map接口提供了三个集合视图，它们允许将映射的内容看作一组键、一组值或一组键-值映射。
+ * 映射的顺序定义为集合视图上的迭代器返回其元素的顺序。
+ * 一些映射实现，比如TreeMap类，对它们的顺序做了特定的保证；
+ * 而其他类，如HashMap类，则不需要。
  *
  * <p>Note: great care must be exercised if mutable objects are used as map
  * keys.  The behavior of a map is not specified if the value of an object is
@@ -118,7 +101,7 @@ import java.io.Serializable;
  * @param <V> the type of mapped values
  *
  * @author  Josh Bloch
- * @see HashMap
+ * @see HashMap 哈希映射
  * @see TreeMap
  * @see Hashtable
  * @see SortedMap
@@ -126,14 +109,16 @@ import java.io.Serializable;
  * @see Set
  * @since 1.2
  */
-public interface Map<K,V> {
+public interface Map<K, V> {
 
     // Query Operations
+    // 查询操作
 
     /**
      * Returns the number of key-value mappings in this map.  If the
      * map contains more than <tt>Integer.MAX_VALUE</tt> elements, returns
      * <tt>Integer.MAX_VALUE</tt>.
+     * 返回这个映射中的键-值映射的数目。
      *
      * @return the number of key-value mappings in this map
      */
@@ -188,11 +173,15 @@ public interface Map<K,V> {
     /**
      * Returns the value to which the specified key is mapped,
      * or {@code null} if this map contains no mapping for the key.
+     * 返回指定键映射到的值，如果这个映射不包含键的映射，则为空。
      *
      * <p>More formally, if this map contains a mapping from a key
      * {@code k} to a value {@code v} such that {@code (key==null ? k==null :
      * key.equals(k))}, then this method returns {@code v}; otherwise
      * it returns {@code null}.  (There can be at most one such mapping.)
+     * 更正式地说，如果这个映射包含一个从键k到值v的映射，这样(key==null ? k==null : key.equals(k))，
+     * 然后这个方法返回v；否则，返回null。
+     * (这样的映射最多只能有一个。)
      *
      * <p>If this map permits null values, then a return value of
      * {@code null} does not <i>necessarily</i> indicate that the map
@@ -213,6 +202,7 @@ public interface Map<K,V> {
     V get(Object key);
 
     // Modification Operations
+    // 修改操作
 
     /**
      * Associates the specified value with the specified key in this map
@@ -221,6 +211,8 @@ public interface Map<K,V> {
      * <tt>m</tt> is said to contain a mapping for a key <tt>k</tt> if and only
      * if {@link #containsKey(Object) m.containsKey(k)} would return
      * <tt>true</tt>.)
+     * 将指定的值与映射中的指定键关联。(可选操作)
+     * 如果映射之间包含键的映射，则旧值将被指定的值替换。(当且仅当m.containsKey(k)返回true时，表示映射m包含键k的映射。)
      *
      * @param key key with which the specified value is to be associated
      * @param value value to be associated with the specified key
@@ -246,6 +238,9 @@ public interface Map<K,V> {
      * from key <tt>k</tt> to value <tt>v</tt> such that
      * <code>(key==null ?  k==null : key.equals(k))</code>, that mapping
      * is removed.  (The map can contain at most one such mapping.)
+     * 如果某个键存在，则从这个映射中移除这个键的映射。(可选操作)
+     * 更正式地说，如果这个映射包含一个从键k到值v的映射，这样(key==null ?  k==null : key.equals(k))，这个映射被移除。
+     * (这个映射最多可以包含一个这样的映射。)
      *
      * <p>Returns the value to which this map previously associated the key,
      * or <tt>null</tt> if the map contained no mapping for the key.
@@ -274,6 +269,7 @@ public interface Map<K,V> {
 
 
     // Bulk Operations
+    // 批量操作
 
     /**
      * Copies all of the mappings from the specified map to this map
@@ -282,6 +278,7 @@ public interface Map<K,V> {
      * for each mapping from key <tt>k</tt> to value <tt>v</tt> in the
      * specified map.  The behavior of this operation is undefined if the
      * specified map is modified while the operation is in progress.
+     * 将所有映射从指定映射复制到这个映射。(可选操作)
      *
      * @param m mappings to be stored in this map
      * @throws UnsupportedOperationException if the <tt>putAll</tt> operation
@@ -299,6 +296,8 @@ public interface Map<K,V> {
     /**
      * Removes all of the mappings from this map (optional operation).
      * The map will be empty after this call returns.
+     * 从集合中移除所有元素。(可选操作)
+     * 这个方法返回后，映射将为空。
      *
      * @throws UnsupportedOperationException if the <tt>clear</tt> operation
      *         is not supported by this map
@@ -307,6 +306,7 @@ public interface Map<K,V> {
 
 
     // Views
+    // 视图
 
     /**
      * Returns a {@link Set} view of the keys contained in this map.
@@ -320,6 +320,7 @@ public interface Map<K,V> {
      * <tt>removeAll</tt>, <tt>retainAll</tt>, and <tt>clear</tt>
      * operations.  It does not support the <tt>add</tt> or <tt>addAll</tt>
      * operations.
+     * 返回这个映射中包含的键的集合视图。
      *
      * @return a set view of the keys contained in this map
      */
@@ -337,6 +338,7 @@ public interface Map<K,V> {
      * <tt>Collection.remove</tt>, <tt>removeAll</tt>,
      * <tt>retainAll</tt> and <tt>clear</tt> operations.  It does not
      * support the <tt>add</tt> or <tt>addAll</tt> operations.
+     * 返回这个映射中包含的值的集合视图。
      *
      * @return a collection view of the values contained in this map
      */
@@ -355,6 +357,7 @@ public interface Map<K,V> {
      * <tt>Set.remove</tt>, <tt>removeAll</tt>, <tt>retainAll</tt> and
      * <tt>clear</tt> operations.  It does not support the
      * <tt>add</tt> or <tt>addAll</tt> operations.
+     * 返回这个映射中包含的映射的集合视图。
      *
      * @return a set view of the mappings contained in this map
      */
@@ -369,13 +372,15 @@ public interface Map<K,V> {
      * the behavior of a map entry is undefined if the backing map has been
      * modified after the entry was returned by the iterator, except through
      * the <tt>setValue</tt> operation on the map entry.
+     * 映射条目，键-值对。
      *
      * @see Map#entrySet()
      * @since 1.2
      */
-    interface Entry<K,V> {
+    interface Entry<K, V> {
         /**
          * Returns the key corresponding to this entry.
+         * 返回与这个条目对应的键。
          *
          * @return the key corresponding to this entry
          * @throws IllegalStateException implementations may, but are not
@@ -388,6 +393,7 @@ public interface Map<K,V> {
          * Returns the value corresponding to this entry.  If the mapping
          * has been removed from the backing map (by the iterator's
          * <tt>remove</tt> operation), the results of this call are undefined.
+         * 返回与这个条目对应的值。
          *
          * @return the value corresponding to this entry
          * @throws IllegalStateException implementations may, but are not
@@ -401,6 +407,7 @@ public interface Map<K,V> {
          * value (optional operation).  (Writes through to the map.)  The
          * behavior of this call is undefined if the mapping has already been
          * removed from the map (by the iterator's <tt>remove</tt> operation).
+         * 用指定的值替换与这个条目对应的值。(可选操作)
          *
          * @param value new value to be stored in this entry
          * @return old value corresponding to the entry
@@ -431,6 +438,7 @@ public interface Map<K,V> {
          * </pre>
          * This ensures that the <tt>equals</tt> method works properly across
          * different implementations of the <tt>Map.Entry</tt> interface.
+         * 将指定对象与这个条目进行相等比较。
          *
          * @param o object to be compared for equality with this map entry
          * @return <tt>true</tt> if the specified object is equal to this map
@@ -449,6 +457,7 @@ public interface Map<K,V> {
          * <tt>e1.hashCode()==e2.hashCode()</tt> for any two Entries
          * <tt>e1</tt> and <tt>e2</tt>, as required by the general
          * contract of <tt>Object.hashCode</tt>.
+         * 返回这个映射条目的哈希码。
          *
          * @return the hash code value for this map entry
          * @see Object#hashCode()
@@ -460,6 +469,7 @@ public interface Map<K,V> {
 
         /**
          * Returns a comparator that compares {@link Map.Entry} in natural order on key.
+         * 返回一个比较映射条目的比较器，按键的自然顺序排序。
          *
          * <p>The returned comparator is serializable and throws {@link
          * NullPointerException} when comparing an entry with a null key.
@@ -477,6 +487,7 @@ public interface Map<K,V> {
 
         /**
          * Returns a comparator that compares {@link Map.Entry} in natural order on value.
+         * 返回一个比较映射条目的比较器，按值的自然顺序排序。
          *
          * <p>The returned comparator is serializable and throws {@link
          * NullPointerException} when comparing an entry with null values.
@@ -532,6 +543,7 @@ public interface Map<K,V> {
     }
 
     // Comparison and hashing
+    // 比较和哈希
 
     /**
      * Compares the specified object with this map for equality.  Returns
@@ -541,6 +553,7 @@ public interface Map<K,V> {
      * <tt>m1.entrySet().equals(m2.entrySet())</tt>.  This ensures that the
      * <tt>equals</tt> method works properly across different implementations
      * of the <tt>Map</tt> interface.
+     * 将指定对象与这个映射比较是否相等。
      *
      * @param o object to be compared for equality with this map
      * @return <tt>true</tt> if the specified object is equal to this map
@@ -555,6 +568,7 @@ public interface Map<K,V> {
      * implies that <tt>m1.hashCode()==m2.hashCode()</tt> for any two maps
      * <tt>m1</tt> and <tt>m2</tt>, as required by the general contract of
      * {@link Object#hashCode}.
+     * 返回这个映射的哈希码。
      *
      * @return the hash code value for this map
      * @see Map.Entry#hashCode()
@@ -570,12 +584,16 @@ public interface Map<K,V> {
     /**
      * Returns the value to which the specified key is mapped, or
      * {@code defaultValue} if this map contains no mapping for the key.
+     * 返回指定键映射到的值，如果这个映射不包含键的映射，则返回默认值。
      *
      * @implSpec
      * The default implementation makes no guarantees about synchronization
      * or atomicity properties of this method. Any implementation providing
      * atomicity guarantees must override this method and document its
      * concurrency properties.
+     * 实现规范：
+     * 默认实现不保证这个方法的同步性或原子性属性。
+     * 任何提供原子性保证的实现都必须覆盖这个方法，并记录其并发性属性。
      *
      * @param key the key whose associated value is to be returned
      * @param defaultValue the default mapping of the key
@@ -591,13 +609,12 @@ public interface Map<K,V> {
      */
     default V getOrDefault(Object key, V defaultValue) {
         V v;
-        return (((v = get(key)) != null) || containsKey(key))
-            ? v
-            : defaultValue;
+        return (((v = get(key)) != null) || containsKey(key)) ? v : defaultValue;
     }
 
+    // 容器集合与函数式的桥梁
     // 二元函数
-    // 对象消费者
+    // 对象消费者-BiConsumer
 
     /**
      * Performs the given action for each entry in this map until all entries
@@ -605,6 +622,8 @@ public interface Map<K,V> {
      * otherwise specified by the implementing class, actions are performed in
      * the order of entry set iteration (if an iteration order is specified.)
      * Exceptions thrown by the action are relayed to the caller.
+     * 对这个映射中的每个条目执行给定的操作，直到所有条目都被处理或这个操作引发异常。
+     * for-each，循环遍历。
      *
      * @implSpec
      * The default implementation is equivalent to, for this {@code map}:
@@ -636,9 +655,12 @@ public interface Map<K,V> {
                 // this usually means the entry is no longer in the map.
                 throw new ConcurrentModificationException(ise);
             }
+            // 接受对象
             action.accept(k, v);
         }
     }
+
+    // 二元函数-BiFunction
 
     /**
      * Replaces each entry's value with the result of invoking the given
@@ -693,9 +715,11 @@ public interface Map<K,V> {
             }
 
             // ise thrown from function is not a cme.
+            // 应用函数
             v = function.apply(k, v);
 
             try {
+                // 重置映射的值v
                 entry.setValue(v);
             } catch(IllegalStateException ise) {
                 // this usually means the entry is no longer in the map.
@@ -708,10 +732,10 @@ public interface Map<K,V> {
      * If the specified key is not already associated with a value (or is mapped
      * to {@code null}) associates it with the given value and returns
      * {@code null}, else returns the current value.
+     * 如果指定的键还没有与某个值关联(或者映射为null)，则将其与给定值关联并返回null；否则，返回当前值。
      *
      * @implSpec
-     * The default implementation is equivalent to, for this {@code
-     * map}:
+     * The default implementation is equivalent to, for this {@code map}:
      *
      * <pre> {@code
      * V v = map.get(key);
@@ -750,6 +774,7 @@ public interface Map<K,V> {
     default V putIfAbsent(K key, V value) {
         V v = get(key);
         if (v == null) {
+            // 不存在映射，才设置
             v = put(key, value);
         }
 
@@ -759,6 +784,7 @@ public interface Map<K,V> {
     /**
      * Removes the entry for the specified key only if it is currently
      * mapped to the specified value.
+     * 移除指定的键的映射条目。
      *
      * @implSpec
      * The default implementation is equivalent to, for this {@code map}:
@@ -792,6 +818,7 @@ public interface Map<K,V> {
      */
     default boolean remove(Object key, Object value) {
         Object curValue = get(key);
+        // CAS
         if (!Objects.equals(curValue, value) ||
             (curValue == null && !containsKey(key))) {
             return false;
@@ -800,7 +827,7 @@ public interface Map<K,V> {
         return true;
     }
 
-    // 替换
+    // 替换映射的值
 
     /**
      * Replaces the entry for the specified key only if currently
@@ -846,6 +873,7 @@ public interface Map<K,V> {
      */
     default boolean replace(K key, V oldValue, V newValue) {
         Object curValue = get(key);
+        // CAS
         if (!Objects.equals(curValue, oldValue) ||
             (curValue == null && !containsKey(key))) {
             return false;
@@ -901,6 +929,7 @@ public interface Map<K,V> {
     }
 
     // 计算
+    // 一元函数-Function
 
     /**
      * If the specified key is not already associated with a value (or is mapped
@@ -964,17 +993,20 @@ public interface Map<K,V> {
     default V computeIfAbsent(K key,
             Function<? super K, ? extends V> mappingFunction) {
         Objects.requireNonNull(mappingFunction);
-        V v;
-        if ((v = get(key)) == null) {
+        // 旧值不存在时
+        V oldValue;
+        if ((oldValue = get(key)) == null) {
             V newValue;
+            // 应用映射函数计算键对应的新值
             if ((newValue = mappingFunction.apply(key)) != null) {
                 put(key, newValue);
                 return newValue;
             }
         }
-
-        return v;
+        return oldValue;
     }
+
+    // 二元函数-BiFunction
 
     /**
      * If the value for the specified key is present and non-null, attempts to
@@ -1025,8 +1057,10 @@ public interface Map<K,V> {
     default V computeIfPresent(K key,
             BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
         Objects.requireNonNull(remappingFunction);
+        // 旧值不存在时
         V oldValue;
         if ((oldValue = get(key)) != null) {
+            // 应用映射函数计算映射条目对应的新值
             V newValue = remappingFunction.apply(key, oldValue);
             if (newValue != null) {
                 put(key, newValue);
@@ -1103,6 +1137,7 @@ public interface Map<K,V> {
         Objects.requireNonNull(remappingFunction);
         V oldValue = get(key);
 
+        // 应用映射函数计算映射条目对应的新值
         V newValue = remappingFunction.apply(key, oldValue);
         if (newValue == null) {
             // delete mapping
@@ -1186,9 +1221,10 @@ public interface Map<K,V> {
         Objects.requireNonNull(remappingFunction);
         Objects.requireNonNull(value);
         V oldValue = get(key);
+        // 应用映射函数计算旧值和当前值对应的新值
         V newValue = (oldValue == null) ? value :
-                   remappingFunction.apply(oldValue, value);
-        if(newValue == null) {
+                remappingFunction.apply(oldValue, value);
+        if (newValue == null) {
             remove(key);
         } else {
             put(key, newValue);

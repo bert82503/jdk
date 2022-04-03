@@ -152,7 +152,7 @@ public final class Optional<T> {
     // 函数式接口
     // 函数式使用场景
 
-    // 单值容器集合与函数式的桥接
+    // 单值容器集合与函数式的桥梁
 
     // 对象消费者-Consumer
 

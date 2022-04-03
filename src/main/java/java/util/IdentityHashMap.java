@@ -699,6 +699,7 @@ public class IdentityHashMap<K,V>
      *
      * @return a shallow copy of this map
      */
+    @Override
     public Object clone() {
         try {
             IdentityHashMap<K,V> m = (IdentityHashMap<K,V>) super.clone();

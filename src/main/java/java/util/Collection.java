@@ -558,7 +558,7 @@ public interface Collection<E> extends Iterable<E> {
 
     // 默认函数
     // 分而治之，分治思想
-    // 元素集合与数据流的桥接
+    // 元素集合与数据流的桥梁
 
     /**
      * Creates a {@link Spliterator} over the elements in this collection.

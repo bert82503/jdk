@@ -193,9 +193,11 @@ final class ProcessEnvironment
         public int size()        {return m.size();}
         public boolean isEmpty() {return m.isEmpty();}
         public void clear()      {       m.clear();}
+        @Override
         public boolean containsKey(Object key) {
             return m.containsKey(Variable.valueOfQueryOnly(key));
         }
+        @Override
         public boolean containsValue(Object value) {
             return m.containsValue(Value.valueOfQueryOnly(value));
         }

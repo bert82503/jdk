@@ -620,6 +620,7 @@ public class TreeMap<K,V>
      *
      * @return a shallow copy of this map
      */
+    @Override
     public Object clone() {
         TreeMap<K,V> clone = null;
         try {
