@@ -151,6 +151,9 @@ public final class Optional<T> {
 
     // 函数式接口
     // 函数式使用场景
+
+    // 单值容器集合与函数式的桥接
+
     // 对象消费者-Consumer
 
     /**
@@ -315,7 +318,7 @@ public final class Optional<T> {
         return isPresent() ? value : other.get();
     }
 
-    // 异常对象提供者-Supplier
+    // 对象提供者-Supplier
 
     /**
      * Return the contained value, if present, otherwise throw an exception
