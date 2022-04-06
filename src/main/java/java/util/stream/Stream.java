@@ -1256,6 +1256,11 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
             public T next() {
                 return t = (t == Streams.NONE) ? seed : f.apply(t);
             }
+
+            @Override
+            public void remove() {
+                // empty
+            }
         };
         // 有序的、不可变的
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(
