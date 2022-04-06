@@ -837,7 +837,7 @@
  *
  * <p>Examples of associative operations include numeric addition, min, and
  * max, and string concatenation.
- * 关联运算的示例包括数字加法、最小值和最大值以及字符串拼接。
+ * 关联运算的示例包括数字加法、最小值和最大值以及字符串连接。
  *
  * <h2><a name="StreamSources">Low-level stream construction 底层数据流构建</a></h2>
  *
