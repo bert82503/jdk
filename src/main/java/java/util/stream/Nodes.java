@@ -1,34 +1,10 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
+
 package java.util.stream;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
-import java.util.List;
 import java.util.Objects;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -46,6 +22,9 @@ import java.util.function.LongFunction;
  * {@link Node.Builder} and their primitive specializations.  Fork/Join tasks
  * for collecting output from a {@link PipelineHelper} to a {@link Node} and
  * flattening {@link Node}s.
+ * 用于构造节点和节点的实现的工厂方法。
+ * 构建器及其基本类型的专门化实现。
+ * Fork/Join任何用于从数据源管道辅助者收集输出到节点并使节点扁平化。
  *
  * @since 1.8
  */
@@ -553,6 +532,7 @@ final class Nodes {
     }
 
     // Implementations
+    // 实现
 
     private static abstract class EmptyNode<T, T_ARR, T_CONS> implements Node<T> {
         EmptyNode() { }
@@ -1817,6 +1797,7 @@ final class Nodes {
 
     /*
      * This and subclasses are not intended to be serializable
+     * 固定大小的收集器任务。
      */
     @SuppressWarnings("serial")
     private static abstract class SizedCollectorTask<P_IN, P_OUT, T_SINK extends Sink<P_OUT>,
@@ -2146,6 +2127,9 @@ final class Nodes {
         }
     }
 
+    /**
+     * 收集器任务。
+     */
     @SuppressWarnings("serial")
     private static class CollectorTask<P_IN, P_OUT, T_NODE extends Node<P_OUT>, T_BUILDER extends Node.Builder<P_OUT>>
             extends AbstractTask<P_IN, P_OUT, T_NODE, CollectorTask<P_IN, P_OUT, T_NODE, T_BUILDER>> {

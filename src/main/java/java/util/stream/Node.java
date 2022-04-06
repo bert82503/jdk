@@ -1,27 +1,4 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
+
 package java.util.stream;
 
 import java.util.Spliterator;
@@ -34,6 +11,7 @@ import java.util.function.LongConsumer;
 /**
  * An immutable container for describing an ordered sequence of elements of some
  * type {@code T}.
+ * 一种不可变容器，用于描述某种类型T的有序元素序列。
  *
  * <p>A {@code Node} contains a fixed number of elements, which can be accessed
  * via the {@link #count}, {@link #spliterator}, {@link #forEach},
@@ -59,6 +37,8 @@ import java.util.function.LongConsumer;
  */
 interface Node<T> {
 
+    // 拆分器
+
     /**
      * Returns a {@link Spliterator} describing the elements contained in this
      * {@code Node}.
@@ -67,6 +47,9 @@ interface Node<T> {
      *         {@code Node}
      */
     Spliterator<T> spliterator();
+
+    // 迭代遍历
+    // 结果消费者-Consumer
 
     /**
      * Traverses the elements of this node, and invoke the provided
@@ -80,6 +63,7 @@ interface Node<T> {
 
     /**
      * Returns the number of child nodes of this node.
+     * 返回这个节点的子节点数量。
      *
      * @implSpec The default implementation returns zero.
      *
@@ -118,8 +102,9 @@ interface Node<T> {
      * @return the truncated node
      */
     default Node<T> truncate(long from, long to, IntFunction<T[]> generator) {
-        if (from == 0 && to == count())
+        if (from == 0 && to == count()) {
             return this;
+        }
         Spliterator<T> spliterator = spliterator();
         long size = to - from;
         Node.Builder<T> nodeBuilder = Nodes.builder(size, generator);
@@ -132,6 +117,7 @@ interface Node<T> {
 
     /**
      * Provides an array view of the contents of this node.
+     * 提供这个节点内容的数组视图。
      *
      * <p>Depending on the underlying implementation, this may return a
      * reference to an internal array rather than a copy.  Since the returned

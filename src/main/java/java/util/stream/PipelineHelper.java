@@ -1,27 +1,4 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
+
 package java.util.stream;
 
 import java.util.Spliterator;
@@ -49,7 +26,7 @@ import java.util.function.IntFunction;
  * {@link #copyInto(Sink, Spliterator)}, and {@link #wrapSink(Sink)} to execute
  * pipeline operations.
  *
- * @param <P_OUT> type of output elements from the pipeline
+ * @param <P_OUT> type of output elements from the pipeline 数据流管道输出元素的类型
  * @since 1.8
  */
 abstract class PipelineHelper<P_OUT> {
@@ -178,6 +155,7 @@ abstract class PipelineHelper<P_OUT> {
     /**
      * Collects all output elements resulting from applying the pipeline stages
      * to the source {@code Spliterator} into a {@code Node}.
+     * 将对数据源拆分器应用管道阶段所产生的所有输出元素收集到一个节点中。
      *
      * @implNote
      * If the pipeline has no intermediate operations and the source is backed
