@@ -456,7 +456,7 @@ public interface Spliterator<T> {
      * {@link #trySplit} splits a strict prefix of elements, that method
      * {@link #tryAdvance} steps by one element in prefix order, and that
      * {@link #forEachRemaining} performs actions in encounter order.
-     * 元素有序
+     * 元素遇到顺序
      *
      * <p>A {@link Collection} has an encounter order if the corresponding
      * {@link Collection#iterator} documents an order. If so, the encounter
@@ -475,7 +475,7 @@ public interface Spliterator<T> {
      * Characteristic value signifying that, for each pair of
      * encountered elements {@code x, y}, {@code !x.equals(y)}. This
      * applies for example, to a Spliterator based on a {@link Set}.
-     * 元素区别
+     * 元素不相等
      */
     public static final int DISTINCT   = 0x00000001;
 
@@ -500,6 +500,7 @@ public interface Spliterator<T> {
      * finite size that, in the absence of structural source modification,
      * represents an exact count of the number of elements that would be
      * encountered by a complete traversal.
+     * 元素数量/大小
      *
      * @apiNote Most Spliterators for Collections, that cover all elements of a
      * {@code Collection} report this characteristic. Sub-spliterators, such as
