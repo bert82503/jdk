@@ -1,27 +1,4 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
+
 package java.util.stream;
 
 import java.util.EnumMap;
@@ -32,6 +9,8 @@ import java.util.Spliterator;
  * Flags corresponding to characteristics of streams and operations. Flags are
  * utilized by the stream framework to control, specialize or optimize
  * computation.
+ * 与数据流和操作的特征相对应的标志。
+ * 标记被数据流框架用来控制、专门化或优化计算。
  *
  * <p>
  * Stream flags may be used to describe characteristics of several different
@@ -39,6 +18,8 @@ import java.util.Spliterator;
  * and terminal operations.  Not all stream flags are meaningful for all
  * entities; the following table summarizes which flags are meaningful in what
  * contexts:
+ * 数据流标志可以用来描述与数据流相关联的几种不同实体的特征：数据流源、中间操作和终结操作。
+ * 并非所有数据流标志对所有实体都有意义，下表总结了哪些标志在什么上下文中是有意义的：
  *
  * <div>
  * <table>
@@ -46,16 +27,16 @@ import java.util.Spliterator;
  *   <thead class="tableSubHeadingColor">
  *     <tr>
  *       <th colspan="2">&nbsp;</th>
- *       <th>{@code DISTINCT}</th>
- *       <th>{@code SORTED}</th>
- *       <th>{@code ORDERED}</th>
- *       <th>{@code SIZED}</th>
- *       <th>{@code SHORT_CIRCUIT}</th>
+ *       <th>{@code DISTINCT} 去重</th>
+ *       <th>{@code SORTED} 排序</th>
+ *       <th>{@code ORDERED} 顺序</th>
+ *       <th>{@code SIZED} 大小</th>
+ *       <th>{@code SHORT_CIRCUIT} 短路</th>
  *     </tr>
  *   </thead>
  *   <tbody>
  *      <tr>
- *        <th colspan="2" class="tableSubHeadingColor">Stream source</th>
+ *        <th colspan="2" class="tableSubHeadingColor">Stream source 数据流源</th>
  *        <td>Y</td>
  *        <td>Y</td>
  *        <td>Y</td>
@@ -63,7 +44,7 @@ import java.util.Spliterator;
  *        <td>N</td>
  *      </tr>
  *      <tr>
- *        <th colspan="2" class="tableSubHeadingColor">Intermediate operation</th>
+ *        <th colspan="2" class="tableSubHeadingColor">Intermediate operation 中间操作</th>
  *        <td>PCI</td>
  *        <td>PCI</td>
  *        <td>PCI</td>
@@ -71,7 +52,7 @@ import java.util.Spliterator;
  *        <td>PI</td>
  *      </tr>
  *      <tr>
- *        <th colspan="2" class="tableSubHeadingColor">Terminal operation</th>
+ *        <th colspan="2" class="tableSubHeadingColor">Terminal operation 终结操作</th>
  *        <td>N</td>
  *        <td>N</td>
  *        <td>PC</td>
@@ -89,11 +70,11 @@ import java.util.Spliterator;
  *         <th class="tableSubHeadingColor">Meaning</th>
  *         <th colspan="6"></th>
  *       </tr>
- *       <tr><td>Y</td><td>Allowed</td></tr>
- *       <tr><td>N</td><td>Invalid</td></tr>
- *       <tr><td>P</td><td>Preserves</td></tr>
- *       <tr><td>C</td><td>Clears</td></tr>
- *       <tr><td>I</td><td>Injects</td></tr>
+ *       <tr><td>Y</td><td>Allowed 允许</td></tr>
+ *       <tr><td>N</td><td>Invalid 无效</td></tr>
+ *       <tr><td>P</td><td>Preserves 保留</td></tr>
+ *       <tr><td>C</td><td>Clears 清除</td></tr>
+ *       <tr><td>I</td><td>Injects 注入</td></tr>
  *   </tfoot>
  * </table>
  * </div>
@@ -238,6 +219,7 @@ enum StreamOpFlag {
     /**
      * Characteristic value signifying that, for each pair of
      * encountered elements in a stream {@code x, y}, {@code !x.equals(y)}.
+     * 元素不相等的特征值
      * <p>
      * A stream may have this value or an intermediate operation can preserve,
      * clear or inject this value.
@@ -250,6 +232,7 @@ enum StreamOpFlag {
     /**
      * Characteristic value signifying that encounter order follows a natural
      * sort order of comparable elements.
+     * 遇到顺序的特征值，遵循可比元素的自然排序顺序。
      * <p>
      * A stream can have this value or an intermediate operation can preserve,
      * clear or inject this value.
@@ -271,6 +254,7 @@ enum StreamOpFlag {
     /**
      * Characteristic value signifying that an encounter order is
      * defined for stream elements.
+     * 定义遇到顺序的特征值。
      * <p>
      * A stream can have this value, an intermediate operation can preserve,
      * clear or inject this value, or a terminal operation can preserve or clear
@@ -287,6 +271,7 @@ enum StreamOpFlag {
      * is of a known finite size that is equal to the known finite
      * size of the source spliterator input to the first stream
      * in the pipeline.
+     * 数据流的大小为已知的有限大小的特征值。
      * <p>
      * A stream can have this value or an intermediate operation can preserve or
      * clear this value.
@@ -319,9 +304,11 @@ enum StreamOpFlag {
     /**
      * Characteristic value signifying that an operation may short-circuit the
      * stream.
+     * 某个操作可能使数据流短路的特征值。
      * <p>
      * An intermediate operation can preserve or inject this value,
      * or a terminal operation can preserve or inject this value.
+     * 中间操作可以保留或注入这个值，终结操作也可以保留或注入这个值。
      */
     // 12, 0x01000000
     SHORT_CIRCUIT(12,
@@ -335,48 +322,57 @@ enum StreamOpFlag {
     // 15, 0x40000000
 
     /**
-     * Type of a flag
+     * Type of a flag.
+     * 标志类型的枚举。
      */
     enum Type {
         /**
          * The flag is associated with spliterator characteristics.
+         * 拆分器特征
          */
         SPLITERATOR,
 
         /**
          * The flag is associated with stream flags.
+         * 数据流标志
          */
         STREAM,
 
         /**
          * The flag is associated with intermediate operation flags.
+         * 中间操作标志
          */
         OP,
 
         /**
          * The flag is associated with terminal operation flags.
+         * 终结操作标志
          */
         TERMINAL_OP,
 
         /**
          * The flag is associated with terminal operation flags that are
          * propagated upstream across the last stateful operation boundary
+         * 跨越最后一个有状态操作边界向上游传播的终结操作标志
          */
         UPSTREAM_TERMINAL_OP
     }
 
     /**
      * The bit pattern for setting/injecting a flag.
+     * 设置/注入一个标志
      */
     private static final int SET_BITS = 0b01;
 
     /**
      * The bit pattern for clearing a flag.
+     * 清除一个标志
      */
     private static final int CLEAR_BITS = 0b10;
 
     /**
      * The bit pattern for preserving a flag.
+     * 保留一个标志
      */
     private static final int PRESERVE_BITS = 0b11;
 
@@ -384,6 +380,9 @@ enum StreamOpFlag {
         return new MaskBuilder(new EnumMap<>(Type.class)).set(t);
     }
 
+    /**
+     * 掩码构建者
+     */
     private static class MaskBuilder {
         final Map<Type, Integer> map;
 
@@ -419,11 +418,13 @@ enum StreamOpFlag {
     /**
      * The mask table for a flag, this is used to determine if a flag
      * corresponds to a certain flag type and for creating mask constants.
+     * 标志的掩码表
      */
     private final Map<Type, Integer> maskTable;
 
     /**
      * The bit position in the bit mask.
+     * 位掩码的位位置
      */
     private final int bitPosition;
 
@@ -442,7 +443,7 @@ enum StreamOpFlag {
      */
     private final int preserve;
 
-    private StreamOpFlag(int position, MaskBuilder maskBuilder) {
+    StreamOpFlag(int position, MaskBuilder maskBuilder) {
         this.maskTable = maskBuilder.build();
         // Two bits per flag
         position *= 2;
@@ -524,21 +525,25 @@ enum StreamOpFlag {
 
     /**
      * The bit mask for spliterator characteristics
+     * 拆分器
      */
     static final int SPLITERATOR_CHARACTERISTICS_MASK = createMask(Type.SPLITERATOR);
 
     /**
      * The bit mask for source stream flags.
+     * 数据源流
      */
     static final int STREAM_MASK = createMask(Type.STREAM);
 
     /**
      * The bit mask for intermediate operation flags.
+     * 中间操作
      */
     static final int OP_MASK = createMask(Type.OP);
 
     /**
      * The bit mask for terminal operation flags.
+     * 终结操作
      */
     static final int TERMINAL_OP_MASK = createMask(Type.TERMINAL_OP);
 
