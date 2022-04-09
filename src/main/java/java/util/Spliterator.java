@@ -267,6 +267,7 @@ import java.util.function.LongConsumer;
  * primitive values occur when operating on primitive subtype specializations.
  *
  * @param <T> the type of elements returned by this Spliterator
+ *           拆分器返回的元素类型
  *
  * @see Collection
  * @since 1.8
@@ -573,6 +574,7 @@ public interface Spliterator<T> {
 
     /**
      * A Spliterator specialized for primitive values.
+     * 专门用于基本类型值的拆分器。
      *
      * @param <T> the type of elements returned by this Spliterator.  The
      * type must be a wrapper type for a primitive type, such as {@code Integer}
@@ -633,6 +635,7 @@ public interface Spliterator<T> {
 
     /**
      * A Spliterator specialized for {@code int} values.
+     * 专门用于整数基本类型值的拆分器。
      * @since 1.8
      */
     interface OfInt extends OfPrimitive<Integer, IntConsumer, OfInt> {
@@ -687,9 +690,10 @@ public interface Spliterator<T> {
                 forEachRemaining((IntConsumer) action);
             }
             else {
-                if (Tripwire.ENABLED)
+                if (Tripwire.ENABLED) {
                     Tripwire.trip(getClass(),
                                   "{0} calling Spliterator.OfInt.forEachRemaining((IntConsumer) action::accept)");
+                }
                 forEachRemaining((IntConsumer) action::accept);
             }
         }

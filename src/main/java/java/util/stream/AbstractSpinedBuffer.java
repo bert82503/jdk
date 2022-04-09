@@ -1,33 +1,12 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
+
 package java.util.stream;
 
 /**
  * Base class for a data structure for gathering elements into a buffer and then
  * iterating them. Maintains an array of increasingly sized arrays, so there is
  * no copying cost associated with growing the data structure.
+ * 用于将元素收集到缓冲区，并对其进行迭代的数据结构的基类。
+ *
  * @since 1.8
  */
 abstract class AbstractSpinedBuffer {
@@ -54,28 +33,33 @@ abstract class AbstractSpinedBuffer {
 
     /**
      * log2 of the size of the first chunk.
+     * 第一个块大小的log2。
      */
     protected final int initialChunkPower;
 
     /**
      * Index of the *next* element to write; may point into, or just outside of,
      * the current chunk.
+     * 下一个要写入的元素的索引。
      */
     protected int elementIndex;
 
     /**
      * Index of the *current* chunk in the spine array, if the spine array is
      * non-null.
+     * spine数组中的当前块的索引。
      */
     protected int spineIndex;
 
     /**
      * Count of elements in all prior chunks.
+     * 所有先前块中的元素的计数。
      */
     protected long[] priorElementCount;
 
     /**
      * Construct with an initial capacity of 16.
+     * 初始容量为16的建造。
      */
     protected AbstractSpinedBuffer() {
         this.initialChunkPower = MIN_CHUNK_POWER;
@@ -83,12 +67,14 @@ abstract class AbstractSpinedBuffer {
 
     /**
      * Construct with a specified initial capacity.
+     * 以指定的初始容量建造。
      *
      * @param initialCapacity The minimum expected number of elements
      */
     protected AbstractSpinedBuffer(int initialCapacity) {
-        if (initialCapacity < 0)
+        if (initialCapacity < 0) {
             throw new IllegalArgumentException("Illegal Capacity: "+ initialCapacity);
+        }
 
         this.initialChunkPower = Math.max(MIN_CHUNK_POWER,
                                           Integer.SIZE - Integer.numberOfLeadingZeros(initialCapacity - 1));
@@ -96,6 +82,7 @@ abstract class AbstractSpinedBuffer {
 
     /**
      * Is the buffer currently empty?
+     * 缓冲区当前是空的么？
      */
     public boolean isEmpty() {
         return (spineIndex == 0) && (elementIndex == 0);
@@ -103,6 +90,7 @@ abstract class AbstractSpinedBuffer {
 
     /**
      * How many elements are currently in the buffer?
+     * 当前缓冲区中有多少个元素？
      */
     public long count() {
         return (spineIndex == 0)
@@ -112,6 +100,7 @@ abstract class AbstractSpinedBuffer {
 
     /**
      * How big should the nth chunk be?
+     * 第n块应该是多大？
      */
     protected int chunkSize(int n) {
         int power = (n == 0 || n == 1)
@@ -121,7 +110,8 @@ abstract class AbstractSpinedBuffer {
     }
 
     /**
-     * Remove all data from the buffer
+     * Remove all data from the buffer.
+     * 从缓冲区中删除所有数据。
      */
     public abstract void clear();
 }
