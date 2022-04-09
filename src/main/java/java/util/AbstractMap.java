@@ -645,6 +645,9 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
      * implementations. For example, it may be convenient to return
      * arrays of <tt>SimpleEntry</tt> instances in method
      * <tt>Map.entrySet().toArray</tt>.
+     * 维护一个键和值的映射条目。
+     * 可以使用setValue方法修改这个值。
+     * 这个类简化了构建自定义映射实现的过程。
      *
      * @since 1.6
      */
@@ -782,6 +785,9 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
      * does not support method <tt>setValue</tt>.  This class may be
      * convenient in methods that return thread-safe snapshots of
      * key-value mappings.
+     * 一个维护不可变键和值的映射条目。
+     * 这个类不支持setValue方法。
+     * 在返回键-值映射条目的线程安全快照的方法中，这个类可能很方便。
      *
      * @since 1.6
      */
@@ -790,7 +796,15 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
     {
         private static final long serialVersionUID = 7138329143949025153L;
 
+        // final-不可变的字段
+
+        /**
+         * 映射条目的键
+         */
         private final K key;
+        /**
+         * 映射条目的值
+         */
         private final V value;
 
         /**
@@ -848,6 +862,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
          */
         @Override
         public V setValue(V value) {
+            // 不支持的操作异常
             throw new UnsupportedOperationException();
         }
 

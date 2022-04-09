@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1994, 2009, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
@@ -30,7 +6,7 @@ package java.lang;
  * long} in an object. An object of type {@code Long} contains a
  * single field whose type is {@code long}. (包含 long 类型的单个字段)
  * <p>
- * {@code Long} 类型将 long 基本类型的值包装到对象中。
+ * 长整型类型，将long基本类型的值包装到对象中。(不可变类)
  *
  * <p> In addition, this class provides several methods for converting
  * a {@code long} to a {@code String} and a {@code String} to a {@code
@@ -49,8 +25,6 @@ package java.lang;
  * @author  Joseph D. Darcy
  * @since   JDK1.0
  */
-// [包装类] 长整型：将long基本类型的值包装到对象中(不可变类)
-// final 修饰符来保证类不会被扩展
 public final class Long extends Number implements Comparable<Long> {
     /**
      * A constant holding the minimum value a {@code long} can

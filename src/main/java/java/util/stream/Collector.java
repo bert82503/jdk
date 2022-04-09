@@ -218,7 +218,7 @@ public interface Collector<T, A, R> {
 
     // 结果提供者、累加器、组合器和完成器函数
 
-    // 结果提供者-Supplier
+    // 结果提供者函数-Supplier
 
     /**
      * A function that creates and returns a new mutable result container.
