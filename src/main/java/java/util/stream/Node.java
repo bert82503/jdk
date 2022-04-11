@@ -170,6 +170,7 @@ interface Node<T> {
     /**
      * A mutable builder for a {@code Node} that implements {@link Sink}, which
      * builds a flat node containing the elements that have been pushed to it.
+     * 实现接收结果的水槽的节点的可变构建者，构建一个平面节点，其中包含已推送到它的元素。
      */
     interface Builder<T> extends Sink<T> {
 
@@ -206,7 +207,7 @@ interface Node<T> {
         }
     }
 
-    public interface OfPrimitive<T, T_CONS, T_ARR,
+    interface OfPrimitive<T, T_CONS, T_ARR,
                                  T_SPLITR extends Spliterator.OfPrimitive<T, T_CONS, T_SPLITR>,
                                  T_NODE extends OfPrimitive<T, T_CONS, T_ARR, T_SPLITR, T_NODE>>
             extends Node<T> {
