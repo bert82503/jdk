@@ -224,6 +224,7 @@ interface Node<T> {
          *
          * @return a {@link Spliterator.OfPrimitive} describing the elements of
          *         this node
+         *         描述这个节点的元素的拆分器
          */
         @Override
         T_SPLITR spliterator();
