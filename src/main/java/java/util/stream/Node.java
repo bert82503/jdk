@@ -21,6 +21,9 @@ import java.util.function.LongConsumer;
  * </em> or a <em>leaf</em>; if it has children, it is considered an
  * <em>internal</em> node.  The size of an internal node is the sum of sizes of
  * its children.
+ * 节点包含固定数量的元素，可以通过计数器、拆分器、元素遍历或复制方法访问这些元素。
+ * 一个节点可以有零个或多个子节点，如果它没有子节点访问，它被认为是扁平的或叶型的。
+ * 如果它有子节点，则将其视为内部节点。内部节点的大小是其子节点大小的总和。
  *
  * @apiNote
  * <p>A {@code Node} typically does not store the elements directly, but instead
@@ -31,8 +34,12 @@ import java.util.function.LongConsumer;
  * contained in the leaf nodes.  The use of {@code Node} within the stream
  * framework is largely to avoid copying data unnecessarily during parallel
  * operations.
+ * 节点通常不直接存储元素，而是中间对一个或多个现有(有效的不可变)数据结构的访问，例如集合、数组或一组其他节点。
+ * 通常节点被形成为树，树的形状对应于生成叶子节点中包含的元素的计算树。
+ * 在数据流框架中使用节点主要是为了避免在并行操作期间复制不必要的数据。
  *
  * @param <T> the type of elements.
+ *           元素的类型
  * @since 1.8
  */
 interface Node<T> {
