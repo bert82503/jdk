@@ -97,6 +97,8 @@ import java.util.function.LongConsumer;
  */
 interface Sink<T> extends Consumer<T> {
 
+    // 操作数消费者-Consumer
+
     /**
      * Resets the sink state to receive a fresh data set.  This must be called
      * before sending any data to the sink.  After calling {@link #end()},
@@ -221,6 +223,8 @@ interface Sink<T> extends Consumer<T> {
             accept(i.doubleValue());
         }
     }
+
+    // 责任链模式
 
     /**
      * Abstract {@code Sink} implementation for creating chains of

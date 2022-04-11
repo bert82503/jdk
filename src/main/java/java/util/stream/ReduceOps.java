@@ -54,7 +54,7 @@ final class ReduceOps {
     makeRef(U seed, BiFunction<U, ? super T, U> reducer, BinaryOperator<U> combiner) {
         Objects.requireNonNull(reducer);
         Objects.requireNonNull(combiner);
-        // 归约的累加数据池
+        // 归约的累加水槽
         class ReducingSink extends Box<U> implements AccumulatingSink<T, U, ReducingSink> {
             @Override
             public void begin(long size) {
@@ -98,7 +98,7 @@ final class ReduceOps {
     public static <T> TerminalOp<T, Optional<T>>
     makeRef(BinaryOperator<T> operator) {
         Objects.requireNonNull(operator);
-        // 归约的累加数据池
+        // 归约的累加水槽
         class ReducingSink
                 implements AccumulatingSink<T, Optional<T>, ReducingSink> {
             /**
@@ -172,7 +172,7 @@ final class ReduceOps {
         BiConsumer<I, ? super T> accumulator = collector.accumulator();
         // 组合器函数
         BinaryOperator<I> combiner = collector.combiner();
-        // 归约的累加数据池
+        // 归约的累加水槽
         class ReducingSink extends Box<I>
                 implements AccumulatingSink<T, I, ReducingSink> {
             @Override
@@ -234,7 +234,7 @@ final class ReduceOps {
         Objects.requireNonNull(seedFactory);
         Objects.requireNonNull(accumulator);
         Objects.requireNonNull(reducer);
-        // 归约的累加数据池
+        // 归约的累加水槽
         class ReducingSink extends Box<R>
                 implements AccumulatingSink<T, R, ReducingSink> {
             @Override
@@ -277,7 +277,7 @@ final class ReduceOps {
     public static TerminalOp<Integer, Integer>
     makeInt(int identity, IntBinaryOperator operator) {
         Objects.requireNonNull(operator);
-        // 归约的累加数据池
+        // 归约的累加水槽
         class ReducingSink
                 implements AccumulatingSink<Integer, Integer, ReducingSink>, Sink.OfInt {
             /**
@@ -327,7 +327,7 @@ final class ReduceOps {
     public static TerminalOp<Integer, OptionalInt>
     makeInt(IntBinaryOperator operator) {
         Objects.requireNonNull(operator);
-        // 归约的累加数据池
+        // 归约的累加水槽
         class ReducingSink
                 implements AccumulatingSink<Integer, OptionalInt, ReducingSink>, Sink.OfInt {
             private boolean empty;
@@ -705,7 +705,7 @@ final class ReduceOps {
     private interface AccumulatingSink<T, R, K extends AccumulatingSink<T, R, K>>
             extends TerminalSink<T, R> {
         /**
-         * 合并另一个子数据池的结果
+         * 合并另一个子水槽的结果
          */
         void combine(K other);
     }
@@ -713,7 +713,7 @@ final class ReduceOps {
     /**
      * State box for a single state element, used as a base class for
      * {@code AccumulatingSink} instances.
-     * 用于单个状态元素的状态框，用作累加数据池实例的基类。
+     * 用于单个状态元素的状态框，用作累加水槽实例的基类。
      *
      * @param <U> The type of the state element
      *           状态元素的类型
@@ -733,8 +733,8 @@ final class ReduceOps {
      * output into an {@code AccumulatingSink}, which performs a reduce
      * operation. The {@code AccumulatingSink} must represent an associative
      * reducing operation.
-     * 计算数据流管道并将输出发送到累加数据池的终结操作，累加数据池执行归约操作。
-     * 累加数据池必须表示一个关联的归约操作。
+     * 计算数据流管道并将输出发送到累加水槽的终结操作，累加水槽执行归约操作。
+     * 累加水槽必须表示一个关联的归约操作。
      *
      * @param <T> the output type of the stream pipeline
      *           数据流管道的输出类型
