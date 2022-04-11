@@ -1335,6 +1335,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * builder, in the order they were added.
      *
      * @param <T> the type of stream elements
+     *           数据流元素的类型
      * @see Stream#builder()
      * @since 1.8
      */
@@ -1342,6 +1343,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
 
         /**
          * Adds an element to the stream being built.
+         * 向正在构建的数据流添加元素。
          *
          * @throws IllegalStateException if the builder has already transitioned to
          * the built state
@@ -1351,6 +1353,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
 
         /**
          * Adds an element to the stream being built.
+         * 向正在构建的数据流添加元素。
          *
          * @implSpec
          * The default implementation behaves as if:
@@ -1373,6 +1376,8 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
          * Builds the stream, transitioning this builder to the built state.
          * An {@code IllegalStateException} is thrown if there are further attempts
          * to operate on the builder after it has entered the built state.
+         * 构建数据流，将这个数据流的构建器转换为构建状态。
+         * 在构建器进入构建状态之后，如果有进一步的操作尝试，则会抛出非法状态异常。
          *
          * @return the built stream
          * @throws IllegalStateException if the builder has already transitioned to
