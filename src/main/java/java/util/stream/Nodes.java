@@ -42,6 +42,8 @@ final class Nodes {
     // IllegalArgumentException messages
     static final String BAD_SIZE = "Stream size exceeds max array size";
 
+    // 空节点
+
     @SuppressWarnings("rawtypes")
     private static final Node EMPTY_NODE = new EmptyNode.OfRef();
     private static final Node.OfInt EMPTY_INT_NODE = new EmptyNode.OfInt();
@@ -105,9 +107,11 @@ final class Nodes {
     }
 
     // Reference-based node methods
+    // 基于对象引用的节点方法
 
     /**
      * Produces a {@link Node} describing an array.
+     * 生成描述数组的节点。
      *
      * <p>The node will hold a reference to the array and will not make a copy.
      *
@@ -121,6 +125,7 @@ final class Nodes {
 
     /**
      * Produces a {@link Node} describing a {@link Collection}.
+     * 生成描述集合的节点。
      * <p>
      * The node will hold a reference to the collection and will not make a copy.
      *
@@ -134,6 +139,7 @@ final class Nodes {
 
     /**
      * Produces a {@link Node.Builder}.
+     * 生成节点构建者。
      *
      * @param exactSizeIfKnown -1 if a variable size builder is requested,
      * otherwise the exact capacity desired.  A fixed capacity builder will
@@ -150,6 +156,7 @@ final class Nodes {
 
     /**
      * Produces a variable size @{link Node.Builder}.
+     * 生成可变大小的节点构建者。
      *
      * @param <T> the type of elements of the node builder
      * @return a {@code Node.Builder}
@@ -159,6 +166,7 @@ final class Nodes {
     }
 
     // Int nodes
+    // 整数节点
 
     /**
      * Produces a {@link Node.OfInt} describing an int[] array.
@@ -270,6 +278,7 @@ final class Nodes {
     }
 
     // Parallel evaluation of pipelines to nodes
+    // 流水线到节点的并行评估
 
     /**
      * Collect, in parallel, elements output from a pipeline and describe those
@@ -298,12 +307,15 @@ final class Nodes {
                                                     IntFunction<P_OUT[]> generator) {
         long size = helper.exactOutputSizeIfKnown(spliterator);
         if (size >= 0 && spliterator.hasCharacteristics(Spliterator.SUBSIZED)) {
-            if (size >= MAX_ARRAY_SIZE)
+            if (size >= MAX_ARRAY_SIZE) {
                 throw new IllegalArgumentException(BAD_SIZE);
+            }
             P_OUT[] array = generator.apply((int) size);
+            // 固定大小的收集器任务
             new SizedCollectorTask.OfRef<>(spliterator, helper, array).invoke();
             return node(array);
         } else {
+            // 收集器任务节点
             Node<P_OUT> node = new CollectorTask.OfRef<>(helper, generator, spliterator).invoke();
             return flattenTree ? flatten(node, generator) : node;
         }
@@ -335,8 +347,9 @@ final class Nodes {
                                                boolean flattenTree) {
         long size = helper.exactOutputSizeIfKnown(spliterator);
         if (size >= 0 && spliterator.hasCharacteristics(Spliterator.SUBSIZED)) {
-            if (size >= MAX_ARRAY_SIZE)
+            if (size >= MAX_ARRAY_SIZE) {
                 throw new IllegalArgumentException(BAD_SIZE);
+            }
             int[] array = new int[(int) size];
             new SizedCollectorTask.OfInt<>(spliterator, helper, array).invoke();
             return node(array);
@@ -373,8 +386,9 @@ final class Nodes {
                                                  boolean flattenTree) {
         long size = helper.exactOutputSizeIfKnown(spliterator);
         if (size >= 0 && spliterator.hasCharacteristics(Spliterator.SUBSIZED)) {
-            if (size >= MAX_ARRAY_SIZE)
+            if (size >= MAX_ARRAY_SIZE) {
                 throw new IllegalArgumentException(BAD_SIZE);
+            }
             long[] array = new long[(int) size];
             new SizedCollectorTask.OfLong<>(spliterator, helper, array).invoke();
             return node(array);
@@ -411,8 +425,9 @@ final class Nodes {
                                                      boolean flattenTree) {
         long size = helper.exactOutputSizeIfKnown(spliterator);
         if (size >= 0 && spliterator.hasCharacteristics(Spliterator.SUBSIZED)) {
-            if (size >= MAX_ARRAY_SIZE)
+            if (size >= MAX_ARRAY_SIZE) {
                 throw new IllegalArgumentException(BAD_SIZE);
+            }
             double[] array = new double[(int) size];
             new SizedCollectorTask.OfDouble<>(spliterator, helper, array).invoke();
             return node(array);
@@ -424,10 +439,12 @@ final class Nodes {
     }
 
     // Parallel flattening of nodes
+    // 节点的并行扁平化
 
     /**
      * Flatten, in parallel, a {@link Node}.  A flattened node is one that has
      * no children.  If the node is already flat, it is simply returned.
+     * 并行扁平化的节点。
      *
      * @implSpec
      * If a new node is to be created, the generator is used to create an array
@@ -443,8 +460,10 @@ final class Nodes {
     public static <T> Node<T> flatten(Node<T> node, IntFunction<T[]> generator) {
         if (node.getChildCount() > 0) {
             long size = node.count();
-            if (size >= MAX_ARRAY_SIZE)
+            if (size >= MAX_ARRAY_SIZE) {
                 throw new IllegalArgumentException(BAD_SIZE);
+            }
+            // 数组任务节点
             T[] array = generator.apply((int) size);
             new ToArrayTask.OfRef<>(node, array, 0).invoke();
             return node(array);
@@ -469,8 +488,9 @@ final class Nodes {
     public static Node.OfInt flattenInt(Node.OfInt node) {
         if (node.getChildCount() > 0) {
             long size = node.count();
-            if (size >= MAX_ARRAY_SIZE)
+            if (size >= MAX_ARRAY_SIZE) {
                 throw new IllegalArgumentException(BAD_SIZE);
+            }
             int[] array = new int[(int) size];
             new ToArrayTask.OfInt(node, array, 0).invoke();
             return node(array);
@@ -495,8 +515,9 @@ final class Nodes {
     public static Node.OfLong flattenLong(Node.OfLong node) {
         if (node.getChildCount() > 0) {
             long size = node.count();
-            if (size >= MAX_ARRAY_SIZE)
+            if (size >= MAX_ARRAY_SIZE) {
                 throw new IllegalArgumentException(BAD_SIZE);
+            }
             long[] array = new long[(int) size];
             new ToArrayTask.OfLong(node, array, 0).invoke();
             return node(array);
@@ -521,8 +542,9 @@ final class Nodes {
     public static Node.OfDouble flattenDouble(Node.OfDouble node) {
         if (node.getChildCount() > 0) {
             long size = node.count();
-            if (size >= MAX_ARRAY_SIZE)
+            if (size >= MAX_ARRAY_SIZE) {
                 throw new IllegalArgumentException(BAD_SIZE);
+            }
             double[] array = new double[(int) size];
             new ToArrayTask.OfDouble(node, array, 0).invoke();
             return node(array);
@@ -534,6 +556,9 @@ final class Nodes {
     // Implementations
     // 实现
 
+    /**
+     * 空节点。
+     */
     private static abstract class EmptyNode<T, T_ARR, T_CONS> implements Node<T> {
         EmptyNode() { }
 
@@ -558,6 +583,7 @@ final class Nodes {
 
             @Override
             public Spliterator<T> spliterator() {
+                // 空元素数据源的拆分器
                 return Spliterators.emptySpliterator();
             }
         }
@@ -614,15 +640,25 @@ final class Nodes {
         }
     }
 
-    /** Node class for a reference array */
+    /**
+     * Node class for a reference array
+     * 数组引用的节点。
+     */
     private static class ArrayNode<T> implements Node<T> {
+        /**
+         * 底层的数组对象
+         */
         final T[] array;
+        /**
+         * 当前的大小
+         */
         int curSize;
 
         @SuppressWarnings("unchecked")
         ArrayNode(long size, IntFunction<T[]> generator) {
-            if (size >= MAX_ARRAY_SIZE)
+            if (size >= MAX_ARRAY_SIZE) {
                 throw new IllegalArgumentException(BAD_SIZE);
+            }
             this.array = generator.apply((int) size);
             this.curSize = 0;
         }
@@ -633,14 +669,17 @@ final class Nodes {
         }
 
         // Node
+        // 节点
 
         @Override
         public Spliterator<T> spliterator() {
+            // 数组拆分器
             return Arrays.spliterator(array, 0, curSize);
         }
 
         @Override
         public void copyInto(T[] dest, int destOffset) {
+            // 数据复制
             System.arraycopy(array, 0, dest, destOffset, curSize);
         }
 
@@ -665,8 +704,6 @@ final class Nodes {
             }
         }
 
-        //
-
         @Override
         public String toString() {
             return String.format("ArrayNode[%d][%s]",
@@ -674,8 +711,14 @@ final class Nodes {
         }
     }
 
-    /** Node class for a Collection */
+    /**
+     * Node class for a Collection
+     * 集合节点类。
+     */
     private static final class CollectionNode<T> implements Node<T> {
+        /**
+         * 底层的集合对象
+         */
         private final Collection<T> c;
 
         CollectionNode(Collection<T> c) {
@@ -686,13 +729,15 @@ final class Nodes {
 
         @Override
         public Spliterator<T> spliterator() {
+            // 数据流的拆分器
             return c.stream().spliterator();
         }
 
         @Override
         public void copyInto(T[] array, int offset) {
-            for (T t : c)
+            for (T t : c) {
                 array[offset++] = t;
+            }
         }
 
         @Override
@@ -711,8 +756,6 @@ final class Nodes {
             c.forEach(consumer);
         }
 
-        //
-
         @Override
         public String toString() {
             return String.format("CollectionNode[%d][%s]", c.size(), c);
@@ -720,11 +763,21 @@ final class Nodes {
     }
 
     /**
-     * Node class for an internal node with two or more children
+     * Node class for an internal node with two or more children.
+     * 具有两个或多个子节点的内部节点的节点类。
      */
     private static abstract class AbstractConcNode<T, T_NODE extends Node<T>> implements Node<T> {
+        /**
+         * 左节点
+         */
         protected final T_NODE left;
+        /**
+         * 右节点
+         */
         protected final T_NODE right;
+        /**
+         * 左右子树的数量总和
+         */
         private final long size;
 
         AbstractConcNode(T_NODE left, T_NODE right) {
@@ -744,8 +797,12 @@ final class Nodes {
 
         @Override
         public T_NODE getChild(int i) {
-            if (i == 0) return left;
-            if (i == 1) return right;
+            if (i == 0) {
+                return left;
+            }
+            if (i == 1) {
+                return right;
+            }
             throw new IndexOutOfBoundsException();
         }
 
@@ -780,8 +837,9 @@ final class Nodes {
         @Override
         public T[] asArray(IntFunction<T[]> generator) {
             long size = count();
-            if (size >= MAX_ARRAY_SIZE)
+            if (size >= MAX_ARRAY_SIZE) {
                 throw new IllegalArgumentException(BAD_SIZE);
+            }
             T[] array = generator.apply((int) size);
             copyInto(array, 0);
             return array;
@@ -789,20 +847,22 @@ final class Nodes {
 
         @Override
         public void forEach(Consumer<? super T> consumer) {
+            // 遍历左右子树
             left.forEach(consumer);
             right.forEach(consumer);
         }
 
         @Override
         public Node<T> truncate(long from, long to, IntFunction<T[]> generator) {
-            if (from == 0 && to == count())
+            if (from == 0 && to == count()) {
                 return this;
+            }
             long leftCount = left.count();
-            if (from >= leftCount)
+            if (from >= leftCount) {
                 return right.truncate(from - leftCount, to - leftCount, generator);
-            else if (to <= leftCount)
+            } else if (to <= leftCount) {
                 return left.truncate(from, to, generator);
-            else {
+            } else {
                 return Nodes.conc(getShape(), left.truncate(from, leftCount, generator),
                                   right.truncate(0, to - leftCount, generator));
             }
@@ -844,8 +904,9 @@ final class Nodes {
             @Override
             public T_ARR asPrimitiveArray() {
                 long size = count();
-                if (size >= MAX_ARRAY_SIZE)
+                if (size >= MAX_ARRAY_SIZE) {
                     throw new IllegalArgumentException(BAD_SIZE);
+                }
                 T_ARR array = newArray((int) size);
                 copyInto(array, 0);
                 return array;
@@ -853,10 +914,11 @@ final class Nodes {
 
             @Override
             public String toString() {
-                if (count() < 32)
+                if (count() < 32) {
                     return String.format("%s[%s.%s]", this.getClass().getName(), left, right);
-                else
+                } else {
                     return String.format("%s[size=%d]", this.getClass().getName(), count());
+                }
             }
         }
 
@@ -903,16 +965,25 @@ final class Nodes {
         }
     }
 
-    /** Abstract class for spliterator for all internal node classes */
+    /**
+     * Abstract class for spliterator for all internal node classes
+     * 所有内部节点类的拆分器的抽象类。
+     */
     private static abstract class InternalNodeSpliterator<T,
                                                           S extends Spliterator<T>,
                                                           N extends Node<T>>
             implements Spliterator<T> {
         // Node we are pointing to
         // null if full traversal has occurred
+        /**
+         * 当前节点
+         */
         N curNode;
 
         // next child of curNode to consume
+        /**
+         * 当前子节点的索引
+         */
         int curChildIndex;
 
         // The spliterator of the curNode if that node is last and has no children.
@@ -935,31 +1006,36 @@ final class Nodes {
         /**
          * Initiate a stack containing, in left-to-right order, the child nodes
          * covered by this spliterator
+         * 初始化一个堆栈，按照从左到右的顺序，包含这个拆分器覆盖的子节点。
          */
         @SuppressWarnings("unchecked")
         protected final Deque<N> initStack() {
             // Bias size to the case where leaf nodes are close to this node
             // 8 is the minimum initial capacity for the ArrayDeque implementation
             Deque<N> stack = new ArrayDeque<>(8);
-            for (int i = curNode.getChildCount() - 1; i >= curChildIndex; i--)
+            for (int i = curNode.getChildCount() - 1; i >= curChildIndex; i--) {
                 stack.addFirst((N) curNode.getChild(i));
+            }
             return stack;
         }
 
         /**
          * Depth first search, in left-to-right order, of the node tree, using
          * an explicit stack, to find the next non-empty leaf node.
+         * 使用显式堆栈，按从左到右的顺序，深度优先搜索节点树，以找到下一个非空叶子节点。
          */
         @SuppressWarnings("unchecked")
         protected final N findNextLeafNode(Deque<N> stack) {
             N n = null;
             while ((n = stack.pollFirst()) != null) {
                 if (n.getChildCount() == 0) {
-                    if (n.count() > 0)
+                    if (n.count() > 0) {
                         return n;
+                    }
                 } else {
-                    for (int i = n.getChildCount() - 1; i >= 0; i--)
+                    for (int i = n.getChildCount() - 1; i >= 0; i--) {
                         stack.addFirst((N) n.getChild(i));
+                    }
                 }
             }
 
@@ -968,25 +1044,27 @@ final class Nodes {
 
         @SuppressWarnings("unchecked")
         protected final boolean initTryAdvance() {
-            if (curNode == null)
+            if (curNode == null) {
                 return false;
+            }
 
             if (tryAdvanceSpliterator == null) {
                 if (lastNodeSpliterator == null) {
                     // Initiate the node stack
                     tryAdvanceStack = initStack();
                     N leaf = findNextLeafNode(tryAdvanceStack);
-                    if (leaf != null)
+                    if (leaf != null) {
                         tryAdvanceSpliterator = (S) leaf.spliterator();
-                    else {
+                    } else {
                         // A non-empty leaf node was not found
                         // No elements to traverse
                         curNode = null;
                         return false;
                     }
                 }
-                else
+                else {
                     tryAdvanceSpliterator = lastNodeSpliterator;
+                }
             }
             return true;
         }
@@ -994,13 +1072,13 @@ final class Nodes {
         @Override
         @SuppressWarnings("unchecked")
         public final S trySplit() {
-            if (curNode == null || tryAdvanceSpliterator != null)
+            if (curNode == null || tryAdvanceSpliterator != null) {
                 return null; // Cannot split if fully or partially traversed
-            else if (lastNodeSpliterator != null)
+            } else if (lastNodeSpliterator != null) {
                 return (S) lastNodeSpliterator.trySplit();
-            else if (curChildIndex < curNode.getChildCount() - 1)
+            } else if (curChildIndex < curNode.getChildCount() - 1) {
                 return (S) curNode.getChild(curChildIndex++).spliterator();
-            else {
+            } else {
                 curNode = (N) curNode.getChild(curChildIndex);
                 if (curNode.getChildCount() == 0) {
                     lastNodeSpliterator = (S) curNode.spliterator();
@@ -1015,17 +1093,19 @@ final class Nodes {
 
         @Override
         public final long estimateSize() {
-            if (curNode == null)
+            if (curNode == null) {
                 return 0;
+            }
 
             // Will not reflect the effects of partial traversal.
             // This is compliant with the specification
-            if (lastNodeSpliterator != null)
+            if (lastNodeSpliterator != null) {
                 return lastNodeSpliterator.estimateSize();
-            else {
+            } else {
                 long size = 0;
-                for (int i = curChildIndex; i < curNode.getChildCount(); i++)
+                for (int i = curChildIndex; i < curNode.getChildCount(); i++) {
                     size += curNode.getChild(i).count();
+                }
                 return size;
             }
         }
@@ -1044,8 +1124,9 @@ final class Nodes {
 
             @Override
             public boolean tryAdvance(Consumer<? super T> consumer) {
-                if (!initTryAdvance())
+                if (!initTryAdvance()) {
                     return false;
+                }
 
                 boolean hasNext = tryAdvanceSpliterator.tryAdvance(consumer);
                 if (!hasNext) {
@@ -1066,8 +1147,9 @@ final class Nodes {
 
             @Override
             public void forEachRemaining(Consumer<? super T> consumer) {
-                if (curNode == null)
+                if (curNode == null) {
                     return;
+                }
 
                 if (tryAdvanceSpliterator == null) {
                     if (lastNodeSpliterator == null) {
@@ -1078,11 +1160,13 @@ final class Nodes {
                         }
                         curNode = null;
                     }
-                    else
+                    else {
                         lastNodeSpliterator.forEachRemaining(consumer);
+                    }
                 }
-                else
+                else {
                     while(tryAdvance(consumer)) { }
+                }
             }
         }
 
@@ -1098,8 +1182,9 @@ final class Nodes {
 
             @Override
             public boolean tryAdvance(T_CONS consumer) {
-                if (!initTryAdvance())
+                if (!initTryAdvance()) {
                     return false;
+                }
 
                 boolean hasNext = tryAdvanceSpliterator.tryAdvance(consumer);
                 if (!hasNext) {
@@ -1120,8 +1205,9 @@ final class Nodes {
 
             @Override
             public void forEachRemaining(T_CONS consumer) {
-                if (curNode == null)
+                if (curNode == null) {
                     return;
+                }
 
                 if (tryAdvanceSpliterator == null) {
                     if (lastNodeSpliterator == null) {
@@ -1132,11 +1218,13 @@ final class Nodes {
                         }
                         curNode = null;
                     }
-                    else
+                    else {
                         lastNodeSpliterator.forEachRemaining(consumer);
+                    }
                 }
-                else
+                else {
                     while(tryAdvance(consumer)) { }
+                }
             }
         }
 
@@ -1170,6 +1258,7 @@ final class Nodes {
 
     /**
      * Fixed-sized builder class for reference nodes
+     * 用于引用节点的固定大小的构建者。
      */
     private static final class FixedNodeBuilder<T>
             extends ArrayNode<T>
@@ -1182,17 +1271,19 @@ final class Nodes {
 
         @Override
         public Node<T> build() {
-            if (curSize < array.length)
+            if (curSize < array.length) {
                 throw new IllegalStateException(String.format("Current size %d is less than fixed size %d",
                                                               curSize, array.length));
+            }
             return this;
         }
 
         @Override
         public void begin(long size) {
-            if (size != array.length)
+            if (size != array.length) {
                 throw new IllegalStateException(String.format("Begin size %d is not equal to fixed size %d",
                                                               size, array.length));
+            }
             curSize = 0;
         }
 
@@ -1208,9 +1299,10 @@ final class Nodes {
 
         @Override
         public void end() {
-            if (curSize < array.length)
+            if (curSize < array.length) {
                 throw new IllegalStateException(String.format("End size %d is less than fixed size %d",
                                                               curSize, array.length));
+            }
         }
 
         @Override
@@ -1222,6 +1314,7 @@ final class Nodes {
 
     /**
      * Variable-sized builder class for reference nodes
+     * 用于引用节点的大小可变的构建者。
      */
     private static final class SpinedNodeBuilder<T>
             extends SpinedBuffer<T>
@@ -1294,8 +1387,9 @@ final class Nodes {
         int curSize;
 
         IntArrayNode(long size) {
-            if (size >= MAX_ARRAY_SIZE)
+            if (size >= MAX_ARRAY_SIZE) {
                 throw new IllegalArgumentException(BAD_SIZE);
+            }
             this.array = new int[(int) size];
             this.curSize = 0;
         }
@@ -1350,8 +1444,9 @@ final class Nodes {
         int curSize;
 
         LongArrayNode(long size) {
-            if (size >= MAX_ARRAY_SIZE)
+            if (size >= MAX_ARRAY_SIZE) {
                 throw new IllegalArgumentException(BAD_SIZE);
+            }
             this.array = new long[(int) size];
             this.curSize = 0;
         }
@@ -1404,8 +1499,9 @@ final class Nodes {
         int curSize;
 
         DoubleArrayNode(long size) {
-            if (size >= MAX_ARRAY_SIZE)
+            if (size >= MAX_ARRAY_SIZE) {
                 throw new IllegalArgumentException(BAD_SIZE);
+            }
             this.array = new double[(int) size];
             this.curSize = 0;
         }
@@ -1864,8 +1960,9 @@ final class Nodes {
 
         @Override
         public void begin(long size) {
-            if (size > length)
+            if (size > length) {
                 throw new IllegalStateException("size passed to Sink.begin exceeds array length");
+            }
             // Casts to int are safe since absolute size is verified to be within
             // bounds when the root concrete SizedCollectorTask is constructed
             // with the shared array
@@ -2169,8 +2266,9 @@ final class Nodes {
 
         @Override
         public void onCompletion(CountedCompleter<?> caller) {
-            if (!isLeaf())
+            if (!isLeaf()) {
                 setLocalResult(concFactory.apply(leftChild.getLocalResult(), rightChild.getLocalResult()));
+            }
             super.onCompletion(caller);
         }
 

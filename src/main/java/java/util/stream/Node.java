@@ -82,6 +82,7 @@ interface Node<T> {
 
     /**
      * Retrieves the child {@code Node} at a given index.
+     * 在给定的索引处检索子节点。
      *
      * @implSpec The default implementation always throws
      * {@code IndexOutOfBoundsException}.
@@ -169,6 +170,7 @@ interface Node<T> {
 
     /**
      * Returns the number of elements contained in this node.
+     * 返回这个节点中包含的元素个数。
      *
      * @return the number of elements contained in this node
      */
