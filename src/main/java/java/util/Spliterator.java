@@ -11,10 +11,12 @@ import java.util.function.LongConsumer;
  * of elements covered by a Spliterator could be, for example, an array, a
  * {@link Collection}, an IO channel, or a generator function.
  * 用于遍历和划分数据源元素的对象。
+ * 拆分器覆盖的元素的数据源可以是数组、集合、IO通道或生成器函数。
  *
  * <p>A Spliterator may traverse elements individually ({@link
  * #tryAdvance tryAdvance()}) or sequentially in bulk
  * ({@link #forEachRemaining forEachRemaining()}).
+ * 拆分器可以单独遍历元素tryAdvance()，也可以批量依次遍历元素forEachRemaining()。
  *
  * <p>A Spliterator may also partition off some of its elements (using
  * {@link #trySplit}) as another Spliterator, to be used in
@@ -23,6 +25,9 @@ import java.util.function.LongConsumer;
  * manner, are unlikely to benefit from parallelism.  Traversal
  * and splitting exhaust elements; each Spliterator is useful for only a single
  * bulk computation.
+ * 拆分器还可以将它的一些元素分割为另一个拆分器(使用trySplit)，以便在可能的并行操作中使用。
+ * 使用拆分器的操作如果不能进行分裂，或者以高度不平衡或低效的方式进行分裂，则不太可能从并行性中获益。
+ * 横贯和拆分排除元件，每个拆分器只对单个批量计算有用。
  *
  * <p>A Spliterator also reports a set of {@link #characteristics()} of its
  * structure, source, and elements from among {@link #ORDERED},
@@ -34,11 +39,16 @@ import java.util.function.LongConsumer;
  * {@code DISTINCT}, and a Spliterator for a {@link SortedSet} would also
  * report {@code SORTED}.  Characteristics are reported as a simple unioned bit
  * set.
+ * 拆分器还报告其结构、数据源和元素的一组特征，这些特征来自遇到顺序、去重、排序、大小、非空、不可变、并发和子大小。
+ * 拆分器客户端可以使用它们来控制、专门化或简单计算。
  *
- * Some characteristics additionally constrain method behavior; for example if
+ * <p>Some characteristics additionally constrain method behavior; for example if
  * {@code ORDERED}, traversal methods must conform to their documented ordering.
  * New characteristics may be defined in the future, so implementors should not
  * assign meanings to unlisted values.
+ * 另外一些特征约束了方法行为。
+ * 例如，如果是遇到顺序，遍历方法必须遵循其文档记录的顺序。
+ * 将来可能会定义新的特征，因此实现者不应该给未列出的值赋意义。
  *
  * <p><a name="binding">A Spliterator that does not report {@code IMMUTABLE} or
  * {@code CONCURRENT} is expected to have a documented policy concerning:
@@ -57,6 +67,14 @@ import java.util.function.LongConsumer;
  * Spliterator may optimize traversal and check for structural interference
  * after all elements have been traversed, rather than checking per-element and
  * failing immediately.
+ * 一个不报告不可变或并发的拆分器应该有一个文档化的策略。
+ * 当拆分器绑定到元素数据源，并检测结构干扰，检测绑定后的元素数据源。
+ * 后期绑定的拆分器在第一次遍历、第一次拆分或第一次查询估计大小时绑定到元素数据源，而不是在创建拆分器时绑定到元素数据源。
+ * 不后期绑定的拆分器在构造函数或任何方法的第一次调用时绑定到元素数据源。
+ * 当遍历拆分器时，在绑定之前对数据源所做的修改将被反映出来。
+ * 绑定拆分器之后，如果检测到结构干扰，应该尽最大努力抛出并发修改异常。
+ * 这样做的拆分器被称为快速失败。
+ * 拆分器的批量遍历方法可以在遍历所有元素之后优化遍历并检查结构干扰，而不是逐个元素检查，然后立即失败。
  *
  * <p>Spliterators can provide an estimate of the number of remaining elements
  * via the {@link #estimateSize} method.  Ideally, as reflected in characteristic
@@ -65,6 +83,9 @@ import java.util.function.LongConsumer;
  * exactly known, an estimated value value may still be useful to operations
  * being performed on the source, such as helping to determine whether it is
  * preferable to split further or traverse the remaining elements sequentially.
+ * 拆分器可以通过estimateSize方法估计剩余元素的数量。
+ * 理想情况下，正如特征大小所反映的那样，这个值或成功遍历中遇到的元素数量完全一致。
+ * 然后，即使不完全知道，估计的值仍然可能对正在对数据源执行的操作有用。
  *
  * <p>Despite their obvious utility in parallel algorithms, spliterators are not
  * expected to be thread-safe; instead, implementations of parallel algorithms
@@ -81,6 +102,13 @@ import java.util.function.LongConsumer;
  * tryAdvance()}, as certain guarantees (such as the accuracy of
  * {@link #estimateSize()} for {@code SIZED} spliterators) are only valid before
  * traversal has begun.
+ * 尽管它们在并行算法中有明显的效用，但拆分器并不期望是线程安全的。
+ * 相反，使用拆分器的并行算法实现应该确保拆分器在同一时间只被一个线程使用。
+ * 这通常很容易通过串行线程限制实现，这通常是通过递归分解工作的典型并行算法的自然结果。
+ * 调用trySplit()的线程可能会将返回的拆分器交给另一个线程，而另一个线程可能会遍历或进一步拆分这个拆分器。
+ * 如果两个或多个线程同时操作同一个拆分器，则拆分和遍历的行为是未定义的。
+ * 如果原始线程将一个拆分器交给另一个线程进行处理，最好是在tryAdvance()使用任何元素之前进行这个切换，
+ * 因为某些保证对于大小拆分器的准确性只有在遍历开始之前才有效。
  *
  * <p>Primitive subtype specializations of {@code Spliterator} are provided for
  * {@link OfInt int}, {@link OfLong long}, and {@link OfDouble double} values.
@@ -111,25 +139,37 @@ import java.util.function.LongConsumer;
  * smaller per-element overhead than {@code Iterator}, and to avoid the inherent
  * race involved in having separate methods for {@code hasNext()} and
  * {@code next()}.
+ * 和迭代器一样，拆分器是用来遍历数据源元素的。
+ * 拆分器api通过支持分解和单个元素迭代，除了支持顺序遍历外，还支持高效的并行遍历。
+ * 此外，通过拆分器访问元素的协议被设计成比迭代器对每个元素施加更小的开销，
+ * 并避免使用hasNext()和next()的单独方法所带来的固有竞争。
  *
  * <p>For mutable sources, arbitrary and non-deterministic behavior may occur if
  * the source is structurally interfered with (elements added, replaced, or
  * removed) between the time that the Spliterator binds to its data source and
  * the end of traversal.  For example, such interference will produce arbitrary,
  * non-deterministic results when using the {@code java.util.stream} framework.
+ * 对于可变数据源，如果在拆分器绑定到其数据源的时间和遍历结束之间，数据源在结构上受到干扰(添加、替换或删除元素)，
+ * 则可能会发生任意和不确定性行为。
+ * 例如，当使用数据流框架时，这种干扰将产生任意的、不确定的结果。
  *
  * <p>Structural interference of a source can be managed in the following ways
  * (in approximate order of decreasing desirability):
+ * 干扰数据源的结构干扰可以按以下方式处理(按可取程度递减的近似顺序)：
  * <ul>
  * <li>The source cannot be structurally interfered with.
  * <br>For example, an instance of
  * {@link java.util.concurrent.CopyOnWriteArrayList} is an immutable source.
  * A Spliterator created from the source reports a characteristic of
  * {@code IMMUTABLE}.</li>
+ * 不能从结构上干扰数据源。
+ * 例如，CopyOnWriteArrayList的一个实例就是一个不可变的数据源。
  * <li>The source manages concurrent modifications.
  * <br>For example, a key set of a {@link java.util.concurrent.ConcurrentHashMap}
  * is a concurrent source.  A Spliterator created from the source reports a
  * characteristic of {@code CONCURRENT}.</li>
+ * 数据源管理并发修改。
+ * 例如，ConcurrentHashMap的一个键集合就是一个并发数据源。
  * <li>The mutable source provides a late-binding and fail-fast Spliterator.
  * <br>Late binding narrows the window during which interference can affect
  * the calculation; fail-fast detects, on a best-effort basis, that structural
@@ -137,19 +177,28 @@ import java.util.function.LongConsumer;
  * {@link ConcurrentModificationException}.  For example, {@link ArrayList},
  * and many other non-concurrent {@code Collection} classes in the JDK, provide
  * a late-binding, fail-fast spliterator.</li>
+ * 可变数据源提供一个延迟绑定和快速失败的拆分器。
+ * 延迟绑定缩小干扰影响计算的窗口，快速失败尽可能地检测在遍历开始后发生了结构干扰，并抛出并发修改异常。
+ * 例如，ArrayList和许多其他非并发集合类，提供了一个延迟绑定、快速失败的拆分器。
  * <li>The mutable source provides a non-late-binding but fail-fast Spliterator.
  * <br>The source increases the likelihood of throwing
  * {@code ConcurrentModificationException} since the window of potential
  * interference is larger.</li>
+ * 可变数据源提供一个非延迟绑定但快速失败的拆分器。
+ * 这个数据源增加抛出并发修改异常的可能性，因为潜在干扰的窗口更大。
  * <li>The mutable source provides a late-binding and non-fail-fast Spliterator.
  * <br>The source risks arbitrary, non-deterministic behavior after traversal
  * has commenced since interference is not detected.
  * </li>
+ * 可变数据源提供一个延迟绑定和非快速失败的拆分器。
+ * 由于没有检测到干扰，在遍历开始后，数据源冒着任意的、不确定性行为的风险。
  * <li>The mutable source provides a non-late-binding and non-fail-fast
  * Spliterator.
  * <br>The source increases the risk of arbitrary, non-deterministic behavior
  * since non-detected interference may occur after construction.
  * </li>
+ * 可变数据源提供一个非延迟绑定和非快速失败的拆分器。
+ * 由于施工后可能发生未检测到的干扰，这个数据源增加了任意、非确定性行为的风险。
  * </ul>
  *
  * <p><b>Example.</b> Here is a class (not a very useful one, except
@@ -229,6 +278,10 @@ import java.util.function.LongConsumer;
  * and process elements concurrently in undetermined order.  This
  * example uses a {@link java.util.concurrent.CountedCompleter};
  * similar usages apply to other parallel task constructions.
+ * 作为一个例子，如何是并行计算框架？
+ * 将使用拆分器并行计算，这是一个方法来实现一个相关的并行遍历，说明主要使用成语分裂子任务推迟到估计的工作量足够小，按顺序执行。
+ * 这里我们假设子任务之间的处理顺序无关紧要，不同的分叉的任务可以进一步以未确定的顺序并发地分割和处理元素。
+ * 这个例子使用CountedCompleter，类似的用法也适用于其他并行任务结构。
  *
  * <pre>{@code
  * static <T> void parEach(TaggedArray<T> a, Consumer<T> action) {
@@ -282,13 +335,19 @@ public interface Spliterator<T> {
      * Spliterator is {@link #ORDERED} the action is performed on the
      * next element in encounter order.  Exceptions thrown by the
      * action are relayed to the caller.
+     * 如果剩余元素存在，则对其执行给定的操作，返回true；否则返回false。
+     * 如果这个拆分器是有序的行为，则按遇到的顺序对下一个元素执行操作。
+     * 由动作抛出的异常被转发给调用者。
      *
      * @param action The action
+     *               操作数消费者的行为
      * @return {@code false} if no remaining elements existed
      * upon entry to this method, else {@code true}.
      * @throws NullPointerException if the specified action is null
      */
     boolean tryAdvance(Consumer<? super T> action);
+
+    // 遍历
 
     /**
      * Performs the given action for each remaining element, sequentially in
@@ -296,45 +355,57 @@ public interface Spliterator<T> {
      * throws an exception.  If this Spliterator is {@link #ORDERED}, actions
      * are performed in encounter order.  Exceptions thrown by the action
      * are relayed to the caller.
+     * 在当前线程中依次对每个剩余元素执行给定的操作，直到所有元素都被处理或操作抛出异常。
+     * 如果这个拆分器是有序的，操作将按照遇到的顺序执行。
+     * 由动作抛出的异常被转发给调用者。
      *
      * @implSpec
      * The default implementation repeatedly invokes {@link #tryAdvance} until
      * it returns {@code false}.  It should be overridden whenever possible.
+     * 默认实现会反复调用tryAdvance，直到它返回false。
+     * 只要有可能，就应该重写它。
      *
      * @param action The action
+     *               操作数消费者的行为
      * @throws NullPointerException if the specified action is null
      */
     default void forEachRemaining(Consumer<? super T> action) {
         do { } while (tryAdvance(action));
     }
 
-    // 遍历和划分
+    // 划分
 
     /**
      * If this spliterator can be partitioned, returns a Spliterator
      * covering elements, that will, upon return from this method, not
      * be covered by this Spliterator.
+     * 如果可以对这个拆分器进行分区，则返回一个覆盖元素的拆分器，这个元素在从这个方法返回时将不会被这个拆分器覆盖。
      *
      * <p>If this Spliterator is {@link #ORDERED}, the returned Spliterator
      * must cover a strict prefix of the elements.
-     *
+     * 如果这个拆分器是有序的，则返回的拆分器必须覆盖元素的严格前缀。
+     *`
      * <p>Unless this Spliterator covers an infinite number of elements,
      * repeated calls to {@code trySplit()} must eventually return {@code null}.
      * Upon non-null return:
+     * 除非这个拆分器包含无限多个元素，否则对trySplit()的重复调用最终必须返回null。在非空返回：
      * <ul>
      * <li>the value reported for {@code estimateSize()} before splitting,
      * must, after splitting, be greater than or equal to {@code estimateSize()}
      * for this and the returned Spliterator; and</li>
+     * 在分裂之前为estimateSize()报告的值，在分裂之后，必须大于或等于这个和返回的拆分器的estimateSize()；
      * <li>if this Spliterator is {@code SUBSIZED}, then {@code estimateSize()}
      * for this spliterator before splitting must be equal to the sum of
      * {@code estimateSize()} for this and the returned Spliterator after
      * splitting.</li>
+     * 如果这个拆分器被子大小，那么这个拆分器在分裂之前的estimateSize()必须等于这个拆分器和分裂后返回的拆分器的estimateSize()之和。
      * </ul>
      *
      * <p>This method may return {@code null} for any reason,
      * including emptiness, inability to split after traversal has
      * commenced, data structure constraints, and efficiency
      * considerations.
+     * 由于任何原因，这个方法可能返回null，包括空值、遍历开始后无法拆分、数据结构约束和效率考虑。
      *
      * @apiNote
      * An ideal {@code trySplit} method efficiently (without
@@ -347,9 +418,13 @@ public interface Spliterator<T> {
      * deviations in balance and/or overly inefficient {@code
      * trySplit} mechanics typically result in poor parallel
      * performance.
+     * 理想的trySplit方法能够有效地(不需要遍历)将其元素精确地分成两半，从而允许平衡的并行计算。
+     * 许多背离这一理想的做法仍然非常有效。
+     * 失衡或过度低效的trySplit机制通常会导致糟糕的并行性能。
      *
      * @return a {@code Spliterator} covering some portion of the
      * elements, or {@code null} if this spliterator cannot be split
+     * 一个包含部分元素的拆分器，如果这个拆分器不能被拆分，则为空
      */
     Spliterator<T> trySplit();
 
@@ -357,6 +432,8 @@ public interface Spliterator<T> {
      * Returns an estimate of the number of elements that would be
      * encountered by a {@link #forEachRemaining} traversal, or returns {@link
      * Long#MAX_VALUE} if infinite, unknown, or too expensive to compute.
+     * 返回forEachRemaining遍历将遇到的元素数量的估计，或返回长整数。
+     * MAX_VALUE，如果无穷大、未知，或过于昂贵而无法计算。
      *
      * <p>If this Spliterator is {@link #SIZED} and has not yet been partially
      * traversed or split, or this Spliterator is {@link #SUBSIZED} and has
@@ -372,6 +449,9 @@ public interface Spliterator<T> {
      * that of its parent; if the root Spliterator does not maintain an
      * accurate count, it could estimate size to be the power of two
      * corresponding to its maximum depth.
+     * 即使是一个不准确的估计，通常也是有用的，而且计算起来并不昂贵。
+     * 例如，一个近似平衡的二叉树的子拆分器可能会返回一个估计元素数量为其父二叉树元素数量一半的值；
+     * 如果根拆分器没有保持一个准确的计数，它可以估计大小为与其最大深度相对应的2的幂次方。
      *
      * @return the estimated size, or {@code Long.MAX_VALUE} if infinite,
      *         unknown, or too expensive to compute.
@@ -667,9 +747,10 @@ public interface Spliterator<T> {
                 return tryAdvance((IntConsumer) action);
             }
             else {
-                if (Tripwire.ENABLED)
+                if (Tripwire.ENABLED) {
                     Tripwire.trip(getClass(),
                                   "{0} calling Spliterator.OfInt.tryAdvance((IntConsumer) action::accept)");
+                }
                 return tryAdvance((IntConsumer) action::accept);
             }
         }
@@ -732,9 +813,10 @@ public interface Spliterator<T> {
                 return tryAdvance((LongConsumer) action);
             }
             else {
-                if (Tripwire.ENABLED)
+                if (Tripwire.ENABLED) {
                     Tripwire.trip(getClass(),
                                   "{0} calling Spliterator.OfLong.tryAdvance((LongConsumer) action::accept)");
+                }
                 return tryAdvance((LongConsumer) action::accept);
             }
         }
@@ -755,9 +837,10 @@ public interface Spliterator<T> {
                 forEachRemaining((LongConsumer) action);
             }
             else {
-                if (Tripwire.ENABLED)
+                if (Tripwire.ENABLED) {
                     Tripwire.trip(getClass(),
                                   "{0} calling Spliterator.OfLong.forEachRemaining((LongConsumer) action::accept)");
+                }
                 forEachRemaining((LongConsumer) action::accept);
             }
         }
@@ -796,9 +879,10 @@ public interface Spliterator<T> {
                 return tryAdvance((DoubleConsumer) action);
             }
             else {
-                if (Tripwire.ENABLED)
+                if (Tripwire.ENABLED) {
                     Tripwire.trip(getClass(),
                                   "{0} calling Spliterator.OfDouble.tryAdvance((DoubleConsumer) action::accept)");
+                }
                 return tryAdvance((DoubleConsumer) action::accept);
             }
         }
@@ -820,9 +904,10 @@ public interface Spliterator<T> {
                 forEachRemaining((DoubleConsumer) action);
             }
             else {
-                if (Tripwire.ENABLED)
+                if (Tripwire.ENABLED) {
                     Tripwire.trip(getClass(),
                                   "{0} calling Spliterator.OfDouble.forEachRemaining((DoubleConsumer) action::accept)");
+                }
                 forEachRemaining((DoubleConsumer) action::accept);
             }
         }
