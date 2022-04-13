@@ -529,9 +529,11 @@ public interface IntStream extends BaseStream<Integer, IntStream> {
      * Returns an {@code IntSummaryStatistics} describing various
      * summary data about the elements of this stream.  This is a special
      * case of a <a href="package-summary.html#Reduction">reduction</a>.
+     * 描述关于这个数据流元素的各种汇总数据。
      *
      * <p>This is a <a href="package-summary.html#StreamOps">terminal
      * operation</a>.
+     * 这是一个终结操作。
      *
      * @return an {@code IntSummaryStatistics} describing various summary data
      * about the elements of this stream

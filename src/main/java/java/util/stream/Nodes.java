@@ -1383,6 +1383,9 @@ final class Nodes {
     private static final double[] EMPTY_DOUBLE_ARRAY = new double[0];
 
     private static class IntArrayNode implements Node.OfInt {
+        /**
+         * 整数基本类型的数组引用
+         */
         final int[] array;
         int curSize;
 
