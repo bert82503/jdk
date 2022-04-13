@@ -11,7 +11,7 @@ import java.util.function.Supplier;
  * implementations of the Stream interface and its primitive specializations.
  * Manages construction and evaluation of stream pipelines.
  * 流水线类的抽象基类，它们是流水线接口及其基本专门化的核心实现。
- * 管理数据流管道流水线的建设和评估。
+ * 管理数据流管道流水线的建设和求值。
  *
  * <p>An {@code AbstractPipeline} represents an initial portion of a stream
  * pipeline, encapsulating a stream source and zero or more intermediate
@@ -111,7 +111,7 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * Valid at the point of pipeline preparation for evaluation.
      * 在这个流水线管道对象和数据流源之间的中间操作的数量(如果是顺序的)，
      * 或者之前的有状态操作的数量(如果是并行的)。
-     * 有效的在流水线管道准备阶段进行评价。
+     * 有效的在流水线管道准备阶段进行求值。
      */
     private int depth;
 
@@ -120,7 +120,7 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * up to and including the operation represented by this pipeline object.
      * Valid at the point of pipeline preparation for evaluation.
      * 数据流源和操作的组合标志，以及到这个流水线管道对象为止的所有操作，包括由这个流水线管道对象表示的操作。
-     * 有效的在流水线管道准备阶段进行评价。
+     * 有效的在流水线管道准备阶段进行求值。
      */
     private int combinedFlags;
 
@@ -251,11 +251,11 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
 
 
     // Terminal evaluation methods
-    // 终结操作评价方法
+    // 终结操作求值方法
 
     /**
      * Evaluate the pipeline with a terminal operation to produce a result.
-     * 用终结操作对数据流管道进行评估，以产生结果。
+     * 用终结操作对数据流管道进行求值，以产生结果。
      *
      * @param <R> the type of result
      *           结果的类型

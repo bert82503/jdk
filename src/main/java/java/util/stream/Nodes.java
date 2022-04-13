@@ -278,7 +278,7 @@ final class Nodes {
     }
 
     // Parallel evaluation of pipelines to nodes
-    // 流水线到节点的并行评估
+    // 流水线到节点的并行求值
 
     /**
      * Collect, in parallel, elements output from a pipeline and describe those
