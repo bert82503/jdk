@@ -412,7 +412,7 @@
  * <pre>{@code
  *     List<String> results =
  *         stream.filter(s -> pattern.matcher(s).matches())
- *               .collect(Collectors.toList());  // No side-effects! 没有副作用！
+ *               .collect(Collectors.toList());  // No side-effects! 无副作用！
  * }</pre>
  *
  * <h3><a name="Ordering">Ordering 排序</a></h3>
