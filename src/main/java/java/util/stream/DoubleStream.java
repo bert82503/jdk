@@ -1,41 +1,13 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
+
 package java.util.stream;
 
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.DoubleSummaryStatistics;
 import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleConsumer;
@@ -780,6 +752,11 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
             @Override
             public boolean hasNext() {
                 return true;
+            }
+
+            @Override
+            public void remove() {
+                // empty
             }
 
             @Override

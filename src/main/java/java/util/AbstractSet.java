@@ -5,7 +5,7 @@ package java.util;
  * This class provides a skeletal implementation of the <tt>Set</tt>
  * interface to minimize the effort required to implement this
  * interface.
- * 本类提供Set接口的框架实现，以最大程度地减少实现这个接口所需的工作。
+ * 这个类提供了Set接口的框架实现，以最大限度地减少实现这个接口所需的工作。
  * <p>
  *
  * The process of implementing a set by extending this class is identical
@@ -33,15 +33,18 @@ package java.util;
  * @since 1.2
  */
 public abstract class AbstractSet<E> extends AbstractCollection<E> implements Set<E> {
+
     /**
      * Sole constructor.  (For invocation by subclass constructors, typically
      * implicit.)
+     * 唯一的构造函数。
+     * 用于子类构造函数的调用，通常是隐式的。
      */
     protected AbstractSet() {
     }
 
     // Comparison and hashing
-    // 比较和散列
+    // 比较和哈希
 
     /**
      * Compares the specified object with this set for equality.  Returns
@@ -62,20 +65,21 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
      */
     @Override
     public boolean equals(Object o) {
-        if (o == this)
+        if (o == this) {
             return true;
-        // 非集合类或两个元素的数量不相等
-        if (!(o instanceof Set))
+        }
+        if (!(o instanceof Set)) {
             return false;
+        }
+
         Collection<?> c = (Collection<?>) o;
-        if (c.size() != size())
+        // 元素数量是否相等，优化措施
+        if (c.size() != size()) {
             return false;
+        }
         try {
-            // 相等集合，等价性包含
             return containsAll(c);
-        } catch (ClassCastException unused)   {
-            return false;
-        } catch (NullPointerException unused) {
+        } catch (ClassCastException | NullPointerException unused)   {
             return false;
         }
     }
@@ -100,14 +104,13 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
     @Override
     public int hashCode() {
         int h = 0;
-        // 元素的迭代器
+        // 迭代器
         Iterator<E> i = iterator();
-        // 所有元素的散列码之和
         while (i.hasNext()) {
             E obj = i.next();
-            // 元素可能为null
-            if (obj != null)
+            if (obj != null) {
                 h += obj.hashCode();
+            }
         }
         return h;
     }
@@ -154,10 +157,10 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
         Objects.requireNonNull(c);
         boolean modified = false;
 
-        // 使用元素数量小的进行迭代移除，减少查找次数
         if (size() > c.size()) {
-            for (Iterator<?> i = c.iterator(); i.hasNext(); )
+            for (Iterator<?> i = c.iterator(); i.hasNext(); ) {
                 modified |= remove(i.next());
+            }
         } else {
             for (Iterator<?> i = iterator(); i.hasNext(); ) {
                 if (c.contains(i.next())) {

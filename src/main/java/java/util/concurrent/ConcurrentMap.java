@@ -117,7 +117,8 @@ public interface ConcurrentMap<K, V> extends Map<K, V> {
      * @throws IllegalArgumentException if some property of the specified key
      *         or value prevents it from being stored in this map
      */
-     V putIfAbsent(K key, V value);
+    @Override
+    V putIfAbsent(K key, V value);
 
     /**
      * Removes the entry for a key only if currently mapped to a given value.
@@ -147,6 +148,7 @@ public interface ConcurrentMap<K, V> extends Map<K, V> {
      *         and this map does not permit null keys or values
      *         (<a href="../Collection.html#optional-restrictions">optional</a>)
      */
+    @Override
     boolean remove(Object key, Object value);
 
     /**
@@ -178,6 +180,7 @@ public interface ConcurrentMap<K, V> extends Map<K, V> {
      * @throws IllegalArgumentException if some property of a specified key
      *         or value prevents it from being stored in this map
      */
+    @Override
     boolean replace(K key, V oldValue, V newValue);
 
     /**
@@ -211,6 +214,7 @@ public interface ConcurrentMap<K, V> extends Map<K, V> {
      * @throws IllegalArgumentException if some property of the specified key
      *         or value prevents it from being stored in this map
      */
+    @Override
     V replace(K key, V value);
 
     /**

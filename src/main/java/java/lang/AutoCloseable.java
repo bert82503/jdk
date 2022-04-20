@@ -1,73 +1,29 @@
-/*
- * Copyright (c) 2009, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
 /**
- * An object that may hold resources (such as file or socket handles)
- * until it is closed. The {@link #close()} method of an {@code AutoCloseable}
- * object is called automatically when exiting a {@code
- * try}-with-resources block for which the object has been declared in
- * the resource specification header. This construction ensures prompt
- * release, avoiding resource exhaustion exceptions and errors that
- * may otherwise occur.
- *
- * @apiNote
- * <p>It is possible, and in fact common, for a base class to
- * implement AutoCloseable even though not all of its subclasses or
- * instances will hold releasable resources.  For code that must operate
- * in complete generality, or when it is known that the {@code AutoCloseable}
- * instance requires resource release, it is recommended to use {@code
- * try}-with-resources constructions. However, when using facilities such as
- * {@link java.util.stream.Stream} that support both I/O-based and
- * non-I/O-based forms, {@code try}-with-resources blocks are in
- * general unnecessary when using non-I/O-based forms.
+ * A resource that must be closed when it is no longer needed.
+ * 资源在它不再被需要时，必须被关闭。
+ * [资源释放] 可自动关闭的资源（资源在不需要时必须关闭）
  *
  * @author Josh Bloch
  * @since 1.7
  */
 public interface AutoCloseable {
+
     /**
      * Closes this resource, relinquishing any underlying resources.
      * This method is invoked automatically on objects managed by the
      * {@code try}-with-resources statement.
+     * 关闭此资源，放弃任何底层的资源。
+     * 在由 try-with-resources 语句管理的对象上，此方法会被自动调用。
      *
      * <p>While this interface method is declared to throw {@code
      * Exception}, implementers are <em>strongly</em> encouraged to
      * declare concrete implementations of the {@code close} method to
      * throw more specific exceptions, or to throw no exception at all
      * if the close operation cannot fail.
-     *
-     * <p> Cases where the close operation may fail require careful
-     * attention by implementers. It is strongly advised to relinquish
-     * the underlying resources and to internally <em>mark</em> the
-     * resource as closed, prior to throwing the exception. The {@code
-     * close} method is unlikely to be invoked more than once and so
-     * this ensures that the resources are released in a timely manner.
-     * Furthermore it reduces problems that could arise when the resource
-     * wraps, or is wrapped, by another resource.
+     * 强烈推荐：抛出更具体的异常
      *
      * <p><em>Implementers of this interface are also strongly advised
      * to not have the {@code close} method throw {@link
@@ -81,6 +37,7 @@ public interface AutoCloseable {
      * More generally, if it would cause problems for an
      * exception to be suppressed, the {@code AutoCloseable.close}
      * method should not throw it.
+     * 强烈建议：不要抛出中断异常（{@link InterruptedException}）
      *
      * <p>Note that unlike the {@link java.io.Closeable#close close}
      * method of {@link java.io.Closeable}, this {@code close} method
@@ -91,8 +48,12 @@ public interface AutoCloseable {
      *
      * However, implementers of this interface are strongly encouraged
      * to make their {@code close} methods idempotent.
+     * 注意：不像 {@link java.io.Closeable#close Closeable.close()} 方法，
+     * 此方法不需要是幂等的。
+     * 换句话说，多次调用此方法可能会有一些明显的副作用；不像 {@code Closeable.close} 被调用多次需要没有影响。
+     * 但是，强烈建议此接口的实现者让他们的 {@code close} 方法幂等。
      *
-     * @throws Exception if this resource cannot be closed
+     * @throws Exception if this resource cannot be closed (无法关闭此资源)
      */
     void close() throws Exception;
 }

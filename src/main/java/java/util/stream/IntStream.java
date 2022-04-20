@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 package java.util.stream;
 
 import java.util.Arrays;
@@ -49,6 +25,7 @@ import java.util.function.Supplier;
  * A sequence of primitive int-valued elements supporting sequential and parallel
  * aggregate operations.  This is the {@code int} primitive specialization of
  * {@link Stream}.
+ * 注意：数据流，支持顺序和并行聚合操作的元素序列。
  *
  * <p>The following example illustrates an aggregate operation using
  * {@link Stream} and {@link IntStream}, computing the sum of the weights of the
@@ -65,12 +42,19 @@ import java.util.function.Supplier;
  * for <a href="package-summary.html">java.util.stream</a> for additional
  * specification of streams, stream operations, stream pipelines, and
  * parallelism.
+ * 请参阅Stream的类文档和java.util.stream的包文档，了解数据流、数据流操作、数据流管道和并行性的其他规范，
+ * 这些规范管理着所有数据流类型的行为。
  *
  * @since 1.8
  * @see Stream
  * @see <a href="package-summary.html">java.util.stream</a>
  */
 public interface IntStream extends BaseStream<Integer, IntStream> {
+
+    // 中间操作
+
+    // 一元函数
+    // 谓词函数-IntPredicate
 
     /**
      * Returns a stream consisting of the elements of this stream that match
@@ -87,6 +71,8 @@ public interface IntStream extends BaseStream<Integer, IntStream> {
      */
     IntStream filter(IntPredicate predicate);
 
+    // 一元整数运算符-IntUnaryOperator
+
     /**
      * Returns a stream consisting of the results of applying the given
      * function to the elements of this stream.
@@ -100,6 +86,8 @@ public interface IntStream extends BaseStream<Integer, IntStream> {
      * @return the new stream
      */
     IntStream map(IntUnaryOperator mapper);
+
+    // 一元函数-IntFunction
 
     /**
      * Returns an object-valued {@code Stream} consisting of the results of
@@ -115,6 +103,8 @@ public interface IntStream extends BaseStream<Integer, IntStream> {
      * @return the new stream
      */
     <U> Stream<U> mapToObj(IntFunction<? extends U> mapper);
+
+    // 一元函数-IntToLongFunction
 
     /**
      * Returns a {@code LongStream} consisting of the results of applying the
@@ -144,6 +134,8 @@ public interface IntStream extends BaseStream<Integer, IntStream> {
      */
     DoubleStream mapToDouble(IntToDoubleFunction mapper);
 
+    // 一元函数-IntFunction
+
     /**
      * Returns a stream consisting of the results of replacing each element of
      * this stream with the contents of a mapped stream produced by applying
@@ -164,6 +156,8 @@ public interface IntStream extends BaseStream<Integer, IntStream> {
      */
     IntStream flatMap(IntFunction<? extends IntStream> mapper);
 
+    // 去重操作
+
     /**
      * Returns a stream consisting of the distinct elements of this stream.
      *
@@ -173,6 +167,8 @@ public interface IntStream extends BaseStream<Integer, IntStream> {
      * @return the new stream
      */
     IntStream distinct();
+
+    // 排序操作
 
     /**
      * Returns a stream consisting of the elements of this stream in sorted
@@ -272,6 +268,8 @@ public interface IntStream extends BaseStream<Integer, IntStream> {
      */
     IntStream skip(long n);
 
+    // 结果消费者-IntConsumer
+
     /**
      * Performs an action for each element of this stream.
      *
@@ -313,6 +311,9 @@ public interface IntStream extends BaseStream<Integer, IntStream> {
      * @return an array containing the elements of this stream
      */
     int[] toArray();
+
+    // 归约操作
+    // 二元运算符-IntBinaryOperator
 
     /**
      * Performs a <a href="package-summary.html#Reduction">reduction</a> on the
@@ -405,6 +406,8 @@ public interface IntStream extends BaseStream<Integer, IntStream> {
      * @see #reduce(int, IntBinaryOperator)
      */
     OptionalInt reduce(IntBinaryOperator op);
+
+    // 收集操作
 
     /**
      * Performs a <a href="package-summary.html#MutableReduction">mutable
@@ -526,9 +529,11 @@ public interface IntStream extends BaseStream<Integer, IntStream> {
      * Returns an {@code IntSummaryStatistics} describing various
      * summary data about the elements of this stream.  This is a special
      * case of a <a href="package-summary.html#Reduction">reduction</a>.
+     * 描述关于这个数据流元素的各种汇总数据。
      *
      * <p>This is a <a href="package-summary.html#StreamOps">terminal
      * operation</a>.
+     * 这是一个终结操作。
      *
      * @return an {@code IntSummaryStatistics} describing various summary data
      * about the elements of this stream
@@ -670,11 +675,15 @@ public interface IntStream extends BaseStream<Integer, IntStream> {
      */
     Stream<Integer> boxed();
 
+    // 顺序、并行数据流
+
     @Override
     IntStream sequential();
 
     @Override
     IntStream parallel();
+
+    // 迭代器、拆分器
 
     @Override
     PrimitiveIterator.OfInt iterator();
@@ -689,7 +698,7 @@ public interface IntStream extends BaseStream<Integer, IntStream> {
      *
      * @return a stream builder
      */
-    public static Builder builder() {
+    static Builder builder() {
         return new Streams.IntStreamBuilderImpl();
     }
 
@@ -698,7 +707,7 @@ public interface IntStream extends BaseStream<Integer, IntStream> {
      *
      * @return an empty sequential stream
      */
-    public static IntStream empty() {
+    static IntStream empty() {
         return StreamSupport.intStream(Spliterators.emptyIntSpliterator(), false);
     }
 
@@ -708,7 +717,7 @@ public interface IntStream extends BaseStream<Integer, IntStream> {
      * @param t the single element
      * @return a singleton sequential stream
      */
-    public static IntStream of(int t) {
+    static IntStream of(int t) {
         return StreamSupport.intStream(new Streams.IntStreamBuilderImpl(t), false);
     }
 
@@ -718,7 +727,7 @@ public interface IntStream extends BaseStream<Integer, IntStream> {
      * @param values the elements of the new stream
      * @return the new stream
      */
-    public static IntStream of(int... values) {
+    static IntStream of(int... values) {
         return Arrays.stream(values);
     }
 
@@ -738,7 +747,7 @@ public interface IntStream extends BaseStream<Integer, IntStream> {
      *          a new element
      * @return A new sequential {@code IntStream}
      */
-    public static IntStream iterate(final int seed, final IntUnaryOperator f) {
+    static IntStream iterate(final int seed, final IntUnaryOperator f) {
         Objects.requireNonNull(f);
         final PrimitiveIterator.OfInt iterator = new PrimitiveIterator.OfInt() {
             int t = seed;
@@ -746,6 +755,11 @@ public interface IntStream extends BaseStream<Integer, IntStream> {
             @Override
             public boolean hasNext() {
                 return true;
+            }
+
+            @Override
+            public void remove() {
+                // empty
             }
 
             @Override
@@ -768,7 +782,7 @@ public interface IntStream extends BaseStream<Integer, IntStream> {
      * @param s the {@code IntSupplier} for generated elements
      * @return a new infinite sequential unordered {@code IntStream}
      */
-    public static IntStream generate(IntSupplier s) {
+    static IntStream generate(IntSupplier s) {
         Objects.requireNonNull(s);
         return StreamSupport.intStream(
                 new StreamSpliterators.InfiniteSupplyingSpliterator.OfInt(Long.MAX_VALUE, s), false);
@@ -791,7 +805,7 @@ public interface IntStream extends BaseStream<Integer, IntStream> {
      * @return a sequential {@code IntStream} for the range of {@code int}
      *         elements
      */
-    public static IntStream range(int startInclusive, int endExclusive) {
+    static IntStream range(int startInclusive, int endExclusive) {
         if (startInclusive >= endExclusive) {
             return empty();
         } else {
@@ -817,7 +831,7 @@ public interface IntStream extends BaseStream<Integer, IntStream> {
      * @return a sequential {@code IntStream} for the range of {@code int}
      *         elements
      */
-    public static IntStream rangeClosed(int startInclusive, int endInclusive) {
+    static IntStream rangeClosed(int startInclusive, int endInclusive) {
         if (startInclusive > endInclusive) {
             return empty();
         } else {
@@ -843,7 +857,7 @@ public interface IntStream extends BaseStream<Integer, IntStream> {
      * @param b the second stream
      * @return the concatenation of the two input streams
      */
-    public static IntStream concat(IntStream a, IntStream b) {
+    static IntStream concat(IntStream a, IntStream b) {
         Objects.requireNonNull(a);
         Objects.requireNonNull(b);
 
@@ -866,7 +880,7 @@ public interface IntStream extends BaseStream<Integer, IntStream> {
      * @see IntStream#builder()
      * @since 1.8
      */
-    public interface Builder extends IntConsumer {
+    interface Builder extends IntConsumer {
 
         /**
          * Adds an element to the stream being built.

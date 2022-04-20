@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1994, 2012, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
@@ -29,6 +5,8 @@ package java.lang;
  * Class {@code Object} is the root of the class hierarchy.
  * Every class has {@code Object} as a superclass. All objects,
  * including arrays, implement the methods of this class.
+ * {@code Object}类是类层次结构树的根。
+ * 每个类型都以{@code Object}作为其超类，所有对象（包括数组）都实现该类的方法。
  *
  * @author  unascribed
  * @see     java.lang.Class
@@ -36,15 +14,24 @@ package java.lang;
  */
 public class Object {
 
+    // 注册本地方法
+
     private static native void registerNatives();
+    // 静态初始化块
     static {
         registerNatives();
     }
+
+    // 类型
 
     /**
      * Returns the runtime class of this {@code Object}. The returned
      * {@code Class} object is the object that is locked by {@code
      * static synchronized} methods of the represented class.
+     * 返回对象的运行时类。
+     * 返回的{@code Class}对象是由所表示类的静态同步方法锁定的对象。
+     *
+     * ?：泛型通配符，表示未知类型。
      *
      * <p><b>The actual result type is {@code Class<? extends |X|>}
      * where {@code |X|} is the erasure of the static type of the
@@ -58,14 +45,18 @@ public class Object {
      *
      * @return The {@code Class} object that represents the runtime
      *         class of this object.
-     * @jls 15.8.2 Class Literals
+     * @jls 15.8.2 Class Literals (类字面常量)
      */
     public final native Class<?> getClass();
 
+    // 等价性/散列映射
+    // 比较和散列
+
     /**
      * Returns a hash code value for the object. This method is
-     * supported for the benefit of hash tables such as those provided by
+     * supported for the benefit of hash tables (散列表) such as those provided by
      * {@link java.util.HashMap}.
+     * 返回对象的散列码值。
      * <p>
      * The general contract of {@code hashCode} is:
      * <ul>
@@ -75,15 +66,20 @@ public class Object {
      *     used in {@code equals} comparisons on the object is modified.
      *     This integer need not remain consistent from one execution of an
      *     application to another execution of the same application.
+     *     (在同一个对象上执行多次，该方法必须始终返回相同的整数。
+     *     如果两个对象的散列码值相同，但这两个对象不一定相等。因为存在散列冲突)
      * <li>If two objects are equal according to the {@code equals(Object)}
      *     method, then calling the {@code hashCode} method on each of
      *     the two objects must produce the same integer result.
+     *     (如果两个对象相等，则两个对象的散列码肯定相同。
+     *     同一个算法，输入参数相同，输出结果肯定一样。)
      * <li>It is <em>not</em> required that if two objects are unequal
      *     according to the {@link java.lang.Object#equals(java.lang.Object)}
      *     method, then calling the {@code hashCode} method on each of the
      *     two objects must produce distinct integer results.  However, the
      *     programmer should be aware that producing distinct integer results
      *     for unequal objects may improve the performance of hash tables.
+     *     (负载因子：不相等的对象尽量产生不同的整数结果，以提高散列表的性能。)
      * </ul>
      * <p>
      * As much as is reasonably practical, the hashCode method defined by
@@ -91,16 +87,17 @@ public class Object {
      * objects. (This is typically implemented by converting the internal
      * address of the object into an integer, but this implementation
      * technique is not required by the
-     * Java&trade; programming language.)
+     * Java&trade; programming language. 为不相等的对象返回不同的整数)
      *
      * @return  a hash code value for this object.
-     * @see     java.lang.Object#equals(java.lang.Object)
+     * @see     #equals(Object)
      * @see     java.lang.System#identityHashCode
      */
     public native int hashCode();
 
     /**
      * Indicates whether some other object is "equal to" this one.
+     * 指出另一个对象是否"等于"这个对象。
      * <p>
      * The {@code equals} method implements an equivalence relation
      * on non-null object references:
@@ -138,6 +135,7 @@ public class Object {
      * method whenever this method is overridden, so as to maintain the
      * general contract for the {@code hashCode} method, which states
      * that equal objects must have equal hash codes.
+     * (相等的对象必须具有相等的散列码。)
      *
      * @param   obj   the reference object with which to compare.
      * @return  {@code true} if this object is the same as the obj
@@ -146,8 +144,11 @@ public class Object {
      * @see     java.util.HashMap
      */
     public boolean equals(Object obj) {
+        // 同一个对象，内存地址相同
         return (this == obj);
     }
+
+    // 复制
 
     /**
      * Creates and returns a copy of this object.  The precise meaning
@@ -166,6 +167,7 @@ public class Object {
      * <pre>
      * x.clone().equals(x)</pre></blockquote>
      * will be {@code true}, this is not an absolute requirement.
+     * 创建和返回这个对象的副本。
      * <p>
      * By convention, the returned object should be obtained by calling
      * {@code super.clone}.  If a class and all of its superclasses (except
@@ -211,6 +213,9 @@ public class Object {
      */
     protected native Object clone() throws CloneNotSupportedException;
 
+    // 字符串
+    // 使用场景：日志输出
+
     /**
      * Returns a string representation of the object. In general, the
      * {@code toString} method returns a string that
@@ -218,6 +223,9 @@ public class Object {
      * be a concise but informative representation that is easy for a
      * person to read.
      * It is recommended that all subclasses override this method.
+     * 返回对象的字符串表示。
+     * 结果应该是简明且易于人阅读的信息表示。
+     * 建议所有子类覆盖此方法。
      * <p>
      * The {@code toString} method for class {@code Object}
      * returns a string consisting of the name of the class of which the
@@ -233,8 +241,11 @@ public class Object {
      * @return  a string representation of the object.
      */
     public String toString() {
+        // 类名@散列的十六进制
         return getClass().getName() + "@" + Integer.toHexString(hashCode());
     }
+
+    // 线程同步
 
     /**
      * Wakes up a single thread that is waiting on this object's
@@ -242,6 +253,7 @@ public class Object {
      * is chosen to be awakened. The choice is arbitrary and occurs at
      * the discretion of the implementation. A thread waits on an object's
      * monitor by calling one of the {@code wait} methods.
+     * 唤醒正在等待这个对象的监视器的单个线程。
      * <p>
      * The awakened thread will not be able to proceed until the current
      * thread relinquishes the lock on this object. The awakened thread will
@@ -262,6 +274,7 @@ public class Object {
      * </ul>
      * <p>
      * Only one thread at a time can own an object's monitor.
+     * (一次只有一个线程可以拥有对象的监视器。)
      *
      * @throws  IllegalMonitorStateException  if the current thread is not
      *               the owner of this object's monitor.
@@ -274,6 +287,7 @@ public class Object {
      * Wakes up all threads that are waiting on this object's monitor. A
      * thread waits on an object's monitor by calling one of the
      * {@code wait} methods.
+     * 唤醒正在等待这个对象的监视器的所有线程。
      * <p>
      * The awakened threads will not be able to proceed until the current
      * thread relinquishes the lock on this object. The awakened threads
@@ -299,6 +313,8 @@ public class Object {
      * {@link java.lang.Object#notify()} method or the
      * {@link java.lang.Object#notifyAll()} method for this object, or a
      * specified amount of time has elapsed.
+     * 使当前线程等待，直到另一个线程调用这个对象的{@link #notify()}或{@link #notifyAll()}方法，
+     * 或者指定的时间已过。
      * <p>
      * The current thread must own this object's monitor.
      * <p>
@@ -365,8 +381,9 @@ public class Object {
      * of this object's monitor. See the {@code notify} method for a
      * description of the ways in which a thread can become the owner of
      * a monitor.
+     * (本方法只应由作为这个对象的监视器所有者的线程调用。)
      *
-     * @param      timeout   the maximum time to wait in milliseconds.
+     * @param      timeout   the maximum time to wait in milliseconds. (最大等待时间，毫秒)
      * @throws  IllegalArgumentException      if the value of timeout is
      *               negative.
      * @throws  IllegalMonitorStateException  if the current thread is not
@@ -444,6 +461,7 @@ public class Object {
      *             this exception is thrown.
      */
     public final void wait(long timeout, int nanos) throws InterruptedException {
+        // 参数有效性检查
         if (timeout < 0) {
             throw new IllegalArgumentException("timeout value is negative");
         }
@@ -454,9 +472,11 @@ public class Object {
         }
 
         if (nanos > 0) {
+            // +1
             timeout++;
         }
 
+        // 超时等待
         wait(timeout);
     }
 
@@ -502,11 +522,14 @@ public class Object {
         wait(0);
     }
 
+    // 垃圾回收
+
     /**
      * Called by the garbage collector on an object when garbage collection
      * determines that there are no more references to the object.
      * A subclass overrides the {@code finalize} method to dispose of
      * system resources or to perform other cleanup.
+     * 当垃圾收集器判断没有对某个对象的引用时，垃圾收集器对这个对象调用此方法。
      * <p>
      * The general contract of {@code finalize} is that it is invoked
      * if and when the Java&trade; virtual
@@ -552,5 +575,7 @@ public class Object {
      * @see java.lang.ref.PhantomReference
      * @jls 12.6 Finalization of Class Instances
      */
-    protected void finalize() throws Throwable { }
+    protected void finalize() throws Throwable {
+        // empty
+    }
 }

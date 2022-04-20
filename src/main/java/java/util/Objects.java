@@ -8,16 +8,19 @@ import java.util.function.Supplier;
  * on objects.  These utilities include {@code null}-safe or {@code
  * null}-tolerant methods for computing the hash code of an object,
  * returning a string for an object, and comparing two objects.
- * 提供对象行为的null保护、null容忍。
+ * 本类由用于操作对象的静态工具方法组成。
+ * 这些工具方法包括空安全或空容忍的方法，用于计算对象的散列码，返回对象的字符串表示，以及比较两个对象。
  *
  * @since 1.7
  */
 public final class Objects {
+
     private Objects() {
+        // 不可实例化保护
         throw new AssertionError("No java.util.Objects instances for you!");
     }
 
-    // 对象等价性
+    // Object
 
     /**
      * Returns {@code true} if the arguments are equal to each other
@@ -35,6 +38,7 @@ public final class Objects {
      * @see Object#equals(Object)
      */
     public static boolean equals(Object a, Object b) {
+        // 对象相同或对象数据相等
         return (a == b) || (a != null && a.equals(b));
     }
 
@@ -56,15 +60,14 @@ public final class Objects {
     * @see Objects#equals(Object, Object)
     */
     public static boolean deepEquals(Object a, Object b) {
-        if (a == b)
+        if (a == b) {
             return true;
-        else if (a == null || b == null)
+        } else if (a == null || b == null) {
             return false;
-        else
+        } else {
             return Arrays.deepEquals0(a, b);
+        }
     }
-
-    // 散列码映射
 
     /**
      * Returns the hash code of a non-{@code null} argument and 0 for
@@ -76,7 +79,8 @@ public final class Objects {
      * @see Object#hashCode
      */
     public static int hashCode(Object o) {
-        return o != null ? o.hashCode() : 0;
+        // 对象数据的散列码
+        return (o != null) ? o.hashCode() : 0;
     }
 
    /**
@@ -106,10 +110,9 @@ public final class Objects {
     * @see List#hashCode
     */
     public static int hash(Object... values) {
+        // 数组对象数据的散列码
         return Arrays.hashCode(values);
     }
-
-    // 字符串表示
 
     /**
      * Returns the result of calling {@code toString} for a non-{@code
@@ -122,6 +125,7 @@ public final class Objects {
      * @see String#valueOf(Object)
      */
     public static String toString(Object o) {
+        // 对象的字符串表示
         return String.valueOf(o);
     }
 
@@ -139,10 +143,12 @@ public final class Objects {
      * @see Objects#toString(Object)
      */
     public static String toString(Object o, String nullDefault) {
+        // null对象的字符串表示
         return (o != null) ? o.toString() : nullDefault;
     }
 
-    // 对象比较
+    // 值比较
+    // Comparator
 
     /**
      * Returns 0 if the arguments are identical and {@code
@@ -165,10 +171,12 @@ public final class Objects {
      * @see Comparator
      */
     public static <T> int compare(T a, T b, Comparator<? super T> c) {
-        return (a == b) ? 0 :  c.compare(a, b);
+        // 比较两个对象
+        return (a == b) ? 0 : c.compare(a, b);
     }
 
-    // 入参有效性检查
+    // 参数校验
+    // 状态校验
 
     /**
      * Checks that the specified object reference is not {@code null}. This
@@ -179,6 +187,7 @@ public final class Objects {
      *     this.bar = Objects.requireNonNull(bar);
      * }
      * </pre></blockquote>
+     * 检查指定的对象引用是否不为空。
      *
      * @param obj the object reference to check for nullity
      * @param <T> the type of the reference
@@ -186,8 +195,8 @@ public final class Objects {
      * @throws NullPointerException if {@code obj} is {@code null}
      */
     public static <T> T requireNonNull(T obj) {
+        // 若对象为null，则抛出NPE空指针异常
         if (obj == null) {
-            // 抛出对象值为null的NPE异常
             throw new NullPointerException();
         }
         return obj;
@@ -214,18 +223,21 @@ public final class Objects {
      */
     public static <T> T requireNonNull(T obj, String message) {
         if (obj == null) {
-            // 抛出对象值为null的NPE异常
             throw new NullPointerException(message);
         }
         return obj;
     }
 
+    // 谓词函数-Predicate
+
     /**
      * Returns {@code true} if the provided reference is {@code null} otherwise
      * returns {@code false}.
+     * 如果提供的对象引用是null，则返回true；否则，返回false。
      *
      * @apiNote This method exists to be used as a
      * {@link java.util.function.Predicate}, {@code filter(Objects::isNull)}
+     * 本方法作为谓词存在，filter(Objects::isNull)
      *
      * @param obj a reference to be checked against {@code null}
      * @return {@code true} if the provided reference is {@code null} otherwise
@@ -235,15 +247,18 @@ public final class Objects {
      * @since 1.8
      */
     public static boolean isNull(Object obj) {
+        // 判断对象为null
         return obj == null;
     }
 
     /**
      * Returns {@code true} if the provided reference is non-{@code null}
      * otherwise returns {@code false}.
+     * 如果提供的对象引用是非null，则返回true；否则，返回false。
      *
      * @apiNote This method exists to be used as a
      * {@link java.util.function.Predicate}, {@code filter(Objects::nonNull)}
+     * 本方法作为谓词存在，filter(Objects::nonNull)
      *
      * @param obj a reference to be checked against {@code null}
      * @return {@code true} if the provided reference is non-{@code null}
@@ -256,6 +271,8 @@ public final class Objects {
         return obj != null;
     }
 
+    // 对象生产者-Supplier
+
     /**
      * Checks that the specified object reference is not {@code null} and
      * throws a customized {@link NullPointerException} if it is.
@@ -267,6 +284,9 @@ public final class Objects {
      * call this method care should be taken that the costs of
      * creating the message supplier are less than the cost of just
      * creating the string message directly.
+     * 本方法允许将消息的创建延迟到进行空检查之后。
+     * 虽然在非空情况下这可能带来性能优势，但在决定调用本方法时，应该注意创建消息提供者的成本要低于直接创建字符串消息的成本。
+     * 降低对象创建的成本
      *
      * @param obj     the object reference to check for nullity
      * @param messageSupplier supplier of the detail message to be
@@ -278,7 +298,6 @@ public final class Objects {
      */
     public static <T> T requireNonNull(T obj, Supplier<String> messageSupplier) {
         if (obj == null) {
-            // 抛出对象值为null的NPE异常
             throw new NullPointerException(messageSupplier.get());
         }
         return obj;

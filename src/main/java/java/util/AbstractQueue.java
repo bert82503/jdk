@@ -128,6 +128,7 @@ public abstract class AbstractQueue<E>
      * @return the head of this queue
      * @throws NoSuchElementException if this queue is empty
      */
+    @Override
     public E element() {
         E x = peek();
         if (x != null)
@@ -177,6 +178,7 @@ public abstract class AbstractQueue<E>
      *         this time due to insertion restrictions
      * @see #add(Object)
      */
+    @Override
     public boolean addAll(Collection<? extends E> c) {
         if (c == null)
             throw new NullPointerException();

@@ -46,6 +46,7 @@ package java.util;
  * specifically for use with capacity-restricted {@code Queue}
  * implementations; in most implementations, insert operations cannot
  * fail.
+ * 单向队列。
  *
  * <table BORDER CELLPADDING=3 CELLSPACING=1>
  * <caption>Summary of Queue methods</caption>
@@ -142,6 +143,7 @@ package java.util;
  * @param <E> the type of elements held in this collection
  */
 public interface Queue<E> extends Collection<E> {
+    // 队尾进，队头出
     /**
      * Inserts the specified element into this queue if it is possible to do so
      * immediately without violating capacity restrictions, returning
@@ -159,6 +161,7 @@ public interface Queue<E> extends Collection<E> {
      * @throws IllegalArgumentException if some property of this element
      *         prevents it from being added to this queue
      */
+    @Override
     boolean add(E e);
 
     /**

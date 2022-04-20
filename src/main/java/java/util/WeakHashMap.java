@@ -413,6 +413,7 @@ public class WeakHashMap<K,V>
      * @return <tt>true</tt> if there is a mapping for <tt>key</tt>;
      *         <tt>false</tt> otherwise
      */
+    @Override
     public boolean containsKey(Object key) {
         return getEntry(key) != null;
     }
@@ -537,6 +538,7 @@ public class WeakHashMap<K,V>
      * @param m mappings to be stored in this map.
      * @throws  NullPointerException if the specified map is null.
      */
+    @Override
     public void putAll(Map<? extends K, ? extends V> m) {
         int numKeysToBeAdded = m.size();
         if (numKeysToBeAdded == 0)
@@ -671,6 +673,7 @@ public class WeakHashMap<K,V>
      * @return <tt>true</tt> if this map maps one or more keys to the
      *         specified value
      */
+    @Override
     public boolean containsValue(Object value) {
         if (value==null)
             return containsNullValue();
@@ -863,6 +866,7 @@ public class WeakHashMap<K,V>
      * operations.  It does not support the <tt>add</tt> or <tt>addAll</tt>
      * operations.
      */
+    @Override
     public Set<K> keySet() {
         Set<K> ks = keySet;
         if (ks == null) {
@@ -916,6 +920,7 @@ public class WeakHashMap<K,V>
      * <tt>retainAll</tt> and <tt>clear</tt> operations.  It does not
      * support the <tt>add</tt> or <tt>addAll</tt> operations.
      */
+    @Override
     public Collection<V> values() {
         Collection<V> vs = values;
         if (vs == null) {
@@ -961,6 +966,7 @@ public class WeakHashMap<K,V>
      * <tt>clear</tt> operations.  It does not support the
      * <tt>add</tt> or <tt>addAll</tt> operations.
      */
+    @Override
     public Set<Map.Entry<K,V>> entrySet() {
         Set<Map.Entry<K,V>> es = entrySet;
         return es != null ? es : (entrySet = new EntrySet());

@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1994, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
@@ -30,12 +6,15 @@ package java.lang;
  * {@code boolean} in an object. An object of type
  * {@code Boolean} contains a single field whose type is
  * {@code boolean}.
+ * 布尔类型，将boolean基本类型的值包装到对象中。
+ * final修饰符保证类不会被扩展
  * <p>
  * In addition, this class provides many methods for
  * converting a {@code boolean} to a {@code String} and a
  * {@code String} to a {@code boolean}, as well as other
  * constants and methods useful when dealing with a
  * {@code boolean}.
+ * 提供与字符串的互相转换。
  *
  * @author  Arthur van Hoff
  * @since   JDK1.0
@@ -65,6 +44,8 @@ public final class Boolean implements java.io.Serializable,
 
     /**
      * The value of the Boolean.
+     * 布尔类型的值。
+     * 使所有的域都成为私有的，使所有的域都是final的
      *
      * @serial
      */
@@ -76,6 +57,7 @@ public final class Boolean implements java.io.Serializable,
     /**
      * Allocates a {@code Boolean} object representing the
      * {@code value} argument.
+     * 构造一个新分配的表示指定布尔值的布尔对象。
      *
      * <p><b>Note: It is rarely appropriate to use this constructor.
      * Unless a <i>new</i> instance is required, the static factory
@@ -105,6 +87,8 @@ public final class Boolean implements java.io.Serializable,
         this(parseBoolean(s));
     }
 
+    // 解析字符串
+
     /**
      * Parses the string argument as a boolean.  The {@code boolean}
      * returned represents the value {@code true} if the string argument
@@ -132,6 +116,9 @@ public final class Boolean implements java.io.Serializable,
         return value;
     }
 
+    // 静态工厂模式
+    // 基本类型 -> 包装类
+
     /**
      * Returns a {@code Boolean} instance representing the specified
      * {@code boolean} value.  If the specified {@code boolean} value
@@ -141,6 +128,7 @@ public final class Boolean implements java.io.Serializable,
      * should generally be used in preference to the constructor
      * {@link #Boolean(boolean)}, as this method is likely to yield
      * significantly better space and time performance.
+     * 返回一个表示指定的布尔值的布尔实例(选择用静态工厂代替公有的构造器可以让你以后有添加缓存的灵活性，而不必影响客户端)。
      *
      * @param  b a boolean value.
      * @return a {@code Boolean} instance representing {@code b}.
@@ -163,11 +151,14 @@ public final class Boolean implements java.io.Serializable,
         return parseBoolean(s) ? TRUE : FALSE;
     }
 
+    // 转换为字符串
+
     /**
      * Returns a {@code String} object representing the specified
      * boolean.  If the specified boolean is {@code true}, then
      * the string {@code "true"} will be returned, otherwise the
      * string {@code "false"} will be returned.
+     * 返回表示指定布尔值的字符串对象。
      *
      * @param b the boolean to be converted
      * @return the string representation of the specified {@code boolean}
@@ -185,6 +176,7 @@ public final class Boolean implements java.io.Serializable,
      *
      * @return  a string representation of this object.
      */
+    @Override
     public String toString() {
         return value ? "true" : "false";
     }
@@ -222,6 +214,7 @@ public final class Boolean implements java.io.Serializable,
      * @return  {@code true} if the Boolean objects represent the
      *          same value; {@code false} otherwise.
      */
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof Boolean) {
             return value == ((Boolean)obj).booleanValue();
@@ -253,6 +246,7 @@ public final class Boolean implements java.io.Serializable,
         try {
             result = parseBoolean(System.getProperty(name));
         } catch (IllegalArgumentException | NullPointerException e) {
+            // 忽略
         }
         return result;
     }
@@ -269,12 +263,14 @@ public final class Boolean implements java.io.Serializable,
      * @see     Comparable
      * @since  1.5
      */
+    @Override
     public int compareTo(Boolean b) {
         return compare(this.value, b.value);
     }
 
     /**
      * Compares two {@code boolean} values.
+     * 比较两个布尔值。
      * The value returned is identical to what would be returned by:
      * <pre>
      *    Boolean.valueOf(x).compareTo(Boolean.valueOf(y))
@@ -288,8 +284,13 @@ public final class Boolean implements java.io.Serializable,
      * @since 1.7
      */
     public static int compare(boolean x, boolean y) {
+        // 比较规则
         return (x == y) ? 0 : (x ? 1 : -1);
     }
+
+    // 位操作
+    // 二元运算符：与、或、非
+    // 函数式接口：BinaryOperator
 
     /**
      * Returns the result of applying the logical AND operator to the

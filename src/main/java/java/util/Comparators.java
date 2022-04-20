@@ -33,14 +33,17 @@ import java.util.function.ToLongFunction;
 
 /**
  * Package private supporting class for {@link Comparator}.
+ * 值比较器。
  */
 class Comparators {
+
     private Comparators() {
         throw new AssertionError("no instances");
     }
 
     /**
      * Compares {@link Comparable} objects in natural order.
+     * 自然顺序比较器。
      *
      * @see Comparable
      */
@@ -59,7 +62,8 @@ class Comparators {
     }
 
     /**
-     * Null-friendly comparators
+     * Null-friendly comparators.
+     * null值友好的比较器。
      */
     final static class NullComparator<T> implements Comparator<T>, Serializable {
         private static final long serialVersionUID = -7569533591570686392L;

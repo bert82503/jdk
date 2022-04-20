@@ -1,27 +1,4 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
+
 package java.util.stream;
 
 import java.util.Spliterator;
@@ -34,6 +11,7 @@ import java.util.function.LongConsumer;
 /**
  * An immutable container for describing an ordered sequence of elements of some
  * type {@code T}.
+ * 一种不可变容器，用于描述某种类型T的有序元素序列。
  *
  * <p>A {@code Node} contains a fixed number of elements, which can be accessed
  * via the {@link #count}, {@link #spliterator}, {@link #forEach},
@@ -43,6 +21,9 @@ import java.util.function.LongConsumer;
  * </em> or a <em>leaf</em>; if it has children, it is considered an
  * <em>internal</em> node.  The size of an internal node is the sum of sizes of
  * its children.
+ * 节点包含固定数量的元素，可以通过计数器、拆分器、元素遍历或复制方法访问这些元素。
+ * 一个节点可以有零个或多个子节点，如果它没有子节点访问，它被认为是扁平的或叶型的。
+ * 如果它有子节点，则将其视为内部节点。内部节点的大小是其子节点大小的总和。
  *
  * @apiNote
  * <p>A {@code Node} typically does not store the elements directly, but instead
@@ -53,11 +34,17 @@ import java.util.function.LongConsumer;
  * contained in the leaf nodes.  The use of {@code Node} within the stream
  * framework is largely to avoid copying data unnecessarily during parallel
  * operations.
+ * 节点通常不直接存储元素，而是中间对一个或多个现有(有效的不可变)数据结构的访问，例如集合、数组或一组其他节点。
+ * 通常节点被形成为树，树的形状对应于生成叶子节点中包含的元素的计算树。
+ * 在数据流框架中使用节点主要是为了避免在并行操作期间复制不必要的数据。
  *
  * @param <T> the type of elements.
+ *           元素的类型
  * @since 1.8
  */
 interface Node<T> {
+
+    // 拆分器
 
     /**
      * Returns a {@link Spliterator} describing the elements contained in this
@@ -67,6 +54,9 @@ interface Node<T> {
      *         {@code Node}
      */
     Spliterator<T> spliterator();
+
+    // 迭代遍历
+    // 结果消费者-Consumer
 
     /**
      * Traverses the elements of this node, and invoke the provided
@@ -80,6 +70,7 @@ interface Node<T> {
 
     /**
      * Returns the number of child nodes of this node.
+     * 返回这个节点的子节点数量。
      *
      * @implSpec The default implementation returns zero.
      *
@@ -91,6 +82,7 @@ interface Node<T> {
 
     /**
      * Retrieves the child {@code Node} at a given index.
+     * 在给定的索引处检索子节点。
      *
      * @implSpec The default implementation always throws
      * {@code IndexOutOfBoundsException}.
@@ -118,8 +110,9 @@ interface Node<T> {
      * @return the truncated node
      */
     default Node<T> truncate(long from, long to, IntFunction<T[]> generator) {
-        if (from == 0 && to == count())
+        if (from == 0 && to == count()) {
             return this;
+        }
         Spliterator<T> spliterator = spliterator();
         long size = to - from;
         Node.Builder<T> nodeBuilder = Nodes.builder(size, generator);
@@ -132,6 +125,7 @@ interface Node<T> {
 
     /**
      * Provides an array view of the contents of this node.
+     * 提供这个节点内容的数组视图。
      *
      * <p>Depending on the underlying implementation, this may return a
      * reference to an internal array rather than a copy.  Since the returned
@@ -176,6 +170,7 @@ interface Node<T> {
 
     /**
      * Returns the number of elements contained in this node.
+     * 返回这个节点中包含的元素个数。
      *
      * @return the number of elements contained in this node
      */
@@ -184,6 +179,7 @@ interface Node<T> {
     /**
      * A mutable builder for a {@code Node} that implements {@link Sink}, which
      * builds a flat node containing the elements that have been pushed to it.
+     * 实现接收结果的水槽的节点的可变构建者，构建一个平面节点，其中包含已推送到它的元素。
      */
     interface Builder<T> extends Sink<T> {
 
@@ -220,7 +216,7 @@ interface Node<T> {
         }
     }
 
-    public interface OfPrimitive<T, T_CONS, T_ARR,
+    interface OfPrimitive<T, T_CONS, T_ARR,
                                  T_SPLITR extends Spliterator.OfPrimitive<T, T_CONS, T_SPLITR>,
                                  T_NODE extends OfPrimitive<T, T_CONS, T_ARR, T_SPLITR, T_NODE>>
             extends Node<T> {
@@ -230,6 +226,7 @@ interface Node<T> {
          *
          * @return a {@link Spliterator.OfPrimitive} describing the elements of
          *         this node
+         *         描述这个节点的元素的拆分器
          */
         @Override
         T_SPLITR spliterator();

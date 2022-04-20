@@ -4,31 +4,43 @@ package java.util;
 /**
  * This class provides a skeletal implementation of the <tt>Collection</tt>
  * interface, to minimize the effort required to implement this interface.
- * 本类提供Collection接口的框架实现，以最大程度地减少实现这个接口所需的工作。
+ * 这个类提供Collection接口的框架实现，以最小化实现这个接口所需的工作。
  * <p>
  *
  * To implement an unmodifiable collection, the programmer needs only to
  * extend this class and provide implementations for the <tt>iterator</tt> and
  * <tt>size</tt> methods.  (The iterator returned by the <tt>iterator</tt>
- * method must implement <tt>hasNext</tt> and <tt>next</tt>.)<p>
+ * method must implement <tt>hasNext</tt> and <tt>next</tt>.)
+ * 要实现不可修改的集合，程序员只需扩展这个类并提供迭代器和size方法的实现。
+ * 迭代器方法返回的迭代器必须实现hasNext和next方法。
+ * <p>
  *
  * To implement a modifiable collection, the programmer must additionally
  * override this class's <tt>add</tt> method (which otherwise throws an
  * <tt>UnsupportedOperationException</tt>), and the iterator returned by the
  * <tt>iterator</tt> method must additionally implement its <tt>remove</tt>
- * method.<p>
+ * method.
+ * 要实现可修改的集合，程序员必须另外重写这个类的add方法。(否则将抛出不支持的操作异常)
+ * 迭代器方法返回的迭代器必须另外实现其remove方法。
+ * <p>
  *
  * The programmer should generally provide a void (no argument) and
  * <tt>Collection</tt> constructor, as per the recommendation in the
- * <tt>Collection</tt> interface specification.<p>
+ * <tt>Collection</tt> interface specification.
+ * 程序员通常应该按照Collection接口规范中的建议，提供一个无参数和Collection参数的构造函数。
+ * <p>
  *
  * The documentation for each non-abstract method in this class describes its
  * implementation in detail.  Each of these methods may be overridden if
- * the collection being implemented admits a more efficient implementation.<p>
+ * the collection being implemented admits a more efficient implementation.
+ * 这个类中每个非抽象方法的文档详细描述了其实现。
+ * 如果正在实现的集合允许更有效的实现，那么这些方法中的每一个都可以被重写。
+ * <p>
  *
  * This class is a member of the
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
+ * 这个类是Java集合框架的成员。
  *
  * @author  Josh Bloch
  * @author  Neal Gafter
@@ -36,9 +48,12 @@ package java.util;
  * @since 1.2
  */
 public abstract class AbstractCollection<E> implements Collection<E> {
+
     /**
      * Sole constructor.  (For invocation by subclass constructors, typically
      * implicit.)
+     * 唯一的构造函数。
+     * 用于子类构造函数的调用，通常是隐式的。
      */
     protected AbstractCollection() {
     }
@@ -48,17 +63,14 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 
     /**
      * Returns an iterator over the elements contained in this collection.
-     * 元素的迭代器。
+     * 返回这个集合中元素的迭代器。
      *
      * @return an iterator over the elements contained in this collection
      */
+    @Override
     public abstract Iterator<E> iterator();
 
-    /**
-     * {@inheritDoc}
-     *
-     * 元素的数量
-     */
+    @Override
     public abstract int size();
 
     /**
@@ -66,8 +78,9 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      *
      * <p>This implementation returns <tt>size() == 0</tt>.
      */
+    @Override
     public boolean isEmpty() {
-        // 元素的数量
+        // 集合中的元素数量
         return size() == 0;
     }
 
@@ -76,23 +89,28 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      *
      * <p>This implementation iterates over the elements in the collection,
      * checking each element in turn for equality with the specified element.
+     * 这个实现遍历集合中的元素，依次检查每个元素是否与指定的元素相等。
      *
      * @throws ClassCastException   {@inheritDoc}
      * @throws NullPointerException {@inheritDoc}
      */
+    @Override
     public boolean contains(Object o) {
-        // 元素的迭代器
+        // 迭代器
         Iterator<E> it = iterator();
-        if (o==null) {
-            // null场景(允许元素为null)
-            while (it.hasNext())
-                if (it.next()==null)
+        if (o == null) {
+            while (it.hasNext()) {
+                if (it.next() == null) {
                     return true;
+                }
+            }
         } else {
-            // 非null场景
-            while (it.hasNext())
-                if (o.equals(it.next()))
+            while (it.hasNext()) {
+                // 对象相等
+                if (o.equals(it.next())) {
                     return true;
+                }
+            }
         }
         return false;
     }
@@ -119,13 +137,16 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * return list.toArray();
      * }</pre>
      */
+    @Override
     public Object[] toArray() {
         // Estimate size of array; be prepared to see more or fewer elements
         Object[] r = new Object[size()];
         Iterator<E> it = iterator();
         for (int i = 0; i < r.length; i++) {
             if (! it.hasNext()) // fewer elements than expected
+            {
                 return Arrays.copyOf(r, i);
+            }
             r[i] = it.next();
         }
         return it.hasNext() ? finishToArray(r, it) : r;
@@ -158,15 +179,14 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * @throws ArrayStoreException  {@inheritDoc}
      * @throws NullPointerException {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public <T> T[] toArray(T[] a) {
         // Estimate size of array; be prepared to see more or fewer elements
         int size = size();
-        // 通过反射创建数组实例
         T[] r = a.length >= size ? a :
                   (T[])java.lang.reflect.Array
                   .newInstance(a.getClass().getComponentType(), size);
-        // 元素的迭代器
         Iterator<E> it = iterator();
 
         for (int i = 0; i < r.length; i++) {
@@ -176,7 +196,6 @@ public abstract class AbstractCollection<E> implements Collection<E> {
                 } else if (a.length < i) {
                     return Arrays.copyOf(r, i);
                 } else {
-                    // 基于内存的数组复制
                     System.arraycopy(r, 0, a, 0, i);
                     if (a.length > i) {
                         a[i] = null;
@@ -216,20 +235,23 @@ public abstract class AbstractCollection<E> implements Collection<E> {
             if (i == cap) {
                 int newCap = cap + (cap >> 1) + 1;
                 // overflow-conscious code
-                if (newCap - MAX_ARRAY_SIZE > 0)
+                if (newCap - MAX_ARRAY_SIZE > 0) {
                     newCap = hugeCapacity(cap + 1);
+                }
                 r = Arrays.copyOf(r, newCap);
             }
             r[i++] = (T)it.next();
         }
-        // trim if over allocated
+        // trim if overallocated
         return (i == r.length) ? r : Arrays.copyOf(r, i);
     }
 
     private static int hugeCapacity(int minCapacity) {
         if (minCapacity < 0) // overflow
+        {
             throw new OutOfMemoryError
                 ("Required array size too large");
+        }
         return (minCapacity > MAX_ARRAY_SIZE) ?
             Integer.MAX_VALUE :
             MAX_ARRAY_SIZE;
@@ -243,6 +265,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      *
      * <p>This implementation always throws an
      * <tt>UnsupportedOperationException</tt>.
+     * 这个实现总是抛出一个不支持的操作异常。
      *
      * @throws UnsupportedOperationException {@inheritDoc}
      * @throws ClassCastException            {@inheritDoc}
@@ -250,8 +273,8 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * @throws IllegalArgumentException      {@inheritDoc}
      * @throws IllegalStateException         {@inheritDoc}
      */
+    @Override
     public boolean add(E e) {
-        // 不支持的操作
         throw new UnsupportedOperationException();
     }
 
@@ -261,29 +284,33 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * <p>This implementation iterates over the collection looking for the
      * specified element.  If it finds the element, it removes the element
      * from the collection using the iterator's remove method.
+     * 这个实现遍历集合以查找指定的元素。
+     * 如果找到这个元素，则使用迭代器的remove方法从集合中删除这个元素。
      *
      * <p>Note that this implementation throws an
      * <tt>UnsupportedOperationException</tt> if the iterator returned by this
      * collection's iterator method does not implement the <tt>remove</tt>
      * method and this collection contains the specified object.
+     * 注意，如果这个集合的迭代器方法返回的迭代器没有实现remove方法，且这个集合包含指定的对象，
+     * 则这个实现将抛出不支持的操作异常。
      *
      * @throws UnsupportedOperationException {@inheritDoc}
      * @throws ClassCastException            {@inheritDoc}
      * @throws NullPointerException          {@inheritDoc}
      */
+    @Override
     public boolean remove(Object o) {
-        // 元素的迭代器
+        // 迭代器
         Iterator<E> it = iterator();
-        if (o==null) {
-            // null场景(允许元素为null)
+        if (o == null) {
             while (it.hasNext()) {
-                if (it.next()==null) {
+                if (it.next() == null) {
+                    // 使用迭代器移除元素
                     it.remove();
                     return true;
                 }
             }
         } else {
-            // 非null场景
             while (it.hasNext()) {
                 if (o.equals(it.next())) {
                     it.remove();
@@ -301,36 +328,40 @@ public abstract class AbstractCollection<E> implements Collection<E> {
     /**
      * {@inheritDoc}
      *
-     * 子集，集合的包含关系。
-     *
      * <p>This implementation iterates over the specified collection,
      * checking each element returned by the iterator in turn to see
      * if it's contained in this collection.  If all elements are so
      * contained <tt>true</tt> is returned, otherwise <tt>false</tt>.
+     * 这个实现遍历指定的集合，依次检查迭代器返回的每个元素，看它是否包含在这个集合中。
+     * 如果所有元素都被包含，则返回true，否则返回false。
      *
      * @throws ClassCastException            {@inheritDoc}
      * @throws NullPointerException          {@inheritDoc}
      * @see #contains(Object)
      */
+    @Override
     public boolean containsAll(Collection<?> c) {
-        for (Object e : c)
-            if (!contains(e))
-                // 反例：只要有一个元素不包含，则返回
+        // 集合元素遍历
+        for (Object e : c) {
+            // 元素包含判断
+            if (!contains(e)) {
                 return false;
+            }
+        }
         return true;
     }
 
     /**
      * {@inheritDoc}
      *
-     * 并集。
-     *
      * <p>This implementation iterates over the specified collection, and adds
      * each object returned by the iterator to this collection, in turn.
+     * 这个实现遍历指定的集合，并依次将迭代器返回的每个对象添加到这个集合。
      *
      * <p>Note that this implementation will throw an
      * <tt>UnsupportedOperationException</tt> unless <tt>add</tt> is
      * overridden (assuming the specified collection is non-empty).
+     * 注意，这个实现将抛出一个不支持的操作异常，除非add方法被重写。(假设指定的集合非空)
      *
      * @throws UnsupportedOperationException {@inheritDoc}
      * @throws ClassCastException            {@inheritDoc}
@@ -340,49 +371,13 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      *
      * @see #add(Object)
      */
+    @Override
     public boolean addAll(Collection<? extends E> c) {
-        // 容器已修改标识
         boolean modified = false;
-        for (E e : c)
-            // 遍历添加
-            if (add(e))
-                modified = true;
-        return modified;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * 相对补集。
-     *
-     * <p>This implementation iterates over this collection, checking each
-     * element returned by the iterator in turn to see if it's contained
-     * in the specified collection.  If it's so contained, it's removed from
-     * this collection with the iterator's <tt>remove</tt> method.
-     *
-     * <p>Note that this implementation will throw an
-     * <tt>UnsupportedOperationException</tt> if the iterator returned by the
-     * <tt>iterator</tt> method does not implement the <tt>remove</tt> method
-     * and this collection contains one or more elements in common with the
-     * specified collection.
-     *
-     * @throws UnsupportedOperationException {@inheritDoc}
-     * @throws ClassCastException            {@inheritDoc}
-     * @throws NullPointerException          {@inheritDoc}
-     *
-     * @see #remove(Object)
-     * @see #contains(Object)
-     */
-    public boolean removeAll(Collection<?> c) {
-        Objects.requireNonNull(c);
-        // 容器已修改标识
-        boolean modified = false;
-        // 元素的迭代器
-        Iterator<?> it = iterator();
-        while (it.hasNext()) {
-            if (c.contains(it.next())) {
-                // 存在的，则移除
-                it.remove();
+        // 集合元素遍历
+        for (E e : c) {
+            // 添加元素
+            if (add(e)) {
                 modified = true;
             }
         }
@@ -392,7 +387,47 @@ public abstract class AbstractCollection<E> implements Collection<E> {
     /**
      * {@inheritDoc}
      *
-     * 交集。
+     * <p>This implementation iterates over this collection, checking each
+     * element returned by the iterator in turn to see if it's contained
+     * in the specified collection.  If it's so contained, it's removed from
+     * this collection with the iterator's <tt>remove</tt> method.
+     * 这个实现遍历这个集合，依次检查迭代器返回的每个元素，以查看它是否包含在指定的集合中。
+     * 如果它被包含，则使用迭代器的remove方法将其从集合中删除。
+     *
+     * <p>Note that this implementation will throw an
+     * <tt>UnsupportedOperationException</tt> if the iterator returned by the
+     * <tt>iterator</tt> method does not implement the <tt>remove</tt> method
+     * and this collection contains one or more elements in common with the
+     * specified collection.
+     * 注意，如果迭代器方法返回的迭代器没有实现remove方法，且该集合包含一个或多个与指定集合相同的元素，
+     * 则这个实现将抛出不支持的操作异常。
+     *
+     * @throws UnsupportedOperationException {@inheritDoc}
+     * @throws ClassCastException            {@inheritDoc}
+     * @throws NullPointerException          {@inheritDoc}
+     *
+     * @see #remove(Object)
+     * @see #contains(Object)
+     */
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        Objects.requireNonNull(c);
+        boolean modified = false;
+        // 迭代器
+        Iterator<?> it = iterator();
+        while (it.hasNext()) {
+            // 元素包含判断
+            if (c.contains(it.next())) {
+                // 移除元素
+                it.remove();
+                modified = true;
+            }
+        }
+        return modified;
+    }
+
+    /**
+     * {@inheritDoc}
      *
      * <p>This implementation iterates over this collection, checking each
      * element returned by the iterator in turn to see if it's contained
@@ -412,15 +447,14 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * @see #remove(Object)
      * @see #contains(Object)
      */
+    @Override
     public boolean retainAll(Collection<?> c) {
         Objects.requireNonNull(c);
-        // 容器已修改标识
         boolean modified = false;
-        // 元素的迭代器
+        // 迭代器
         Iterator<E> it = iterator();
         while (it.hasNext()) {
             if (!c.contains(it.next())) {
-                // 不存在的，则移除
                 it.remove();
                 modified = true;
             }
@@ -443,12 +477,12 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      *
      * @throws UnsupportedOperationException {@inheritDoc}
      */
+    @Override
     public void clear() {
-        // 元素的迭代器
+        // 迭代器
         Iterator<E> it = iterator();
         while (it.hasNext()) {
             it.next();
-            // 遍历地移除
             it.remove();
         }
     }
@@ -464,24 +498,25 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * (<tt>"[]"</tt>).  Adjacent elements are separated by the characters
      * <tt>", "</tt> (comma and space).  Elements are converted to strings as
      * by {@link String#valueOf(Object)}.
-     * 返回这个容器的字符串表示形式。
      *
      * @return a string representation of this collection
      */
+    @Override
     public String toString() {
-        // 元素的迭代器
+        // 迭代器
         Iterator<E> it = iterator();
-        if (! it.hasNext())
-            // 空的容器
+        if (! it.hasNext()) {
             return "[]";
+        }
 
         StringBuilder sb = new StringBuilder();
         sb.append('[');
         for (;;) {
             E e = it.next();
             sb.append(e == this ? "(this Collection)" : e);
-            if (! it.hasNext())
+            if (! it.hasNext()) {
                 return sb.append(']').toString();
+            }
             sb.append(',').append(' ');
         }
     }

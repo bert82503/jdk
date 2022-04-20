@@ -1,34 +1,7 @@
-/*
- * Copyright (c) 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
+
 package java.util.stream;
 
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.LongSummaryStatistics;
 import java.util.Objects;
 import java.util.OptionalDouble;
@@ -36,7 +9,6 @@ import java.util.OptionalLong;
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.LongBinaryOperator;
@@ -54,6 +26,7 @@ import java.util.function.Supplier;
  * A sequence of primitive long-valued elements supporting sequential and parallel
  * aggregate operations.  This is the {@code long} primitive specialization of
  * {@link Stream}.
+ * 注意：数据流，支持顺序和并行聚合操作的元素序列。
  *
  * <p>The following example illustrates an aggregate operation using
  * {@link Stream} and {@link LongStream}, computing the sum of the weights of the
@@ -70,6 +43,8 @@ import java.util.function.Supplier;
  * for <a href="package-summary.html">java.util.stream</a> for additional
  * specification of streams, stream operations, stream pipelines, and
  * parallelism.
+ * 请参阅Stream的类文档和java.util.stream的包文档，了解数据流、数据流操作、数据流管道和并行性的其他规范，
+ * 这些规范管理着所有数据流类型的行为。
  *
  * @since 1.8
  * @see Stream
@@ -682,7 +657,7 @@ public interface LongStream extends BaseStream<Long, LongStream> {
      *
      * @return a stream builder
      */
-    public static Builder builder() {
+    static Builder builder() {
         return new Streams.LongStreamBuilderImpl();
     }
 
@@ -691,7 +666,7 @@ public interface LongStream extends BaseStream<Long, LongStream> {
      *
      * @return an empty sequential stream
      */
-    public static LongStream empty() {
+    static LongStream empty() {
         return StreamSupport.longStream(Spliterators.emptyLongSpliterator(), false);
     }
 
@@ -701,7 +676,7 @@ public interface LongStream extends BaseStream<Long, LongStream> {
      * @param t the single element
      * @return a singleton sequential stream
      */
-    public static LongStream of(long t) {
+    static LongStream of(long t) {
         return StreamSupport.longStream(new Streams.LongStreamBuilderImpl(t), false);
     }
 
@@ -711,7 +686,7 @@ public interface LongStream extends BaseStream<Long, LongStream> {
      * @param values the elements of the new stream
      * @return the new stream
      */
-    public static LongStream of(long... values) {
+    static LongStream of(long... values) {
         return Arrays.stream(values);
     }
 
@@ -731,7 +706,7 @@ public interface LongStream extends BaseStream<Long, LongStream> {
      *          a new element
      * @return a new sequential {@code LongStream}
      */
-    public static LongStream iterate(final long seed, final LongUnaryOperator f) {
+    static LongStream iterate(final long seed, final LongUnaryOperator f) {
         Objects.requireNonNull(f);
         final PrimitiveIterator.OfLong iterator = new PrimitiveIterator.OfLong() {
             long t = seed;
@@ -739,6 +714,11 @@ public interface LongStream extends BaseStream<Long, LongStream> {
             @Override
             public boolean hasNext() {
                 return true;
+            }
+
+            @Override
+            public void remove() {
+                // empty
             }
 
             @Override
@@ -761,7 +741,7 @@ public interface LongStream extends BaseStream<Long, LongStream> {
      * @param s the {@code LongSupplier} for generated elements
      * @return a new infinite sequential unordered {@code LongStream}
      */
-    public static LongStream generate(LongSupplier s) {
+    static LongStream generate(LongSupplier s) {
         Objects.requireNonNull(s);
         return StreamSupport.longStream(
                 new StreamSpliterators.InfiniteSupplyingSpliterator.OfLong(Long.MAX_VALUE, s), false);
@@ -784,7 +764,7 @@ public interface LongStream extends BaseStream<Long, LongStream> {
      * @return a sequential {@code LongStream} for the range of {@code long}
      *         elements
      */
-    public static LongStream range(long startInclusive, final long endExclusive) {
+    static LongStream range(long startInclusive, final long endExclusive) {
         if (startInclusive >= endExclusive) {
             return empty();
         } else if (endExclusive - startInclusive < 0) {
@@ -817,7 +797,7 @@ public interface LongStream extends BaseStream<Long, LongStream> {
      * @return a sequential {@code LongStream} for the range of {@code long}
      *         elements
      */
-    public static LongStream rangeClosed(long startInclusive, final long endInclusive) {
+    static LongStream rangeClosed(long startInclusive, final long endInclusive) {
         if (startInclusive > endInclusive) {
             return empty();
         } else if (endInclusive - startInclusive + 1 <= 0) {
@@ -851,7 +831,7 @@ public interface LongStream extends BaseStream<Long, LongStream> {
      * @param b the second stream
      * @return the concatenation of the two input streams
      */
-    public static LongStream concat(LongStream a, LongStream b) {
+    static LongStream concat(LongStream a, LongStream b) {
         Objects.requireNonNull(a);
         Objects.requireNonNull(b);
 
@@ -874,7 +854,7 @@ public interface LongStream extends BaseStream<Long, LongStream> {
      * @see LongStream#builder()
      * @since 1.8
      */
-    public interface Builder extends LongConsumer {
+    interface Builder extends LongConsumer {
 
         /**
          * Adds an element to the stream being built.

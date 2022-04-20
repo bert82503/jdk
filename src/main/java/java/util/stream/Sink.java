@@ -1,27 +1,4 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
+
 package java.util.stream;
 
 import java.util.Objects;
@@ -43,6 +20,8 @@ import java.util.function.LongConsumer;
  * not wish to receive any more data (the {@code cancellationRequested()}
  * method), which a source can poll before sending more data to the
  * {@code Sink}.
+ * 水槽。
+ * 结果消费者的扩展，用于通过数据流管道的各个阶段来执行值，以及管理大小信息、控制流等额外的方法。
  *
  * <p>A sink may be in one of two states: an initial state and an active state.
  * It starts out in the initial state; the {@code begin()} method transitions
@@ -54,6 +33,7 @@ import java.util.function.LongConsumer;
  * A stream pipeline consists of a source, zero or more intermediate stages
  * (such as filtering or mapping), and a terminal stage, such as reduction or
  * for-each.  For concreteness, consider the pipeline:
+ * 数据流管道由一个数据源、零个或多个中间阶段和一个终结阶段组成。
  *
  * <pre>{@code
  *     int longestStringLengthStartingWithA
@@ -67,6 +47,7 @@ import java.util.function.LongConsumer;
  * filtering stage consumes strings and emits a subset of those strings; the
  * mapping stage consumes strings and emits ints; the reduction stage consumes
  * those ints and computes the maximal value.
+ * 这里，有三个阶段：过滤、映射和归约。
  *
  * <p>A {@code Sink} instance is used to represent each stage of this pipeline,
  * whether the stage accepts objects, ints, longs, or doubles.  Sink has entry
@@ -111,14 +92,18 @@ import java.util.function.LongConsumer;
  * The {@code accept()} method applies the mapping function from {@code U} to
  * {@code int} and passes the resulting value to the downstream {@code Sink}.
  *
- * @param <T> type of elements for value streams
+ * @param <T> type of elements for value streams 值数据流的元素类型
  * @since 1.8
  */
 interface Sink<T> extends Consumer<T> {
+
+    // 操作数消费者-Consumer
+
     /**
      * Resets the sink state to receive a fresh data set.  This must be called
      * before sending any data to the sink.  After calling {@link #end()},
      * you may call this method to reset the sink for another calculation.
+     * 重置接收器状态以接收新的数据集。
      * @param size The exact size of the data to be pushed downstream, if
      * known or {@code -1} if unknown or infinite.
      *
@@ -131,6 +116,7 @@ interface Sink<T> extends Consumer<T> {
      * Indicates that all elements have been pushed.  If the {@code Sink} is
      * stateful, it should send any stored state downstream at this time, and
      * should clear any accumulated state (and associated resources).
+     * 表示所有元素已被推入。
      *
      * <p>Prior to this call, the sink must be in the active state, and after
      * this call it is returned to the initial state.
@@ -139,6 +125,7 @@ interface Sink<T> extends Consumer<T> {
 
     /**
      * Indicates that this {@code Sink} does not wish to receive any more data.
+     * 表示这个接收器不希望接收任何更多的数据。
      *
      * @implSpec The default implementation always returns false.
      *
@@ -150,6 +137,7 @@ interface Sink<T> extends Consumer<T> {
 
     /**
      * Accepts an int value.
+     * 接受一个整数值。
      *
      * @implSpec The default implementation throws IllegalStateException.
      *
@@ -161,6 +149,7 @@ interface Sink<T> extends Consumer<T> {
 
     /**
      * Accepts a long value.
+     * 接受一个长整数值。
      *
      * @implSpec The default implementation throws IllegalStateException.
      *
@@ -192,8 +181,9 @@ interface Sink<T> extends Consumer<T> {
 
         @Override
         default void accept(Integer i) {
-            if (Tripwire.ENABLED)
+            if (Tripwire.ENABLED) {
                 Tripwire.trip(getClass(), "{0} calling Sink.OfInt.accept(Integer)");
+            }
             accept(i.intValue());
         }
     }
@@ -209,8 +199,9 @@ interface Sink<T> extends Consumer<T> {
 
         @Override
         default void accept(Long i) {
-            if (Tripwire.ENABLED)
+            if (Tripwire.ENABLED) {
                 Tripwire.trip(getClass(), "{0} calling Sink.OfLong.accept(Long)");
+            }
             accept(i.longValue());
         }
     }
@@ -226,11 +217,14 @@ interface Sink<T> extends Consumer<T> {
 
         @Override
         default void accept(Double i) {
-            if (Tripwire.ENABLED)
+            if (Tripwire.ENABLED) {
                 Tripwire.trip(getClass(), "{0} calling Sink.OfDouble.accept(Double)");
+            }
             accept(i.doubleValue());
         }
     }
+
+    // 责任链模式
 
     /**
      * Abstract {@code Sink} implementation for creating chains of
@@ -240,8 +234,13 @@ interface Sink<T> extends Consumer<T> {
      * {@code Sink} of unknown input shape and produces a {@code Sink<T>}.  The
      * implementation of the {@code accept()} method must call the correct
      * {@code accept()} method on the downstream {@code Sink}.
+     * 链式的引用。
+     * 用于创建接收器链的接收器实现。
      */
-    static abstract class ChainedReference<T, E_OUT> implements Sink<T> {
+    abstract class ChainedReference<T, E_OUT> implements Sink<T> {
+        /**
+         * 下游接收器
+         */
         protected final Sink<? super E_OUT> downstream;
 
         public ChainedReference(Sink<? super E_OUT> downstream) {
@@ -273,7 +272,7 @@ interface Sink<T> extends Consumer<T> {
      * The implementation of the {@code accept()} method must call the correct
      * {@code accept()} method on the downstream {@code Sink}.
      */
-    static abstract class ChainedInt<E_OUT> implements Sink.OfInt {
+    abstract class ChainedInt<E_OUT> implements Sink.OfInt {
         protected final Sink<? super E_OUT> downstream;
 
         public ChainedInt(Sink<? super E_OUT> downstream) {
@@ -305,7 +304,7 @@ interface Sink<T> extends Consumer<T> {
      * The implementation of the {@code accept()} method must call the correct
      * {@code accept()} method on the downstream {@code Sink}.
      */
-    static abstract class ChainedLong<E_OUT> implements Sink.OfLong {
+    abstract class ChainedLong<E_OUT> implements Sink.OfLong {
         protected final Sink<? super E_OUT> downstream;
 
         public ChainedLong(Sink<? super E_OUT> downstream) {
@@ -337,7 +336,7 @@ interface Sink<T> extends Consumer<T> {
      * The implementation of the {@code accept()} method must call the correct
      * {@code accept()} method on the downstream {@code Sink}.
      */
-    static abstract class ChainedDouble<E_OUT> implements Sink.OfDouble {
+    abstract class ChainedDouble<E_OUT> implements Sink.OfDouble {
         protected final Sink<? super E_OUT> downstream;
 
         public ChainedDouble(Sink<? super E_OUT> downstream) {

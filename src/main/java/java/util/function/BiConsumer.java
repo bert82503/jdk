@@ -1,27 +1,4 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
+
 package java.util.function;
 
 import java.util.Objects;
@@ -31,12 +8,13 @@ import java.util.Objects;
  * result.  This is the two-arity specialization of {@link Consumer}.
  * Unlike most other functional interfaces, {@code BiConsumer} is expected
  * to operate via side-effects.
+ * 从T、U到void的二元函数，一个接受两个入参但不返回任何结果的操作。
  *
  * <p>This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #accept(Object, Object)}.
  *
- * @param <T> the type of the first argument to the operation
- * @param <U> the type of the second argument to the operation
+ * @param <T> the type of the first argument to the operation 操作的第一个参数类型
+ * @param <U> the type of the second argument to the operation 操作的第二个参数类型
  *
  * @see Consumer
  * @since 1.8
@@ -46,11 +24,15 @@ public interface BiConsumer<T, U> {
 
     /**
      * Performs this operation on the given arguments.
+     * 对所有给定的参数执行本操作。
      *
-     * @param t the first input argument
-     * @param u the second input argument
+     * @param t the first input argument 第一个函数参数
+     * @param u the second input argument 第二个函数参数
      */
     void accept(T t, U u);
+
+    // 使用场景：N个消费者模式，责任链模式
+    // 默认函数
 
     /**
      * Returns a composed {@code BiConsumer} that performs, in sequence, this
@@ -66,7 +48,6 @@ public interface BiConsumer<T, U> {
      */
     default BiConsumer<T, U> andThen(BiConsumer<? super T, ? super U> after) {
         Objects.requireNonNull(after);
-
         return (l, r) -> {
             accept(l, r);
             after.accept(l, r);

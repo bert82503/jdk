@@ -1,27 +1,4 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
+
 package java.util.stream;
 
 /**
@@ -31,6 +8,7 @@ package java.util.stream;
  * corresponds to {@code IntStream}).  Each may also correspond to
  * specializations of value-handling abstractions such as {@code Spliterator},
  * {@code Consumer}, etc.
+ * 描述数据流抽象的已知形状专门化的枚举。
  *
  * @apiNote
  * This enum is used by implementations to determine compatibility between
@@ -50,6 +28,7 @@ enum StreamShape {
     /**
      * The shape specialization corresponding to {@code Stream} and elements
      * that are object references.
+     * 对象引用
      */
     REFERENCE,
     /**

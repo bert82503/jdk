@@ -8,8 +8,9 @@ import java.util.function.UnaryOperator;
  * interface has precise control over where in the list each element is
  * inserted.  The user can access elements by their integer index (position in
  * the list), and search for elements in the list.
- * 列表，一个有序的容器(序列)。本接口的用户可以精确地控制列表中每个元素的插入位置。
- * 用户可以通过其索引(列表中的位置)访问元素，并在列表中搜索元素。
+ * 有序集合，也称为序列。
+ * 这个接口的用户可以精确地控制每个元素在列表中插入的位置。
+ * 用户可以根据元素的整数索引(在列表中的位置)访问元素，并在列表中搜索元素。
  * <p>
  *
  * Unlike sets, lists typically allow duplicate elements.  More formally,
@@ -19,7 +20,9 @@ import java.util.function.UnaryOperator;
  * that someone might wish to implement a list that prohibits duplicates, by
  * throwing runtime exceptions when the user attempts to insert them, but we
  * expect this usage to be rare.
- * 与集合不同，列表允许重复的元素。
+ * 与集合不同，列表通常允许重复元素。
+ * 更正式地说，列表通常允许元素对e1和e2。
+ * 如果它们允许空元素(null)，则通常允许多个空元素。
  * <p>
  *
  * The <tt>List</tt> interface places additional stipulations, beyond those
@@ -89,6 +92,7 @@ import java.util.function.UnaryOperator;
  * @since 1.2
  */
 public interface List<E> extends Collection<E> {
+
     // Query Operations
     // 查询操作
 
@@ -96,10 +100,10 @@ public interface List<E> extends Collection<E> {
      * Returns the number of elements in this list.  If this list contains
      * more than <tt>Integer.MAX_VALUE</tt> elements, returns
      * <tt>Integer.MAX_VALUE</tt>.
-     * 列表中元素的数量。
      *
      * @return the number of elements in this list
      */
+    @Override
     int size();
 
     /**
@@ -107,6 +111,7 @@ public interface List<E> extends Collection<E> {
      *
      * @return <tt>true</tt> if this list contains no elements
      */
+    @Override
     boolean isEmpty();
 
     /**
@@ -124,14 +129,15 @@ public interface List<E> extends Collection<E> {
      *         list does not permit null elements
      * (<a href="Collection.html#optional-restrictions">optional</a>)
      */
+    @Override
     boolean contains(Object o);
 
     /**
      * Returns an iterator over the elements in this list in proper sequence.
-     * 元素的迭代器。
      *
      * @return an iterator over the elements in this list in proper sequence
      */
+    @Override
     Iterator<E> iterator();
 
     /**
@@ -150,6 +156,7 @@ public interface List<E> extends Collection<E> {
      *         sequence
      * @see Arrays#asList(Object[])
      */
+    @Override
     Object[] toArray();
 
     /**
@@ -191,6 +198,7 @@ public interface List<E> extends Collection<E> {
      *         this list
      * @throws NullPointerException if the specified array is null
      */
+    @Override
     <T> T[] toArray(T[] a);
 
 
@@ -200,7 +208,6 @@ public interface List<E> extends Collection<E> {
     /**
      * Appends the specified element to the end of this list (optional
      * operation).
-     * 将指定的元素追加到这个列表的末尾(可选操作)。
      *
      * <p>Lists that support this operation may place limitations on what
      * elements may be added to this list.  In particular, some
@@ -220,6 +227,7 @@ public interface List<E> extends Collection<E> {
      * @throws IllegalArgumentException if some property of this element
      *         prevents it from being added to this list
      */
+    @Override
     boolean add(E e);
 
     /**
@@ -243,11 +251,12 @@ public interface List<E> extends Collection<E> {
      * @throws UnsupportedOperationException if the <tt>remove</tt> operation
      *         is not supported by this list
      */
+    @Override
     boolean remove(Object o);
 
 
     // Bulk Modification Operations
-    // 批量操作
+    // 批量修改操作
 
     /**
      * Returns <tt>true</tt> if this list contains all of the elements of the
@@ -267,6 +276,7 @@ public interface List<E> extends Collection<E> {
      *         or if the specified collection is null
      * @see #contains(Object)
      */
+    @Override
     boolean containsAll(Collection<?> c);
 
     /**
@@ -290,6 +300,7 @@ public interface List<E> extends Collection<E> {
      *         specified collection prevents it from being added to this list
      * @see #add(Object)
      */
+    @Override
     boolean addAll(Collection<? extends E> c);
 
     /**
@@ -339,6 +350,7 @@ public interface List<E> extends Collection<E> {
      * @see #remove(Object)
      * @see #contains(Object)
      */
+    @Override
     boolean removeAll(Collection<?> c);
 
     /**
@@ -361,15 +373,17 @@ public interface List<E> extends Collection<E> {
      * @see #remove(Object)
      * @see #contains(Object)
      */
+    @Override
     boolean retainAll(Collection<?> c);
 
-    // Defaultable methods
-    // 默认方法
+    // 一元运算符-UnaryOperator
 
     /**
      * Replaces each element of this list with the result of applying the
      * operator to that element.  Errors or runtime exceptions thrown by
      * the operator are relayed to the caller.
+     * 将这个列表中的每个元素替换为对这个元素应用运算符的结果。
+     * 这个运算符抛出的错误或运行时异常，将传递给调用者。
      *
      * @implSpec
      * The default implementation is equivalent to, for this {@code list}:
@@ -379,6 +393,8 @@ public interface List<E> extends Collection<E> {
      *         li.set(operator.apply(li.next()));
      *     }
      * }</pre>
+     * 实现规范：
+     * 默认实现等价于这个。
      *
      * If the list's list-iterator does not support the {@code set} operation
      * then an {@code UnsupportedOperationException} will be thrown when
@@ -397,7 +413,7 @@ public interface List<E> extends Collection<E> {
      */
     default void replaceAll(UnaryOperator<E> operator) {
         Objects.requireNonNull(operator);
-        // 元素的列表迭代器
+        // 迭代器
         final ListIterator<E> li = this.listIterator();
         while (li.hasNext()) {
             // 应用一元运算符
@@ -405,20 +421,26 @@ public interface List<E> extends Collection<E> {
         }
     }
 
+    // 默认函数
+
     /**
      * Sorts this list according to the order induced by the specified
      * {@link Comparator}.
+     * 根据指定的比较器诱导的顺序对这个列表进行排序。
      *
      * <p>All elements in this list must be <i>mutually comparable</i> using the
      * specified comparator (that is, {@code c.compare(e1, e2)} must not throw
      * a {@code ClassCastException} for any elements {@code e1} and {@code e2}
      * in the list).
+     * 这个列表中的所有元素必须使用指定的比较器进行相互比较。
      *
      * <p>If the specified comparator is {@code null} then all elements in this
      * list must implement the {@link Comparable} interface and the elements'
      * {@linkplain Comparable natural ordering} should be used.
+     * 如果指定的比较器为空，那么这个列表中的所有元素都必须实现Comparable接口，并且应该使用元素的自然顺序。
      *
      * <p>This list must be modifiable, but need not be resizable.
+     * 这个列表必须是可修改的，但不需要调整大小。
      *
      * @implSpec
      * The default implementation obtains an array containing all elements in
@@ -426,6 +448,9 @@ public interface List<E> extends Collection<E> {
      * element from the corresponding position in the array. (This avoids the
      * n<sup>2</sup> log(n) performance that would result from attempting
      * to sort a linked list in place.)
+     * 实现规范：
+     * 默认实现获取包含这个列表中所有元素的数组，对这个数组进行排序，并遍历这个列表，从数组中的相应位置重置每个元素。
+     * (这避免了log(n)的性能，因为在适当的位置对链表进行排序会导致这种性能。)
      *
      * @implNote
      * This implementation is a stable, adaptive, iterative mergesort that
@@ -436,6 +461,8 @@ public interface List<E> extends Collection<E> {
      * comparisons.  Temporary storage requirements vary from a small constant
      * for nearly sorted input arrays to n/2 object references for randomly
      * ordered input arrays.
+     * 实现注意：
+     * 这个实现是一个稳定的、自适应的、迭代的归并排序。
      *
      * <p>The implementation takes equal advantage of ascending and
      * descending order in its input array, and can take advantage of
@@ -465,10 +492,11 @@ public interface List<E> extends Collection<E> {
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     default void sort(Comparator<? super E> c) {
-        // 使用数组排序
+        // 转化为数组
         Object[] a = this.toArray();
+        // 对数组进行排序
         Arrays.sort(a, (Comparator) c);
-        // 元素的列表迭代器
+        // 使用迭代器重置元素
         ListIterator<E> i = this.listIterator();
         for (Object e : a) {
             i.next();
@@ -479,15 +507,19 @@ public interface List<E> extends Collection<E> {
     /**
      * Removes all of the elements from this list (optional operation).
      * The list will be empty after this call returns.
+     * 从列表中移除所有元素。(可选操作)
+     * 在这个调用返回后，列表将为空。
      *
      * @throws UnsupportedOperationException if the <tt>clear</tt> operation
      *         is not supported by this list
      */
+    @Override
     void clear();
 
 
     // Comparison and hashing
-    // 比较和散列
+    // 比较和哈希
+    // Object
 
     /**
      * Compares the specified object with this list for equality.  Returns
@@ -503,6 +535,7 @@ public interface List<E> extends Collection<E> {
      * @param o the object to be compared for equality with this list
      * @return <tt>true</tt> if the specified object is equal to this list
      */
+    @Override
     boolean equals(Object o);
 
     /**
@@ -522,6 +555,7 @@ public interface List<E> extends Collection<E> {
      * @see Object#equals(Object)
      * @see #equals(Object)
      */
+    @Override
     int hashCode();
 
 
@@ -530,7 +564,7 @@ public interface List<E> extends Collection<E> {
 
     /**
      * Returns the element at the specified position in this list.
-     * 返回这个列表中指定位置的元素。
+     * 返回列表中指定位置的元素。
      *
      * @param index index of the element to return
      * @return the element at the specified position in this list
@@ -542,7 +576,7 @@ public interface List<E> extends Collection<E> {
     /**
      * Replaces the element at the specified position in this list with the
      * specified element (optional operation).
-     * 用指定的元素替换这个列表中指定位置的元素。
+     * 用指定的元素替换列表中指定位置的元素。(可选操作)
      *
      * @param index index of the element to replace
      * @param element element to be stored at the specified position
@@ -565,7 +599,6 @@ public interface List<E> extends Collection<E> {
      * (optional operation).  Shifts the element currently at that position
      * (if any) and any subsequent elements to the right (adds one to their
      * indices).
-     * 将指定的元素插入到这个列表中的指定位置(可选操作)。
      *
      * @param index index at which the specified element is to be inserted
      * @param element element to be inserted
@@ -587,7 +620,6 @@ public interface List<E> extends Collection<E> {
      * operation).  Shifts any subsequent elements to the left (subtracts one
      * from their indices).  Returns the element that was removed from the
      * list.
-     * 移除这个列表中指定位置的元素(可选操作)。
      *
      * @param index the index of the element to be removed
      * @return the element previously at the specified position
@@ -608,8 +640,6 @@ public interface List<E> extends Collection<E> {
      * More formally, returns the lowest index <tt>i</tt> such that
      * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
      * or -1 if there is no such index.
-     * 返回指定元素在这个列表中首次出现的索引。
-     * 如果这个列表不包含该元素，则返回-1。
      *
      * @param o element to search for
      * @return the index of the first occurrence of the specified element in
@@ -629,8 +659,6 @@ public interface List<E> extends Collection<E> {
      * More formally, returns the highest index <tt>i</tt> such that
      * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
      * or -1 if there is no such index.
-     * 返回指定元素在这个列表中最后一次出现的索引。
-     * 如果这个列表不包含该元素，则返回-1。
      *
      * @param o element to search for
      * @return the index of the last occurrence of the specified element in
@@ -651,7 +679,6 @@ public interface List<E> extends Collection<E> {
     /**
      * Returns a list iterator over the elements in this list (in proper
      * sequence).
-     * 元素的列表迭代器。
      *
      * @return a list iterator over the elements in this list (in proper
      *         sequence)
@@ -676,7 +703,7 @@ public interface List<E> extends Collection<E> {
     ListIterator<E> listIterator(int index);
 
     // View
-    // 视图(列表)
+    // 视图
 
     /**
      * Returns a view of the portion of this list between the specified
@@ -686,7 +713,7 @@ public interface List<E> extends Collection<E> {
      * changes in the returned list are reflected in this list, and vice-versa.
      * The returned list supports all of the optional list operations supported
      * by this list.
-     * 返回这个列表中指定的fromIndex(包括)和toIndex(不包括)之间的视图。
+     * 返回列表中指定位置的部分的视图，fromIndex包含，toIndex不包含。
      * <p>
      *
      * This method eliminates the need for explicit range operations (of
@@ -716,6 +743,10 @@ public interface List<E> extends Collection<E> {
      */
     List<E> subList(int fromIndex, int toIndex);
 
+    // 默认函数
+    // 分而治之，分治思想
+    // 元素集合与数据流的桥接
+
     /**
      * Creates a {@link Spliterator} over the elements in this list.
      *
@@ -738,6 +769,7 @@ public interface List<E> extends Collection<E> {
      */
     @Override
     default Spliterator<E> spliterator() {
+        // 元素有序的拆分器
         return Spliterators.spliterator(this, Spliterator.ORDERED);
     }
 }

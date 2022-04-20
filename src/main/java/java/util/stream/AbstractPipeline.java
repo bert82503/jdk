@@ -1,27 +1,4 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
+
 package java.util.stream;
 
 import java.util.Objects;
@@ -33,12 +10,16 @@ import java.util.function.Supplier;
  * Abstract base class for "pipeline" classes, which are the core
  * implementations of the Stream interface and its primitive specializations.
  * Manages construction and evaluation of stream pipelines.
+ * 流水线类的抽象基类，它们是流水线接口及其基本专门化的核心实现。
+ * 管理数据流管道流水线的建设和求值。
  *
  * <p>An {@code AbstractPipeline} represents an initial portion of a stream
  * pipeline, encapsulating a stream source and zero or more intermediate
  * operations.  The individual {@code AbstractPipeline} objects are often
  * referred to as <em>stages</em>, where each stage describes either the stream
  * source or an intermediate operation.
+ * 流水线抽象表示数据流管道的初始部分，封装数据流源和零个或多个中间操作。
+ * 单个流水线对象通常被称为阶段，其中每个阶段要么描述数据流源，要么描述中间操作。
  *
  * <p>A concrete intermediate stage is generally built from an
  * {@code AbstractPipeline}, a shape-specific pipeline class which extends it
@@ -48,10 +29,16 @@ import java.util.function.Supplier;
  * used by the operation; the shape-specific classes add helper methods for
  * dealing with collection of results into the appropriate shape-specific
  * containers.
+ * 具体的中间阶段通常是由流水线构建的，流水线是一个特定形状的管道类，可以扩展它，它也是抽象的。
+ * 还有一个特定于操作的具体类，扩展了它。
+ * 流水线包含了计算管道的大部分机制，并实现了将被操作使用的方法。
+ * 特定于形状的类将处理结果集合的辅助方法添加到适当的特定于形状的容器中。
  *
  * <p>After chaining a new intermediate operation, or executing a terminal
  * operation, the stream is considered to be consumed, and no more intermediate
  * or terminal operations are permitted on this stream instance.
+ * 链接一个新的中间操作或执行一个终结操作后，数据流就被认为被消费了，
+ * 在这个数据流实例上不允许有更多的中间操作或终结操作。
  *
  * @implNote
  * <p>For sequential streams, and parallel streams without
@@ -63,26 +50,41 @@ import java.util.function.Supplier;
  * evaluated separately and the result used as the input to the next
  * segment.  In all cases, the source data is not consumed until a terminal
  * operation begins.
+ * 对于顺序数据流，以及没有有状态中间操作的并行数据流。
+ * 并行数据流，流水线计算是在一次传递中完成的，将所有的操作阻塞在一起。
+ * 对于具有有状态操作的并行数据流，执行被划分为多个段，每个有状态操作标记一个段的结束。
+ * 每个段被单独计算，结果用作下一个段的输入。
+ * 在所有情况下，源数据直到终结操作开始时才被使用。
  *
  * @param <E_IN>  type of input elements
+ *              输入元素的类型
  * @param <E_OUT> type of output elements
+ *               输出元素的类型
  * @param <S> type of the subclass implementing {@code BaseStream}
+ *           实现基础数据流的子类型
  * @since 1.8
  */
 abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
         extends PipelineHelper<E_OUT> implements BaseStream<E_OUT, S> {
+
     private static final String MSG_STREAM_LINKED = "stream has already been operated upon or closed";
     private static final String MSG_CONSUMED = "source already consumed or closed";
+
+    // 阶段
+    // 双向链表：当前、前驱、后驱阶段
 
     /**
      * Backlink to the head of the pipeline chain (self if this is the source
      * stage).
+     * 反向链接到流水线管道链的头节点。
+     * 如果这是数据源阶段，则为自己。
      */
     @SuppressWarnings("rawtypes")
     private final AbstractPipeline sourceStage;
 
     /**
      * The "upstream" pipeline, or null if this is the source stage.
+     * 上游流水线管道，如果这是数据源阶段，则为空。
      */
     @SuppressWarnings("rawtypes")
     private final AbstractPipeline previousStage;
@@ -90,12 +92,15 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
     /**
      * The operation flags for the intermediate operation represented by this
      * pipeline object.
+     * 这个管道对象所表示的中间操作的操作标志。
      */
     protected final int sourceOrOpFlags;
 
     /**
      * The next stage in the pipeline, or null if this is the last stage.
      * Effectively final at the point of linking to the next pipeline.
+     * 流水线管道中的下一个阶段，如果这是最后一个阶段，则为空。
+     * 有效地连接到下一个流水线管道的阶段结束。
      */
     @SuppressWarnings("rawtypes")
     private AbstractPipeline nextStage;
@@ -104,6 +109,9 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * The number of intermediate operations between this pipeline object
      * and the stream source if sequential, or the previous stateful if parallel.
      * Valid at the point of pipeline preparation for evaluation.
+     * 在这个流水线管道对象和数据流源之间的中间操作的数量(如果是顺序的)，
+     * 或者之前的有状态操作的数量(如果是并行的)。
+     * 有效的在流水线管道准备阶段进行求值。
      */
     private int depth;
 
@@ -111,6 +119,8 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * The combined source and operation flags for the source and all operations
      * up to and including the operation represented by this pipeline object.
      * Valid at the point of pipeline preparation for evaluation.
+     * 数据流源和操作的组合标志，以及到这个流水线管道对象为止的所有操作，包括由这个流水线管道对象表示的操作。
+     * 有效的在流水线管道准备阶段进行求值。
      */
     private int combinedFlags;
 
@@ -119,6 +129,9 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * Before the pipeline is consumed if non-null then {@code sourceSupplier}
      * must be null. After the pipeline is consumed if non-null then is set to
      * null.
+     * 数据源拆分器。只对头部数据流管道有效。
+     * 在管道被消费之前，如果非空，那么数据源提供者必须为空。
+     * 在数据流管道被消费之后，如果非空则被设置为空。
      */
     private Spliterator<?> sourceSpliterator;
 
@@ -126,32 +139,46 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * The source supplier. Only valid for the head pipeline. Before the
      * pipeline is consumed if non-null then {@code sourceSpliterator} must be
      * null. After the pipeline is consumed if non-null then is set to null.
+     * 数据源提供者。
+     * 只对头部流水线管道有效。
+     * 在消费数据流管道之前，如果非空，则数据源拆分器必须为空。
+     * 在数据流管道被消费后，如果非空则设置为空。
      */
     private Supplier<? extends Spliterator<?>> sourceSupplier;
 
     /**
      * True if this pipeline has been linked or consumed
+     * 如果这个流水线管道已被链接或使用
      */
     private boolean linkedOrConsumed;
 
     /**
      * True if there are any stateful ops in the pipeline; only valid for the
      * source stage.
+     * 如果数据流管道中有任何有状态操作，则为真；
+     * 仅对数据源阶段有效。
      */
     private boolean sourceAnyStateful;
 
+    /**
+     * 数据源关闭行为
+     */
     private Runnable sourceCloseAction;
 
     /**
      * True if pipeline is parallel, otherwise the pipeline is sequential; only
      * valid for the source stage.
+     * 如果数据流管道是平行的，则为真；否则，数据流管道是顺序的。
+     * 仅对数据源阶段有效。
      */
     private boolean parallel;
 
     /**
      * Constructor for the head of a stream pipeline.
+     * 数据流管道头部节点的构造函数。
      *
      * @param source {@code Supplier<Spliterator>} describing the stream source
+     *                                            描述数据流源的拆分器提供者
      * @param sourceFlags The source flags for the stream source, described in
      * {@link StreamOpFlag}
      * @param parallel True if the pipeline is parallel
@@ -171,8 +198,10 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
 
     /**
      * Constructor for the head of a stream pipeline.
+     * 数据流管道头部节点的构造函数。
      *
      * @param source {@code Spliterator} describing the stream source
+     *                                  描述数据流源的拆分器
      * @param sourceFlags the source flags for the stream source, described in
      * {@link StreamOpFlag}
      * @param parallel {@code true} if the pipeline is parallel
@@ -193,40 +222,52 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
     /**
      * Constructor for appending an intermediate operation stage onto an
      * existing pipeline.
+     * 将中间操作阶段附加到现有数据流管道的构造函数。
      *
      * @param previousStage the upstream pipeline stage
+     *                      上游数据流管道阶段
      * @param opFlags the operation flags for the new stage, described in
      * {@link StreamOpFlag}
      */
     AbstractPipeline(AbstractPipeline<?, E_IN, ?> previousStage, int opFlags) {
-        if (previousStage.linkedOrConsumed)
+        if (previousStage.linkedOrConsumed) {
             throw new IllegalStateException(MSG_STREAM_LINKED);
+        }
         previousStage.linkedOrConsumed = true;
+        // 前驱节点 链接 当前节点
         previousStage.nextStage = this;
 
+        // 前驱节点
         this.previousStage = previousStage;
         this.sourceOrOpFlags = opFlags & StreamOpFlag.OP_MASK;
         this.combinedFlags = StreamOpFlag.combineOpFlags(opFlags, previousStage.combinedFlags);
+        // 当前节点
         this.sourceStage = previousStage.sourceStage;
-        if (opIsStateful())
+        if (opIsStateful()) {
             sourceStage.sourceAnyStateful = true;
+        }
         this.depth = previousStage.depth + 1;
     }
 
 
     // Terminal evaluation methods
+    // 终结操作求值方法
 
     /**
      * Evaluate the pipeline with a terminal operation to produce a result.
+     * 用终结操作对数据流管道进行求值，以产生结果。
      *
      * @param <R> the type of result
+     *           结果的类型
      * @param terminalOp the terminal operation to be applied to the pipeline.
+     *                   要应用到数据流管道的终结操作
      * @return the result
      */
     final <R> R evaluate(TerminalOp<E_OUT, R> terminalOp) {
         assert getOutputShape() == terminalOp.inputShape();
-        if (linkedOrConsumed)
+        if (linkedOrConsumed) {
             throw new IllegalStateException(MSG_STREAM_LINKED);
+        }
         linkedOrConsumed = true;
 
         return isParallel()
@@ -236,14 +277,16 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
 
     /**
      * Collect the elements output from the pipeline stage.
+     * 收集数据流管道阶段的元素输出。
      *
      * @param generator the array generator to be used to create array instances
      * @return a flat array-backed Node that holds the collected output elements
      */
     @SuppressWarnings("unchecked")
     final Node<E_OUT> evaluateToArrayNode(IntFunction<E_OUT[]> generator) {
-        if (linkedOrConsumed)
+        if (linkedOrConsumed) {
             throw new IllegalStateException(MSG_STREAM_LINKED);
+        }
         linkedOrConsumed = true;
 
         // If the last intermediate operation is stateful then
@@ -265,18 +308,23 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * Gets the source stage spliterator if this pipeline stage is the source
      * stage.  The pipeline is consumed after this method is called and
      * returns successfully.
+     * 如果这个数据流管道阶段是数据源阶段，则获取数据源阶段拆分器。
+     * 在调用这个方法并成功返回之后，数据流管道将被使用。
      *
      * @return the source stage spliterator
+     * 数据源阶段的拆分器
      * @throws IllegalStateException if this pipeline stage is not the source
      *         stage.
      */
     @SuppressWarnings("unchecked")
     final Spliterator<E_OUT> sourceStageSpliterator() {
-        if (this != sourceStage)
+        if (this != sourceStage) {
             throw new IllegalStateException();
+        }
 
-        if (linkedOrConsumed)
+        if (linkedOrConsumed) {
             throw new IllegalStateException(MSG_STREAM_LINKED);
+        }
         linkedOrConsumed = true;
 
         if (sourceStage.sourceSpliterator != null) {
@@ -297,6 +345,7 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
     }
 
     // BaseStream
+    // 数据流的基本接口
 
     @Override
     @SuppressWarnings("unchecked")
@@ -336,14 +385,17 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
     }
 
     // Primitive specialization use co-variant overrides, hence is not final
+
     @Override
     @SuppressWarnings("unchecked")
     public Spliterator<E_OUT> spliterator() {
-        if (linkedOrConsumed)
+        if (linkedOrConsumed) {
             throw new IllegalStateException(MSG_STREAM_LINKED);
+        }
         linkedOrConsumed = true;
 
         if (this == sourceStage) {
+            // 当前数据源阶段
             if (sourceStage.sourceSpliterator != null) {
                 @SuppressWarnings("unchecked")
                 Spliterator<E_OUT> s = (Spliterator<E_OUT>) sourceStage.sourceSpliterator;
@@ -361,6 +413,7 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
             }
         }
         else {
+            // 包装
             return wrap(this, () -> sourceSpliterator(0), isParallel());
         }
     }
@@ -374,6 +427,7 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
     /**
      * Returns the composition of stream flags of the stream source and all
      * intermediate operations.
+     * 返回数据流源的数据流标志和所有中间操作的组成。
      *
      * @return the composition of stream flags of the stream source and all
      *         intermediate operations
@@ -389,6 +443,9 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * stateful parallel pipeline, this is a spliterator describing the results
      * of all computations up to and including the most recent stateful
      * operation.
+     * 获取这个数据流管道阶段的数据源拆分器。
+     * 对于顺序或无状态的并行数据流管道，这是数据源拆分器。
+     * 对于有状态的并行数据流管道，这是一个描述所有计算结果的拆分器，直到并包括最近的有状态操作。
      */
     @SuppressWarnings("unchecked")
     private Spliterator<?> sourceSpliterator(int terminalFlags) {
@@ -450,12 +507,14 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
     }
 
     // PipelineHelper
+    // 数据流管道辅助者
 
     @Override
     final StreamShape getSourceShape() {
         @SuppressWarnings("rawtypes")
         AbstractPipeline p = AbstractPipeline.this;
         while (p.depth > 0) {
+            // 回溯到前驱节点的数据源阶段
             p = p.previousStage;
         }
         return p.getOutputShape();
@@ -513,7 +572,11 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
     final <P_IN> Sink<P_IN> wrapSink(Sink<E_OUT> sink) {
         Objects.requireNonNull(sink);
 
-        for ( @SuppressWarnings("rawtypes") AbstractPipeline p=AbstractPipeline.this; p.depth > 0; p=p.previousStage) {
+        // 回溯到前驱节点
+        for (@SuppressWarnings("rawtypes") AbstractPipeline p = AbstractPipeline.this;
+             p.depth > 0;
+             p = p.previousStage) {
+            // 接收结果的水槽
             sink = p.opWrapSink(p.previousStage.combinedFlags, sink);
         }
         return (Sink<P_IN>) sink;
@@ -526,6 +589,7 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
             return (Spliterator<E_OUT>) sourceSpliterator;
         }
         else {
+            // 包装为拆分器
             return wrap(this, () -> sourceSpliterator, isParallel());
         }
     }
@@ -537,9 +601,11 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
                                       IntFunction<E_OUT[]> generator) {
         if (isParallel()) {
             // @@@ Optimize if op of this pipeline stage is a stateful op
+            // 将数据流管道输出的元素收集到保存这个形状元素的节点中
             return evaluateToNode(this, spliterator, flatten, generator);
         }
         else {
+            // 使节点构建者与这个数据流形状兼容
             Node.Builder<E_OUT> nb = makeNodeBuilder(
                     exactOutputSizeIfKnown(spliterator), generator);
             return wrapAndCopyInto(nb, spliterator).build();
@@ -554,6 +620,7 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * then it's output shape corresponds to the shape of the source.
      * Otherwise, it's output shape corresponds to the output shape of the
      * associated operation.
+     * 获取数据流管道的输出形状。
      *
      * @return the output shape
      */
@@ -562,11 +629,16 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
     /**
      * Collect elements output from a pipeline into a Node that holds elements
      * of this shape.
+     * 将数据流管道输出的元素收集到保存这个形状元素的节点中。
      *
      * @param helper the pipeline helper describing the pipeline stages
+     *               描述流水线阶段的流水线助手
      * @param spliterator the source spliterator
+     *                    数据源拆分器
      * @param flattenTree true if the returned node should be flattened
+     *                    如果返回的节点应该被扁平化
      * @param generator the array generator
+     *                  元素输出的数组生成器
      * @return a Node holding the output of the pipeline
      */
     abstract <P_IN> Node<E_OUT> evaluateToNode(PipelineHelper<E_OUT> helper,
@@ -578,10 +650,14 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * Create a spliterator that wraps a source spliterator, compatible with
      * this stream shape, and operations associated with a {@link
      * PipelineHelper}.
+     * 创建一个拆分器，它包装了一个数据源拆分器，与这个数据流形状兼容，以及与流水线助手相关的操作。
      *
      * @param ph the pipeline helper describing the pipeline stages
+     *           描述流水线阶段的流水线助手
      * @param supplier the supplier of a spliterator
+     *                 拆分器的提供者
      * @return a wrapping spliterator compatible with this shape
+     * 与这个形状兼容的包装的拆分器
      */
     abstract <P_IN> Spliterator<E_OUT> wrap(PipelineHelper<E_OUT> ph,
                                             Supplier<Spliterator<P_IN>> supplier,
@@ -590,7 +666,10 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
     /**
      * Create a lazy spliterator that wraps and obtains the supplied the
      * spliterator when a method is invoked on the lazy spliterator.
+     * 创建一个延迟拆分器，当在延迟拆分器上调用一个方法时，这个延迟拆分器包装并获取提供的拆分器。
+     *
      * @param supplier the supplier of a spliterator
+     *                 拆分器的提供者
      */
     abstract Spliterator<E_OUT> lazySpliterator(Supplier<? extends Spliterator<E_OUT>> supplier);
 
@@ -598,14 +677,19 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * Traverse the elements of a spliterator compatible with this stream shape,
      * pushing those elements into a sink.   If the sink requests cancellation,
      * no further elements will be pulled or pushed.
+     * 遍历与这个数据流形状兼容的拆分器的元素，将这些元素推入接收器。
+     * 如果接收请求被取消，则不会再拉出或推入其他元素。
      *
      * @param spliterator the spliterator to pull elements from
+     *                    从中提取元素的拆分器
      * @param sink the sink to push elements to
+     *             将接收结果的水槽中的元素推到
      */
     abstract void forEachWithCancel(Spliterator<E_OUT> spliterator, Sink<E_OUT> sink);
 
     /**
      * Make a node builder compatible with this stream shape.
+     * 使节点构建者与这个数据流形状兼容。
      *
      * @param exactSizeIfKnown if {@literal >=0}, then a node builder will be
      * created that has a fixed capacity of at most sizeIfKnown elements. If
@@ -631,6 +715,8 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * then the method
      * {@link #opEvaluateParallel(PipelineHelper, java.util.Spliterator, java.util.function.IntFunction)}
      * must be overridden.
+     * 返回这个操作是否有状态。
+     * 如果它是有状态的，那么opEvaluateParallel方法必须被重写。
      *
      * @return {@code true} if this operation is stateful
      */
@@ -641,12 +727,15 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * and return a {@code Sink} which accepts elements of the input type of
      * this operation and which performs the operation, passing the results to
      * the provided {@code Sink}.
+     * 接受一个接收结果的水槽，这个水槽将接收这个操作的结果，并返回一个水槽。
+     * 这个水槽接受这个操作作为输入类型的元素并执行这个操作，将结果传递给所提供的水槽。
      *
      * @apiNote
      * The implementation may use the {@code flags} parameter to optimize the
      * sink wrapping.  For example, if the input is already {@code DISTINCT},
      * the implementation for the {@code Stream#distinct()} method could just
      * return the sink it was passed.
+     * 这个实现可以使用标记参数来优化接收器包装。
      *
      * @param flags The combined stream and operation flags up to, but not
      *        including, this operation
@@ -663,6 +752,8 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * operations.  Only called on stateful operations.  If {@link
      * #opIsStateful()} returns true then implementations must override the
      * default implementation.
+     * 使用指定的流水线助手对这个操作执行并行计算，这个流水线助手描述了上游中间操作。
+     * 仅在有状态操作时调用。
      *
      * @implSpec The default implementation always throw
      * {@code UnsupportedOperationException}.
@@ -685,6 +776,10 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * It is not necessary (though acceptable) to do a full computation of the
      * result here; it is preferable, if possible, to describe the result via a
      * lazily evaluated spliterator.
+     * 使用描述上游中间操作的指定流水线助手，返回一个描述操作并行计算的拆分器。
+     * 仅在有状态操作时调用。
+     * 这里没有必要，尽管可以接受，对结果进行完整的计算；
+     * 如果可能的话，最好使用延迟计算的拆分器来描述结果。
      *
      * @implSpec The default implementation behaves as if:
      * <pre>{@code

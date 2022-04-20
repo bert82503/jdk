@@ -1,27 +1,4 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
+
 package java.util.stream;
 
 import java.util.Optional;
@@ -39,6 +16,8 @@ import java.util.function.Supplier;
  * Supported variants include find-first (find the first element in the
  * encounter order) and find-any (find any element, may not be the first in
  * encounter order.)
+ * 短路的终结操作实例，这个实例在数据流管道中搜索一个元素，并在找到一个元素时终止。
+ * 受支持的变体包括查找遇到顺序中的第一个元素和查找任何元素，可能不是遇到顺序中的第一个元素。
  *
  * @since 1.8
  */
@@ -274,27 +253,29 @@ final class FindOps {
         }
 
         private void foundResult(O answer) {
-            if (isLeftmostNode())
+            if (isLeftmostNode()) {
                 shortCircuit(answer);
-            else
+            } else {
                 cancelLaterNodes();
+            }
         }
 
         @Override
         protected O doLeaf() {
             O result = helper.wrapAndCopyInto(op.sinkSupplier.get(), spliterator).get();
             if (!op.mustFindFirst) {
-                if (result != null)
+                if (result != null) {
                     shortCircuit(result);
+                }
                 return null;
             }
             else {
                 if (result != null) {
                     foundResult(result);
                     return result;
-                }
-                else
+                } else {
                     return null;
+                }
             }
         }
 
@@ -315,4 +296,3 @@ final class FindOps {
         }
     }
 }
-

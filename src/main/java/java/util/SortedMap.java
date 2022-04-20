@@ -220,6 +220,7 @@ public interface SortedMap<K,V> extends Map<K,V> {
      * @return a set view of the keys contained in this map, sorted in
      *         ascending order
      */
+    @Override
     Set<K> keySet();
 
     /**
@@ -240,6 +241,7 @@ public interface SortedMap<K,V> extends Map<K,V> {
      * @return a collection view of the values contained in this map,
      *         sorted in ascending key order
      */
+    @Override
     Collection<V> values();
 
     /**
@@ -260,5 +262,6 @@ public interface SortedMap<K,V> extends Map<K,V> {
      * @return a set view of the mappings contained in this map,
      *         sorted in ascending key order
      */
+    @Override
     Set<Map.Entry<K, V>> entrySet();
 }

@@ -1,31 +1,19 @@
-/*
- * Copyright (c) 1994, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
-import  java.io.*;
-import  java.util.*;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * The {@code Throwable} class is the superclass of all errors and
@@ -34,14 +22,20 @@ import  java.util.*;
  * can be thrown by the Java {@code throw} statement. Similarly, only
  * this class or one of its subclasses can be the argument type in a
  * {@code catch} clause.
+ * {@code Throwable}类是所有错误和异常的超类。
+ * 只有这个类或其子类之一的实例对象才可以由Java虚拟机抛出，或者由{@code throw}语句抛出。
+ * 类似地，只有这个类或其子类之一才可以是{@code catch}子句中的参数类型。
+ * [链式异常设施] 所有错误和异常的超类。
  *
- * For the purposes of compile-time checking of exceptions, {@code
+ * <p>For the purposes of compile-time checking of exceptions, {@code
  * Throwable} and any subclass of {@code Throwable} that is not also a
  * subclass of either {@link RuntimeException} or {@link Error} are
  * regarded as checked exceptions.
+ * 为了编译时检查异常的目的，Throwable及其任何子类不应该是
+ * {@link RuntimeException}或{@link Error}的子类，它们被视为受检查异常(checked exceptions)。
  *
- * <p>Instances of two subclasses, {@link java.lang.Error} and
- * {@link java.lang.Exception}, are conventionally used to indicate
+ * <p>Instances of two subclasses, {@link Error} and
+ * {@link Exception}, are conventionally used to indicate
  * that exceptional situations have occurred. Typically, these instances
  * are freshly created in the context of the exceptional situation so
  * as to include relevant information (such as stack trace data).
@@ -74,10 +68,10 @@ import  java.util.*;
  * <p>A second reason that a throwable may have a cause is that the method
  * that throws it must conform to a general-purpose interface that does not
  * permit the method to throw the cause directly.  For example, suppose
- * a persistent collection conforms to the {@link java.util.Collection
+ * a persistent collection conforms to the {@link Collection
  * Collection} interface, and that its persistence is implemented atop
  * {@code java.io}.  Suppose the internals of the {@code add} method
- * can throw an {@link java.io.IOException IOException}.  The implementation
+ * can throw an {@link IOException IOException}.  The implementation
  * can communicate the details of the {@code IOException} to its caller
  * while conforming to the {@code Collection} interface by wrapping the
  * {@code IOException} in an appropriate unchecked exception.  (The
@@ -90,11 +84,13 @@ import  java.util.*;
  * wish to allow causes to be associated with them should provide constructors
  * that take a cause and delegate (perhaps indirectly) to one of the
  * {@code Throwable} constructors that takes a cause.
+ * 异常原因可以通过两种方式与throwable相关联：构造函数或{@link #initCause(Throwable)}方法。
  *
  * Because the {@code initCause} method is public, it allows a cause to be
  * associated with any throwable, even a "legacy throwable" whose
  * implementation predates the addition of the exception chaining mechanism to
  * {@code Throwable}.
+ * 异常链机制(the exception chaining mechanism)。
  *
  * <p>By convention, class {@code Throwable} and its subclasses have two
  * constructors, one that takes no arguments and one that takes a
@@ -107,16 +103,19 @@ import  java.util.*;
  *
  * @author  unascribed
  * @author  Josh Bloch (Added exception chaining and programmatic access to
- *          stack trace in 1.4.)
- * @jls 11.2 Compile-Time Checking of Exceptions
+ *          stack trace in 1.4.) 1.4版本添加异常链和执行堆栈跟踪访问
+ * @jls 11.2 Compile-Time Checking of Exceptions (异常的编译时检查)
  * @since JDK1.0
  */
 public class Throwable implements Serializable {
+
     /** use serialVersionUID from JDK 1.0.2 for interoperability */
     private static final long serialVersionUID = -3042686055658047285L;
 
     /**
      * Native code saves some indication of the stack backtrace in this slot.
+     * 这个槽的执行堆栈回溯。
+     * 内存可见性
      */
     private transient Object backtrace;
 
@@ -124,6 +123,7 @@ public class Throwable implements Serializable {
      * Specific details about the Throwable.  For example, for
      * {@code FileNotFoundException}, this contains the name of
      * the file that could not be found.
+     * 关于异常的具体详细信息。
      *
      * @serial
      */
@@ -190,6 +190,7 @@ public class Throwable implements Serializable {
      * throwable is unknown.  If this field is equal to this throwable itself,
      * it indicates that the cause of this throwable has not yet been
      * initialized.
+     * 引起被抛出的这个异常的原因。
      *
      * @serial
      * @since 1.4
@@ -198,6 +199,7 @@ public class Throwable implements Serializable {
 
     /**
      * The stack trace, as returned by {@link #getStackTrace()}.
+     * 执行堆栈跟踪。
      *
      * The field is initialized to a zero-length array.  A {@code
      * null} value of this field indicates subsequent calls to {@link
@@ -220,6 +222,7 @@ public class Throwable implements Serializable {
      * unmodifiable sentinel list.  When a serialized Throwable is
      * read in, if the {@code suppressedExceptions} field points to a
      * zero-element list, the field is reset to the sentinel value.
+     * 被抑制的异常列表。
      *
      * @serial
      * @since 1.7
@@ -232,19 +235,20 @@ public class Throwable implements Serializable {
     /** Message for trying to suppress oneself. */
     private static final String SELF_SUPPRESSION_MESSAGE = "Self-suppression not permitted";
 
-    /** Caption  for labeling causative exception stack traces */
+    /** Caption  for labeling causative exception stack traces (用于标记原因的异常堆栈跟踪的标题) */
     private static final String CAUSE_CAPTION = "Caused by: ";
 
-    /** Caption for labeling suppressed exception stack traces */
+    /** Caption for labeling suppressed exception stack traces (被抑制的异常堆栈跟踪) */
     private static final String SUPPRESSED_CAPTION = "Suppressed: ";
 
     /**
      * Constructs a new throwable with {@code null} as its detail message.
      * The cause is not initialized, and may subsequently be initialized by a
      * call to {@link #initCause}.
+     * [不建议使用] 异常详细消息和原因都未初始化。
      *
      * <p>The {@link #fillInStackTrace()} method is called to initialize
-     * the stack trace data in the newly created throwable.
+     * the stack trace data in the newly created throwable. (初始化执行堆栈跟踪数据)
      */
     public Throwable() {
         fillInStackTrace();
@@ -254,6 +258,7 @@ public class Throwable implements Serializable {
      * Constructs a new throwable with the specified detail message.  The
      * cause is not initialized, and may subsequently be initialized by
      * a call to {@link #initCause}.
+     * 指定异常详细消息（自定义异常，fast-fail）。
      *
      * <p>The {@link #fillInStackTrace()} method is called to initialize
      * the stack trace data in the newly created throwable.
@@ -262,6 +267,7 @@ public class Throwable implements Serializable {
      *          later retrieval by the {@link #getMessage()} method.
      */
     public Throwable(String message) {
+        // 同步方法
         fillInStackTrace();
         detailMessage = message;
     }
@@ -271,6 +277,7 @@ public class Throwable implements Serializable {
      * cause.  <p>Note that the detail message associated with
      * {@code cause} is <i>not</i> automatically incorporated in
      * this throwable's detail message.
+     * 指定异常详细消息和原因（异常包装）。
      *
      * <p>The {@link #fillInStackTrace()} method is called to initialize
      * the stack trace data in the newly created throwable.
@@ -284,6 +291,7 @@ public class Throwable implements Serializable {
      * @since  1.4
      */
     public Throwable(String message, Throwable cause) {
+        // 同步方法
         fillInStackTrace();
         detailMessage = message;
         this.cause = cause;
@@ -296,6 +304,7 @@ public class Throwable implements Serializable {
      * This constructor is useful for throwables that are little more than
      * wrappers for other throwables (for example, {@link
      * java.security.PrivilegedActionException}).
+     * [不建议使用] 指定异常原因。
      *
      * <p>The {@link #fillInStackTrace()} method is called to initialize
      * the stack trace data in the newly created throwable.
@@ -307,7 +316,9 @@ public class Throwable implements Serializable {
      * @since  1.4
      */
     public Throwable(Throwable cause) {
+        // 同步方法
         fillInStackTrace();
+        // 异常详细消息相同
         detailMessage = (cause==null ? null : cause.toString());
         this.cause = cause;
     }
@@ -345,8 +356,9 @@ public class Throwable implements Serializable {
      * @param cause the cause.  (A {@code null} value is permitted,
      * and indicates that the cause is nonexistent or unknown.)
      * @param enableSuppression whether or not suppression is enabled or disabled
+     *                          (异常抑制是否启用或禁用)
      * @param writableStackTrace whether or not the stack trace should be
-     *                           writable
+     *                           writable (执行堆栈跟踪是否应该是可写的)
      *
      * @see OutOfMemoryError
      * @see NullPointerException
@@ -363,9 +375,12 @@ public class Throwable implements Serializable {
         }
         detailMessage = message;
         this.cause = cause;
-        if (!enableSuppression)
+        if (!enableSuppression) {
             suppressedExceptions = null;
+        }
     }
+
+    // 异常的具体详细信息
 
     /**
      * Returns the detail message string of this throwable.
@@ -391,6 +406,8 @@ public class Throwable implements Serializable {
         return getMessage();
     }
 
+    // 异常的根因
+
     /**
      * Returns the cause of this throwable or {@code null} if the
      * cause is nonexistent or unknown.  (The cause is the throwable that
@@ -412,7 +429,7 @@ public class Throwable implements Serializable {
      * @since 1.4
      */
     public synchronized Throwable getCause() {
-        return (cause==this ? null : cause);
+        return (cause == this ? null : cause);
     }
 
     /**
@@ -452,14 +469,18 @@ public class Throwable implements Serializable {
      * @since  1.4
      */
     public synchronized Throwable initCause(Throwable cause) {
-        if (this.cause != this)
+        if (this.cause != this) {
             throw new IllegalStateException("Can't overwrite cause with " +
                                             Objects.toString(cause, "a null"), this);
-        if (cause == this)
+        }
+        if (cause == this) {
             throw new IllegalArgumentException("Self-causation not permitted", this);
+        }
         this.cause = cause;
         return this;
     }
+
+    // 异常的字符串表示
 
     /**
      * Returns a short description of this throwable.
@@ -475,11 +496,15 @@ public class Throwable implements Serializable {
      *
      * @return a string representation of this throwable.
      */
+    @Override
     public String toString() {
         String s = getClass().getName();
         String message = getLocalizedMessage();
         return (message != null) ? (s + ": " + message) : s;
     }
+
+    // 运行态
+    // 打印执行堆栈跟踪
 
     /**
      * Prints this throwable and its backtrace to the
@@ -636,6 +661,7 @@ public class Throwable implements Serializable {
 
     /**
      * Prints this throwable and its backtrace to the specified print stream.
+     * 打印这个异常和其回溯的堆栈跟踪。
      *
      * @param s {@code PrintStream} to use for output
      */
@@ -650,21 +676,25 @@ public class Throwable implements Serializable {
             Collections.newSetFromMap(new IdentityHashMap<Throwable, Boolean>());
         dejaVu.add(this);
 
+        // 数据流的锁对象
         synchronized (s.lock()) {
             // Print our stack trace
             s.println(this);
             StackTraceElement[] trace = getOurStackTrace();
-            for (StackTraceElement traceElement : trace)
+            for (StackTraceElement traceElement : trace) {
                 s.println("\tat " + traceElement);
+            }
 
             // Print suppressed exceptions, if any
-            for (Throwable se : getSuppressed())
+            for (Throwable se : getSuppressed()) {
                 se.printEnclosedStackTrace(s, trace, SUPPRESSED_CAPTION, "\t", dejaVu);
+            }
 
             // Print cause, if any
             Throwable ourCause = getCause();
-            if (ourCause != null)
+            if (ourCause != null) {
                 ourCause.printEnclosedStackTrace(s, trace, CAUSE_CAPTION, "", dejaVu);
+            }
         }
     }
 
@@ -677,6 +707,7 @@ public class Throwable implements Serializable {
                                          String caption,
                                          String prefix,
                                          Set<Throwable> dejaVu) {
+        // 断言当前线程是否持有这个锁
         assert Thread.holdsLock(s.lock());
         if (dejaVu.contains(this)) {
             s.println("\t[CIRCULAR REFERENCE:" + this + "]");
@@ -693,20 +724,24 @@ public class Throwable implements Serializable {
 
             // Print our stack trace
             s.println(prefix + caption + this);
-            for (int i = 0; i <= m; i++)
+            for (int i = 0; i <= m; i++) {
                 s.println(prefix + "\tat " + trace[i]);
-            if (framesInCommon != 0)
+            }
+            if (framesInCommon != 0) {
                 s.println(prefix + "\t... " + framesInCommon + " more");
+            }
 
             // Print suppressed exceptions, if any
-            for (Throwable se : getSuppressed())
+            for (Throwable se : getSuppressed()) {
                 se.printEnclosedStackTrace(s, trace, SUPPRESSED_CAPTION,
                                            prefix +"\t", dejaVu);
+            }
 
             // Print cause, if any
             Throwable ourCause = getCause();
-            if (ourCause != null)
+            if (ourCause != null) {
                 ourCause.printEnclosedStackTrace(s, trace, CAUSE_CAPTION, prefix, dejaVu);
+            }
         }
     }
 
@@ -740,10 +775,12 @@ public class Throwable implements Serializable {
             this.printStream = printStream;
         }
 
+        @Override
         Object lock() {
             return printStream;
         }
 
+        @Override
         void println(Object o) {
             printStream.println(o);
         }
@@ -756,26 +793,32 @@ public class Throwable implements Serializable {
             this.printWriter = printWriter;
         }
 
+        @Override
         Object lock() {
             return printWriter;
         }
 
+        @Override
         void println(Object o) {
             printWriter.println(o);
         }
     }
 
+    // 填充执行堆栈跟踪
+
     /**
      * Fills in the execution stack trace. This method records within this
      * {@code Throwable} object information about the current state of
      * the stack frames for the current thread.
+     * 关于当前线程堆栈帧的当前状态的信息。
+     * [同步方法] 填充执行堆栈跟踪。
      *
      * <p>If the stack trace of this {@code Throwable} {@linkplain
      * Throwable#Throwable(String, Throwable, boolean, boolean) is not
      * writable}, calling this method has no effect.
      *
      * @return  a reference to this {@code Throwable} instance.
-     * @see     java.lang.Throwable#printStackTrace()
+     * @see     Throwable#printStackTrace()
      */
     public synchronized Throwable fillInStackTrace() {
         if (stackTrace != null ||
@@ -786,7 +829,12 @@ public class Throwable implements Serializable {
         return this;
     }
 
+    /**
+     * 构造整个执行堆栈跟踪。
+     */
     private native Throwable fillInStackTrace(int dummy);
+
+    // 获取执行堆栈跟踪
 
     /**
      * Provides programmatic access to the stack trace information printed by
@@ -823,13 +871,16 @@ public class Throwable implements Serializable {
             (stackTrace == null && backtrace != null) /* Out of protocol state */) {
             int depth = getStackTraceDepth();
             stackTrace = new StackTraceElement[depth];
-            for (int i=0; i < depth; i++)
+            for (int i=0; i < depth; i++) {
                 stackTrace[i] = getStackTraceElement(i);
+            }
         } else if (stackTrace == null) {
             return UNASSIGNED_STACK;
         }
         return stackTrace;
     }
+
+    // 设置执行堆栈跟踪
 
     /**
      * Sets the stack trace elements that will be returned by
@@ -863,14 +914,17 @@ public class Throwable implements Serializable {
         // Validate argument
         StackTraceElement[] defensiveCopy = stackTrace.clone();
         for (int i = 0; i < defensiveCopy.length; i++) {
-            if (defensiveCopy[i] == null)
+            if (defensiveCopy[i] == null) {
                 throw new NullPointerException("stackTrace[" + i + "]");
+            }
         }
 
         synchronized (this) {
             if (this.stackTrace == null && // Immutable stack
                 backtrace == null) // Test for out of protocol state
+            {
                 return;
+            }
             this.stackTrace = defensiveCopy;
         }
     }
@@ -893,6 +947,8 @@ public class Throwable implements Serializable {
      *         index >= getStackTraceDepth() }
      */
     native StackTraceElement getStackTraceElement(int index);
+
+    // 异常对象序列号和反序列化
 
     /**
      * Reads a {@code Throwable} from a stream, enforcing
@@ -922,10 +978,12 @@ public class Throwable implements Serializable {
                 for (Throwable t : suppressedExceptions) {
                     // Enforce constraints on suppressed exceptions in
                     // case of corrupt or malicious stream.
-                    if (t == null)
+                    if (t == null) {
                         throw new NullPointerException(NULL_CAUSE_MESSAGE);
-                    if (t == this)
+                    }
+                    if (t == this) {
                         throw new IllegalArgumentException(SELF_SUPPRESSION_MESSAGE);
+                    }
                     suppressed.add(t);
                 }
             }
@@ -950,8 +1008,9 @@ public class Throwable implements Serializable {
                 stackTrace = null;
             } else { // Verify stack trace elements are non-null.
                 for(StackTraceElement ste : stackTrace) {
-                    if (ste == null)
+                    if (ste == null) {
                         throw new NullPointerException("null StackTraceElement in serial stream. ");
+                    }
                 }
             }
         } else {
@@ -980,19 +1039,24 @@ public class Throwable implements Serializable {
 
         StackTraceElement[] oldStackTrace = stackTrace;
         try {
-            if (stackTrace == null)
+            if (stackTrace == null) {
                 stackTrace = SentinelHolder.STACK_TRACE_SENTINEL;
+            }
             s.defaultWriteObject();
         } finally {
             stackTrace = oldStackTrace;
         }
     }
 
+    // try-with-resources 资源自动释放语句
+
     /**
      * Appends the specified exception to the exceptions that were
      * suppressed in order to deliver this exception. This method is
      * thread-safe and typically called (automatically and implicitly)
      * by the {@code try}-with-resources statement.
+     * 将指定的异常附加到为传递这个异常而被抑制的异常。
+     * 本方法是线程安全的，通常自动地和隐式地被try-with-resources语句调用。
      *
      * <p>The suppression behavior is enabled <em>unless</em> disabled
      * {@linkplain #Throwable(String, Throwable, boolean, boolean) via
@@ -1039,17 +1103,22 @@ public class Throwable implements Serializable {
      * @since 1.7
      */
     public final synchronized void addSuppressed(Throwable exception) {
-        if (exception == this)
+        if (exception == this) {
             throw new IllegalArgumentException(SELF_SUPPRESSION_MESSAGE, exception);
+        }
 
-        if (exception == null)
+        if (exception == null) {
             throw new NullPointerException(NULL_CAUSE_MESSAGE);
+        }
 
         if (suppressedExceptions == null) // Suppressed exceptions not recorded
+        {
             return;
+        }
 
-        if (suppressedExceptions == SUPPRESSED_SENTINEL)
+        if (suppressedExceptions == SUPPRESSED_SENTINEL) {
             suppressedExceptions = new ArrayList<>(1);
+        }
 
         suppressedExceptions.add(exception);
     }
@@ -1073,9 +1142,10 @@ public class Throwable implements Serializable {
      */
     public final synchronized Throwable[] getSuppressed() {
         if (suppressedExceptions == SUPPRESSED_SENTINEL ||
-            suppressedExceptions == null)
+            suppressedExceptions == null) {
             return EMPTY_THROWABLE_ARRAY;
-        else
+        } else {
             return suppressedExceptions.toArray(EMPTY_THROWABLE_ARRAY);
+        }
     }
 }

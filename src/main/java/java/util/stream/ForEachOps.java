@@ -1,34 +1,10 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
+
 package java.util.stream;
 
 import java.util.Objects;
 import java.util.Spliterator;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountedCompleter;
-import java.util.concurrent.ForkJoinTask;
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 import java.util.function.IntConsumer;
@@ -41,15 +17,22 @@ import java.util.function.LongConsumer;
  * traversal (elements are provided to the {@code Consumer} as soon as they are
  * available), and ordered traversal (elements are provided to the
  * {@code Consumer} in encounter order.)
+ * 用于创建为数据流的每个元素执行一个动作的终结操作实例工厂。
+ * 支持的变体包括无序遍历和有序遍历。
+ * 无序遍历，元素一旦可用，就提供给消费者。
+ * 有序遍历，元素按照遇到顺序提供给消费者。
  *
  * <p>Elements are provided to the {@code Consumer} on whatever thread and
  * whatever order they become available.  For ordered traversals, it is
  * guaranteed that processing an element <em>happens-before</em> processing
  * subsequent elements in the encounter order.
+ * 元素被提供给消费者在任何线程和任何顺序上，它们成为可用的。
+ * 对于有序遍历，可以保证在处理遇到顺序的后续元素之前处理一个元素。
  *
  * <p>Exceptions occurring as a result of sending an element to the
  * {@code Consumer} will be relayed to the caller and traversal will be
  * prematurely terminated.
+ * 由于向结果消费者发送元素而发生的异常将被转发给调用者，遍历将提前终止。
  *
  * @since 1.8
  */
@@ -132,6 +115,9 @@ final class ForEachOps {
      */
     static abstract class ForEachOp<T>
             implements TerminalOp<T, Void>, TerminalSink<T, Void> {
+        /**
+         * 是否有序
+         */
         private final boolean ordered;
 
         protected ForEachOp(boolean ordered) {
@@ -154,10 +140,11 @@ final class ForEachOps {
         @Override
         public <S> Void evaluateParallel(PipelineHelper<T> helper,
                                          Spliterator<S> spliterator) {
-            if (ordered)
+            if (ordered) {
                 new ForEachOrderedTask<>(helper, spliterator, this).invoke();
-            else
+            } else {
                 new ForEachTask<>(helper, spliterator, helper.wrapSink(this)).invoke();
+            }
             return null;
         }
 
@@ -169,9 +156,13 @@ final class ForEachOps {
         }
 
         // Implementations
+        // 实现
 
         /** Implementation class for reference streams */
         static final class OfRef<T> extends ForEachOp<T> {
+            /**
+             * 结果消费者
+             */
             final Consumer<? super T> consumer;
 
             OfRef(Consumer<? super T> consumer, boolean ordered) {
@@ -249,7 +240,9 @@ final class ForEachOps {
         }
     }
 
-    /** A {@code ForkJoinTask} for performing a parallel for-each operation */
+    /** A {@code ForkJoinTask} for performing a parallel for-each operation
+     * 对每个操作执行并行操作
+     */
     @SuppressWarnings("serial")
     static final class ForEachTask<S, T> extends CountedCompleter<Void> {
         private Spliterator<S> spliterator;
@@ -276,11 +269,13 @@ final class ForEachOps {
         }
 
         // Similar to AbstractTask but doesn't need to track child tasks
+        @Override
         public void compute() {
             Spliterator<S> rightSplit = spliterator, leftSplit;
             long sizeEstimate = rightSplit.estimateSize(), sizeThreshold;
-            if ((sizeThreshold = targetSize) == 0L)
+            if ((sizeThreshold = targetSize) == 0L) {
                 targetSize = sizeThreshold = AbstractTask.suggestTargetSize(sizeEstimate);
+            }
             boolean isShortCircuit = StreamOpFlag.SHORT_CIRCUIT.isKnown(helper.getStreamAndOpFlags());
             boolean forkRight = false;
             Sink<S> taskSink = sink;
@@ -501,8 +496,9 @@ final class ForEachOps {
             // of right subtree (if any, which can be this task's right sibling)
             //
             ForEachOrderedTask<S, T> leftDescendant = completionMap.remove(this);
-            if (leftDescendant != null)
+            if (leftDescendant != null) {
                 leftDescendant.tryComplete();
+            }
         }
     }
 }

@@ -1,27 +1,4 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
+
 package java.util.stream;
 
 import java.util.Comparator;
@@ -34,10 +11,13 @@ import java.util.function.LongConsumer;
 
 /**
  * Utility methods for operating on and creating streams.
+ * 用于操作和创建数据流的实用方法。
  *
  * <p>Unless otherwise stated, streams are created as sequential streams.  A
  * sequential stream can be transformed into a parallel stream by calling the
  * {@code parallel()} method on the created stream.
+ * 除非另有说明，否则数据流都是按顺序数据流创建的。
+ * 通过对创建的数据流调用parallel()方法，可以将顺序数据流转换为并行数据流。
  *
  * @since 1.8
  */
@@ -52,21 +32,33 @@ final class Streams {
      * data element of a stream.  Used when processing streams that can contain
      * {@code null} elements to distinguish between a {@code null} value and no
      * value.
+     * 不表示值的对象实例，它不能是数据流的实际数据元素。
+     * 在处理可以包含空元素的数据流时使用，以区分空值和无值。
      */
     static final Object NONE = new Object();
 
     /**
      * An {@code int} range spliterator.
+     * 一个整数范围的拆分器。
      */
     static final class RangeIntSpliterator implements Spliterator.OfInt {
         // Can never be greater that upTo, this avoids overflow if upper bound
         // is Integer.MAX_VALUE
         // All elements are traversed if from == upTo & last == 0
+        /**
+         * 起始值
+         */
         private int from;
+        /**
+         * 一直到
+         */
         private final int upTo;
         // 1 if the range is closed and the last element has not been traversed
         // Otherwise, 0 if the range is open, or is a closed range and all
         // elements have been traversed
+        /**
+         * 终止值
+         */
         private int last;
 
         RangeIntSpliterator(int from, int upTo, boolean closed) {
@@ -123,6 +115,7 @@ final class Streams {
 
         @Override
         public int characteristics() {
+            // 有序、大小、不可变、去重、排序
             return Spliterator.ORDERED | Spliterator.SIZED | Spliterator.SUBSIZED |
                    Spliterator.IMMUTABLE | Spliterator.NONNULL |
                    Spliterator.DISTINCT | Spliterator.SORTED;
@@ -178,6 +171,7 @@ final class Streams {
 
     /**
      * A {@code long} range spliterator.
+     * 一个长整数范围的拆分器。
      *
      * This implementation cannot be used for ranges whose size is greater
      * than Long.MAX_VALUE
@@ -298,11 +292,20 @@ final class Streams {
         }
     }
 
+    /**
+     * 数据流的构建器的抽象实现类。
+     *
+     * @param <T> 拆分器返回的元素类型
+     * @param <S> 拆分器的类型
+     */
     private static abstract class AbstractStreamBuilderImpl<T, S extends Spliterator<T>> implements Spliterator<T> {
         // >= 0 when building, < 0 when built
         // -1 == no elements
         // -2 == one element, held by first
         // -3 == two or more elements, held by buffer
+        /**
+         * 元素计数器
+         */
         int count;
 
         // Spliterator implementation for 0 or 1 element
@@ -326,15 +329,27 @@ final class Streams {
         }
     }
 
+    /**
+     * 数据流的构建器的实现类。
+     *
+     * @param <T> 数据流元素的类型
+     */
     static final class StreamBuilderImpl<T>
             extends AbstractStreamBuilderImpl<T, Spliterator<T>>
             implements Stream.Builder<T> {
         // The first element in the stream
         // valid if count == 1
+        /**
+         * 数据流中的第一个元素
+         */
         T first;
 
         // The first and subsequent elements in the stream
         // non-null if count == 2
+        /**
+         * 数据流中的第一个和后面的元素。
+         * 元素的有序集合的缓冲区。
+         */
         SpinedBuffer<T> buffer;
 
         /**
@@ -344,6 +359,7 @@ final class Streams {
 
         /**
          * Constructor for a singleton stream.
+         * 单个数据流的构造函数。
          *
          * @param t the single element
          */
@@ -353,6 +369,7 @@ final class Streams {
         }
 
         // StreamBuilder implementation
+        // 数据流的构建器的实现
 
         @Override
         public void accept(T t) {
@@ -374,6 +391,7 @@ final class Streams {
             }
         }
 
+        @Override
         public Stream.Builder<T> add(T t) {
             accept(t);
             return this;
@@ -427,10 +445,17 @@ final class Streams {
             implements IntStream.Builder, Spliterator.OfInt {
         // The first element in the stream
         // valid if count == 1
+        /**
+         * 数据流中的第一个元素
+         */
         int first;
 
         // The first and subsequent elements in the stream
         // non-null if count == 2
+        /**
+         * 数据流中的第一个和后面的元素。
+         * 元素的有序集合的缓冲区。
+         */
         SpinedBuffer.OfInt buffer;
 
         /**
@@ -731,15 +756,17 @@ final class Streams {
                     hasNext = bSpliterator.tryAdvance(consumer);
                 }
             }
-            else
+            else {
                 hasNext = bSpliterator.tryAdvance(consumer);
+            }
             return hasNext;
         }
 
         @Override
         public void forEachRemaining(Consumer<? super T> consumer) {
-            if (beforeSplit)
+            if (beforeSplit) {
                 aSpliterator.forEachRemaining(consumer);
+            }
             bSpliterator.forEachRemaining(consumer);
         }
 
@@ -771,8 +798,9 @@ final class Streams {
 
         @Override
         public Comparator<? super T> getComparator() {
-            if (beforeSplit)
+            if (beforeSplit) {
                 throw new IllegalStateException();
+            }
             return bSpliterator.getComparator();
         }
 
@@ -799,15 +827,17 @@ final class Streams {
                         hasNext = bSpliterator.tryAdvance(action);
                     }
                 }
-                else
+                else {
                     hasNext = bSpliterator.tryAdvance(action);
+                }
                 return hasNext;
             }
 
             @Override
             public void forEachRemaining(T_CONS action) {
-                if (beforeSplit)
+                if (beforeSplit) {
                     aSpliterator.forEachRemaining(action);
+                }
                 bSpliterator.forEachRemaining(action);
             }
         }
@@ -841,6 +871,8 @@ final class Streams {
      * Given two Runnables, return a Runnable that executes both in sequence,
      * even if the first throws an exception, and if both throw exceptions, add
      * any exceptions thrown by the second as suppressed exceptions of the first.
+     * 给定两个可运行的任务，返回一个按顺序执行的可运行任务，即使第一个抛出异常。
+     * 如果两个都抛出异常，则将第二个可运行的任务抛出的任何异常添加为第一个的抑制异常。
      */
     static Runnable composeWithExceptions(Runnable a, Runnable b) {
         return new Runnable() {
@@ -856,7 +888,9 @@ final class Streams {
                     catch (Throwable e2) {
                         try {
                             e1.addSuppressed(e2);
-                        } catch (Throwable ignore) {}
+                        } catch (Throwable ignore) {
+                            // ignore
+                        }
                     }
                     throw e1;
                 }
@@ -870,6 +904,7 @@ final class Streams {
      * executes both of their {@link BaseStream#close} methods in sequence,
      * even if the first throws an exception, and if both throw exceptions, add
      * any exceptions thrown by the second as suppressed exceptions of the first.
+     * 给定两个数据流，返回一个可运行的任务，按顺序同时执行两个数据流的关闭方法。
      */
     static Runnable composedClose(BaseStream<?, ?> a, BaseStream<?, ?> b) {
         return new Runnable() {
@@ -885,7 +920,9 @@ final class Streams {
                     catch (Throwable e2) {
                         try {
                             e1.addSuppressed(e2);
-                        } catch (Throwable ignore) {}
+                        } catch (Throwable ignore) {
+                            // ignore
+                        }
                     }
                     throw e1;
                 }

@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 
 package java.lang;
 
@@ -36,6 +12,7 @@ package java.lang;
  *  if (Thread.interrupted())  // Clears interrupted status!
  *      throw new InterruptedException();
  * </pre>
+ * 中断异常：当线程等待、休眠或其他方式占用，同时线程在活动之前或期间中断。
  *
  * @author  Frank Yellin
  * @see     java.lang.Object#wait()

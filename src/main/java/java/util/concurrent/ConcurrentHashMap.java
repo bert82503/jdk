@@ -960,6 +960,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
      *         {@code equals} method; {@code false} otherwise
      * @throws NullPointerException if the specified key is null
      */
+    @Override
     public boolean containsKey(Object key) {
         return get(key) != null;
     }
@@ -974,6 +975,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
      *         specified value
      * @throws NullPointerException if the specified value is null
      */
+    @Override
     public boolean containsValue(Object value) {
         if (value == null)
             throw new NullPointerException();
@@ -1078,6 +1080,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
      *
      * @param m mappings to be stored in this map
      */
+    @Override
     public void putAll(Map<? extends K, ? extends V> m) {
         tryPresize(m.size());
         for (Map.Entry<? extends K, ? extends V> e : m.entrySet())
@@ -1226,6 +1229,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
      *
      * @return the set view
      */
+    @Override
     public KeySetView<K,V> keySet() {
         KeySetView<K,V> ks;
         return (ks = keySet) != null ? ks : (keySet = new KeySetView<K,V>(this, null));
@@ -1249,6 +1253,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
      *
      * @return the collection view
      */
+    @Override
     public Collection<V> values() {
         ValuesView<K,V> vs;
         return (vs = values) != null ? vs : (values = new ValuesView<K,V>(this));
@@ -1271,6 +1276,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
      *
      * @return the set view
      */
+    @Override
     public Set<Map.Entry<K,V>> entrySet() {
         EntrySetView<K,V> es;
         return (es = entrySet) != null ? es : (entrySet = new EntrySetView<K,V>(this));
@@ -1531,6 +1537,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
      *         or {@code null} if there was no mapping for the key
      * @throws NullPointerException if the specified key or value is null
      */
+    @Override
     public V putIfAbsent(K key, V value) {
         return putVal(key, value, true);
     }
@@ -1540,6 +1547,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
      *
      * @throws NullPointerException if the specified key is null
      */
+    @Override
     public boolean remove(Object key, Object value) {
         if (key == null)
             throw new NullPointerException();
@@ -1551,6 +1559,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
      *
      * @throws NullPointerException if any of the arguments are null
      */
+    @Override
     public boolean replace(K key, V oldValue, V newValue) {
         if (key == null || oldValue == null || newValue == null)
             throw new NullPointerException();
@@ -1564,6 +1573,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
      *         or {@code null} if there was no mapping for the key
      * @throws NullPointerException if the specified key or value is null
      */
+    @Override
     public V replace(K key, V value) {
         if (key == null || value == null)
             throw new NullPointerException();
@@ -1583,11 +1593,13 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
      * @return the mapping for the key, if present; else the default value
      * @throws NullPointerException if the specified key is null
      */
+    @Override
     public V getOrDefault(Object key, V defaultValue) {
         V v;
         return (v = get(key)) == null ? defaultValue : v;
     }
 
+    @Override
     public void forEach(BiConsumer<? super K, ? super V> action) {
         if (action == null) throw new NullPointerException();
         Node<K,V>[] t;
@@ -1599,6 +1611,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
         }
     }
 
+    @Override
     public void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
         if (function == null) throw new NullPointerException();
         Node<K,V>[] t;
@@ -1640,6 +1653,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
      * @throws RuntimeException or Error if the mappingFunction does so,
      *         in which case the mapping is left unestablished
      */
+    @Override
     public V computeIfAbsent(K key, Function<? super K, ? extends V> mappingFunction) {
         if (key == null || mappingFunction == null)
             throw new NullPointerException();
@@ -1741,6 +1755,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
      * @throws RuntimeException or Error if the remappingFunction does so,
      *         in which case the mapping is unchanged
      */
+    @Override
     public V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
         if (key == null || remappingFunction == null)
             throw new NullPointerException();
@@ -1831,6 +1846,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
      * @throws RuntimeException or Error if the remappingFunction does so,
      *         in which case the mapping is unchanged
      */
+    @Override
     public V compute(K key,
                      BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
         if (key == null || remappingFunction == null)
@@ -1957,6 +1973,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
      * @throws RuntimeException or Error if the remappingFunction does so,
      *         in which case the mapping is unchanged
      */
+    @Override
     public V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
         if (key == null || value == null || remappingFunction == null)
             throw new NullPointerException();
@@ -4486,6 +4503,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
             return sb.append(']').toString();
         }
 
+        @Override
         public final boolean containsAll(Collection<?> c) {
             if (c != this) {
                 for (Object e : c) {
@@ -4496,6 +4514,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
             return true;
         }
 
+        @Override
         public final boolean removeAll(Collection<?> c) {
             if (c == null) throw new NullPointerException();
             boolean modified = false;
@@ -4508,6 +4527,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
             return modified;
         }
 
+        @Override
         public final boolean retainAll(Collection<?> c) {
             if (c == null) throw new NullPointerException();
             boolean modified = false;
@@ -4606,6 +4626,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
          * @throws UnsupportedOperationException if no default mapped value
          * for additions was provided
          */
+        @Override
         public boolean addAll(Collection<? extends K> c) {
             boolean added = false;
             V v;
@@ -4750,6 +4771,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
             return map.putVal(e.getKey(), e.getValue(), false) == null;
         }
 
+        @Override
         public boolean addAll(Collection<? extends Entry<K,V>> c) {
             boolean added = false;
             for (Entry<K,V> e : c) {

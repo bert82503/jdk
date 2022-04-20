@@ -346,6 +346,7 @@ public class IdentityHashMap<K,V>
      *          in this map
      * @see     #containsValue(Object)
      */
+    @Override
     public boolean containsKey(Object key) {
         Object k = maskNull(key);
         Object[] tab = table;
@@ -370,6 +371,7 @@ public class IdentityHashMap<K,V>
      *         specified object reference
      * @see     #containsKey(Object)
      */
+    @Override
     public boolean containsValue(Object value) {
         Object[] tab = table;
         for (int i = 1; i < tab.length; i += 2)
@@ -496,6 +498,7 @@ public class IdentityHashMap<K,V>
      * @param m mappings to be stored in this map
      * @throws NullPointerException if the specified map is null
      */
+    @Override
     public void putAll(Map<? extends K, ? extends V> m) {
         int n = m.size();
         if (n == 0)
@@ -699,6 +702,7 @@ public class IdentityHashMap<K,V>
      *
      * @return a shallow copy of this map
      */
+    @Override
     public Object clone() {
         try {
             IdentityHashMap<?,?> m = (IdentityHashMap<?,?>) super.clone();
@@ -963,6 +967,7 @@ public class IdentityHashMap<K,V>
      * @see Object#equals(Object)
      * @see System#identityHashCode(Object)
      */
+    @Override
     public Set<K> keySet() {
         Set<K> ks = keySet;
         if (ks == null) {
@@ -992,6 +997,7 @@ public class IdentityHashMap<K,V>
          * the former contains an optimization that results in incorrect
          * behavior when c is a smaller "normal" (non-identity-based) Set.
          */
+        @Override
         public boolean removeAll(Collection<?> c) {
             Objects.requireNonNull(c);
             boolean modified = false;
@@ -1069,6 +1075,7 @@ public class IdentityHashMap<K,V>
      * behavior of its <tt>contains</tt>, <tt>remove</tt> and
      * <tt>containsAll</tt> methods.</b>
      */
+    @Override
     public Collection<V> values() {
         Collection<V> vs = values;
         if (vs == null) {
@@ -1174,6 +1181,7 @@ public class IdentityHashMap<K,V>
      *
      * @return a set view of the identity-mappings contained in this map
      */
+    @Override
     public Set<Map.Entry<K,V>> entrySet() {
         Set<Map.Entry<K,V>> es = entrySet;
         if (es != null)
@@ -1209,6 +1217,7 @@ public class IdentityHashMap<K,V>
          * the former contains an optimization that results in incorrect
          * behavior when c is a smaller "normal" (non-identity-based) Set.
          */
+        @Override
         public boolean removeAll(Collection<?> c) {
             Objects.requireNonNull(c);
             boolean modified = false;

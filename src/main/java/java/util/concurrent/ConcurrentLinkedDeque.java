@@ -886,6 +886,7 @@ public class ConcurrentLinkedDeque<E>
      *
      * @throws NullPointerException if the specified element is null
      */
+    @Override
     public void addFirst(E e) {
         linkFirst(e);
     }
@@ -899,6 +900,7 @@ public class ConcurrentLinkedDeque<E>
      *
      * @throws NullPointerException if the specified element is null
      */
+    @Override
     public void addLast(E e) {
         linkLast(e);
     }
@@ -910,6 +912,7 @@ public class ConcurrentLinkedDeque<E>
      * @return {@code true} (as specified by {@link Deque#offerFirst})
      * @throws NullPointerException if the specified element is null
      */
+    @Override
     public boolean offerFirst(E e) {
         linkFirst(e);
         return true;
@@ -924,11 +927,13 @@ public class ConcurrentLinkedDeque<E>
      * @return {@code true} (as specified by {@link Deque#offerLast})
      * @throws NullPointerException if the specified element is null
      */
+    @Override
     public boolean offerLast(E e) {
         linkLast(e);
         return true;
     }
 
+    @Override
     public E peekFirst() {
         for (Node<E> p = first(); p != null; p = succ(p)) {
             E item = p.item;
@@ -938,6 +943,7 @@ public class ConcurrentLinkedDeque<E>
         return null;
     }
 
+    @Override
     public E peekLast() {
         for (Node<E> p = last(); p != null; p = pred(p)) {
             E item = p.item;
@@ -950,6 +956,7 @@ public class ConcurrentLinkedDeque<E>
     /**
      * @throws NoSuchElementException {@inheritDoc}
      */
+    @Override
     public E getFirst() {
         return screenNullResult(peekFirst());
     }
@@ -957,10 +964,12 @@ public class ConcurrentLinkedDeque<E>
     /**
      * @throws NoSuchElementException {@inheritDoc}
      */
+    @Override
     public E getLast() {
         return screenNullResult(peekLast());
     }
 
+    @Override
     public E pollFirst() {
         for (Node<E> p = first(); p != null; p = succ(p)) {
             E item = p.item;
@@ -972,6 +981,7 @@ public class ConcurrentLinkedDeque<E>
         return null;
     }
 
+    @Override
     public E pollLast() {
         for (Node<E> p = last(); p != null; p = pred(p)) {
             E item = p.item;
@@ -986,6 +996,7 @@ public class ConcurrentLinkedDeque<E>
     /**
      * @throws NoSuchElementException {@inheritDoc}
      */
+    @Override
     public E removeFirst() {
         return screenNullResult(pollFirst());
     }
@@ -993,6 +1004,7 @@ public class ConcurrentLinkedDeque<E>
     /**
      * @throws NoSuchElementException {@inheritDoc}
      */
+    @Override
     public E removeLast() {
         return screenNullResult(pollLast());
     }
@@ -1006,6 +1018,7 @@ public class ConcurrentLinkedDeque<E>
      * @return {@code true} (as specified by {@link Queue#offer})
      * @throws NullPointerException if the specified element is null
      */
+    @Override
     public boolean offer(E e) {
         return offerLast(e);
     }
@@ -1022,7 +1035,9 @@ public class ConcurrentLinkedDeque<E>
         return offerLast(e);
     }
 
+    @Override
     public E poll()           { return pollFirst(); }
+    @Override
     public E peek()           { return peekFirst(); }
 
     /**
@@ -1038,6 +1053,7 @@ public class ConcurrentLinkedDeque<E>
     /**
      * @throws NoSuchElementException {@inheritDoc}
      */
+    @Override
     public E element()        { return getFirst(); }
 
     /**
@@ -1164,6 +1180,7 @@ public class ConcurrentLinkedDeque<E>
      *         of its elements are null
      * @throws IllegalArgumentException if the collection is this deque
      */
+    @Override
     public boolean addAll(Collection<? extends E> c) {
         if (c == this)
             // As historically specified in AbstractQueue#addAll
@@ -1305,6 +1322,7 @@ public class ConcurrentLinkedDeque<E>
      *
      * @return an iterator over the elements in this deque in reverse order
      */
+    @Override
     public Iterator<E> descendingIterator() {
         return new DescendingItr();
     }

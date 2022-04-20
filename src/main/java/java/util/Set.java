@@ -6,8 +6,9 @@ package java.util;
  * contain no pair of elements <code>e1</code> and <code>e2</code> such that
  * <code>e1.equals(e2)</code>, and at most one null element.  As implied by
  * its name, this interface models the mathematical <i>set</i> abstraction.
- * 不包含重复元素的容器。最多包含一个null元素。
- * 顾名思义，本接口对数学集合抽象进行建模。
+ * 不包含重复元素的集合。
+ * 更正式的说法是，集合不包含一对e1和e2元素，使得e1.equals(e2)，并且最多包含一个空元素(null)。
+ * 顾名思义，这个接口为数学集合的抽象建模。
  *
  * <p>The <tt>Set</tt> interface places additional stipulations, beyond those
  * inherited from the <tt>Collection</tt> interface, on the contracts of all
@@ -60,6 +61,7 @@ package java.util;
  * @since 1.2
  */
 public interface Set<E> extends Collection<E> {
+
     // Query Operations
     // 查询操作
 
@@ -70,6 +72,7 @@ public interface Set<E> extends Collection<E> {
      *
      * @return the number of elements in this set (its cardinality)
      */
+    @Override
     int size();
 
     /**
@@ -77,6 +80,7 @@ public interface Set<E> extends Collection<E> {
      *
      * @return <tt>true</tt> if this set contains no elements
      */
+    @Override
     boolean isEmpty();
 
     /**
@@ -94,6 +98,7 @@ public interface Set<E> extends Collection<E> {
      *         set does not permit null elements
      * (<a href="Collection.html#optional-restrictions">optional</a>)
      */
+    @Override
     boolean contains(Object o);
 
     /**
@@ -103,6 +108,7 @@ public interface Set<E> extends Collection<E> {
      *
      * @return an iterator over the elements in this set
      */
+    @Override
     Iterator<E> iterator();
 
     /**
@@ -121,6 +127,7 @@ public interface Set<E> extends Collection<E> {
      *
      * @return an array containing all the elements in this set
      */
+    @Override
     Object[] toArray();
 
     /**
@@ -165,6 +172,7 @@ public interface Set<E> extends Collection<E> {
      *         set
      * @throws NullPointerException if the specified array is null
      */
+    @Override
     <T> T[] toArray(T[] a);
 
 
@@ -201,6 +209,7 @@ public interface Set<E> extends Collection<E> {
      * @throws IllegalArgumentException if some property of the specified element
      *         prevents it from being added to this set
      */
+    @Override
     boolean add(E e);
 
 
@@ -225,6 +234,7 @@ public interface Set<E> extends Collection<E> {
      * @throws UnsupportedOperationException if the <tt>remove</tt> operation
      *         is not supported by this set
      */
+    @Override
     boolean remove(Object o);
 
 
@@ -250,6 +260,7 @@ public interface Set<E> extends Collection<E> {
      *         or if the specified collection is null
      * @see    #contains(Object)
      */
+    @Override
     boolean containsAll(Collection<?> c);
 
     /**
@@ -274,6 +285,7 @@ public interface Set<E> extends Collection<E> {
      *         specified collection prevents it from being added to this set
      * @see #add(Object)
      */
+    @Override
     boolean addAll(Collection<? extends E> c);
 
     /**
@@ -297,6 +309,7 @@ public interface Set<E> extends Collection<E> {
      *         or if the specified collection is null
      * @see #remove(Object)
      */
+    @Override
     boolean retainAll(Collection<?> c);
 
     /**
@@ -320,6 +333,7 @@ public interface Set<E> extends Collection<E> {
      * @see #remove(Object)
      * @see #contains(Object)
      */
+    @Override
     boolean removeAll(Collection<?> c);
 
     /**
@@ -329,11 +343,12 @@ public interface Set<E> extends Collection<E> {
      * @throws UnsupportedOperationException if the <tt>clear</tt> method
      *         is not supported by this set
      */
+    @Override
     void clear();
 
 
     // Comparison and hashing
-    // 比较和散列
+    // 比较和哈希
 
     /**
      * Compares the specified object with this set for equality.  Returns
@@ -347,6 +362,7 @@ public interface Set<E> extends Collection<E> {
      * @param o object to be compared for equality with this set
      * @return <tt>true</tt> if the specified object is equal to this set
      */
+    @Override
     boolean equals(Object o);
 
     /**
@@ -362,7 +378,12 @@ public interface Set<E> extends Collection<E> {
      * @see Object#equals(Object)
      * @see Set#equals(Object)
      */
+    @Override
     int hashCode();
+
+    // 默认函数
+    // 分而治之，分治思想
+    // 元素集合与数据流的桥接
 
     /**
      * Creates a {@code Spliterator} over the elements in this set.

@@ -4,15 +4,21 @@ package java.lang;
 /**
  * Thrown when an application tries to load in a class through its
  * string name using:
- * 当应用程序尝试使用以下反射操作命令通过其字符串名称加载类时抛出：
  * <ul>
  * <li>The <code>forName</code> method in class <code>Class</code>.
- * <li>The <code>findSystemClass</code> method in class <code>ClassLoader</code>.
+ * <li>The <code>findSystemClass</code> method in class
+ *     <code>ClassLoader</code> .
  * <li>The <code>loadClass</code> method in class <code>ClassLoader</code>.
+ * </ul>
+ * 类未找到异常：表示当应用程序尝试通过其字符串名称加载类时抛出的异常，使用：
+ * <ul>
+ *     <li>{@link Class#forName(String)}</li>
+ *     <li>{@link ClassLoader#findSystemClass(String)}</li>
+ *     <li>{@link ClassLoader#loadClass(String, boolean)}</li>
  * </ul>
  * <p>
  * but no definition for the class with the specified name could be found.
- * 但是找不到具有指定名称的类的定义。
+ * (但没有找到指定名称的类型定义。)
  *
  * <p>As of release 1.4, this exception has been retrofitted to conform to
  * the general purpose exception-chaining mechanism.  The "optional exception
@@ -20,8 +26,7 @@ package java.lang;
  * construction time and accessed via the {@link #getException()} method is
  * now known as the <i>cause</i>, and may be accessed via the {@link
  * Throwable#getCause()} method, as well as the aforementioned "legacy method."
- * 符合通用异常链机制(exception-chaining mechanism)，
- * 可能在建造时提供的"加载类时引发的可选异常"
+ * 通用的异常链机制
  *
  * @author  unascribed
  * @see     java.lang.Class#forName(java.lang.String)
@@ -31,15 +36,15 @@ package java.lang;
  */
 public class ClassNotFoundException extends ReflectiveOperationException {
     /**
-     * use serialVersionUID from JDK 1.1.X for interoperability
+     * use serialVersionUID from JDK 1.1.X for interoperability (互操作性)
      */
      private static final long serialVersionUID = 9176873029745254542L;
 
     /**
      * This field holds the exception ex if the
      * ClassNotFoundException(String s, Throwable ex) constructor was
-     * used to instantiate the object
-     * 包含异常原因实例
+     * used to instantiate the object.
+     * 本字段持有异常实例
      * @serial
      * @since 1.2
      */
@@ -49,7 +54,8 @@ public class ClassNotFoundException extends ReflectiveOperationException {
      * Constructs a <code>ClassNotFoundException</code> with no detail message.
      */
     public ClassNotFoundException() {
-        super((Throwable)null);  // Disallow initCause 禁止
+        // Disallow initCause
+        super((Throwable)null);
     }
 
     /**
@@ -59,7 +65,8 @@ public class ClassNotFoundException extends ReflectiveOperationException {
      * @param   s   the detail message.
      */
     public ClassNotFoundException(String s) {
-        super(s, null);  //  Disallow initCause 禁止
+        // Disallow initCause
+        super(s, null);
     }
 
     /**
@@ -72,7 +79,8 @@ public class ClassNotFoundException extends ReflectiveOperationException {
      * @since 1.2
      */
     public ClassNotFoundException(String s, Throwable ex) {
-        super(s, null);  //  Disallow initCause 禁止
+        // Disallow initCause
+        super(s, null);
         this.ex = ex;
     }
 
@@ -103,4 +111,5 @@ public class ClassNotFoundException extends ReflectiveOperationException {
     public Throwable getCause() {
         return ex;
     }
+
 }

@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 package java.util.function;
 
 import java.util.Objects;
@@ -30,6 +6,7 @@ import java.util.Objects;
  * Represents an operation on a single {@code long}-valued operand that produces
  * a {@code long}-valued result.  This is the primitive type specialization of
  * {@link UnaryOperator} for {@code long}.
+ * 一元长整数运算符。
  *
  * <p>This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #applyAsLong(long)}.
@@ -42,11 +19,16 @@ public interface LongUnaryOperator {
 
     /**
      * Applies this operator to the given operand.
+     * 应用本运算符到所有给定的参数。
      *
      * @param operand the operand
      * @return the operator result
      */
     long applyAsLong(long operand);
+
+    // 连续组合的运算符(before、after)
+    // 使用场景：责任链模式
+    // 默认函数
 
     /**
      * Returns a composed operator that first applies the {@code before}

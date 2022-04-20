@@ -1,27 +1,4 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
+
 package java.util.stream;
 
 import java.util.HashSet;
@@ -58,6 +35,7 @@ final class DistinctOps {
             <P_IN> Node<T> reduce(PipelineHelper<T> helper, Spliterator<P_IN> spliterator) {
                 // If the stream is SORTED then it should also be ORDERED so the following will also
                 // preserve the sort order
+                // 基于链表的哈希集合
                 TerminalOp<T, LinkedHashSet<T>> reduceOp
                         = ReduceOps.<T, LinkedHashSet<T>>makeRef(LinkedHashSet::new, LinkedHashSet::add,
                                                                  LinkedHashSet::addAll);
@@ -78,12 +56,13 @@ final class DistinctOps {
                 else {
                     // Holder of null state since ConcurrentHashMap does not support null values
                     AtomicBoolean seenNull = new AtomicBoolean(false);
-                    ConcurrentHashMap<T, Boolean> map = new ConcurrentHashMap<>();
+                    ConcurrentHashMap<T, Boolean> map = new ConcurrentHashMap<>(16);
                     TerminalOp<T, Void> forEachOp = ForEachOps.makeRef(t -> {
-                        if (t == null)
+                        if (t == null) {
                             seenNull.set(true);
-                        else
+                        } else {
                             map.putIfAbsent(t, Boolean.TRUE);
+                        }
                     }, false);
                     forEachOp.evaluateParallel(helper, spliterator);
 

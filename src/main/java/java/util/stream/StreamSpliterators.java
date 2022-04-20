@@ -1,27 +1,4 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
+
 package java.util.stream;
 
 import java.util.Comparator;
@@ -42,6 +19,7 @@ import java.util.function.Supplier;
 /**
  * Spliterator implementations for wrapping and delegating spliterators, used
  * in the implementation of the {@link Stream#spliterator()} method.
+ * 用于包装和委托拆分器的拆分器实现，在Stream.spliterator()方法的实现中使用。
  *
  * @since 1.8
  */
@@ -496,12 +474,20 @@ class StreamSpliterators {
      * Spliterator implementation that delegates to an underlying spliterator,
      * acquiring the spliterator from a {@code Supplier<Spliterator>} on the
      * first call to any spliterator method.
+     * 委托给底层拆分器的拆分器实现，在第一次调用任何拆分器方法时从对象提供者获取拆分器。
+     *
      * @param <T>
      */
     static class DelegatingSpliterator<T, T_SPLITR extends Spliterator<T>>
             implements Spliterator<T> {
+        /**
+         * 拆分器的提供者
+         */
         private final Supplier<? extends T_SPLITR> supplier;
 
+        /**
+         * 拆分器
+         */
         private T_SPLITR s;
 
         DelegatingSpliterator(Supplier<? extends T_SPLITR> supplier) {

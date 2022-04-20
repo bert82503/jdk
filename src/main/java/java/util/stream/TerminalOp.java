@@ -1,27 +1,4 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
+
 package java.util.stream;
 
 import java.util.Spliterator;
@@ -33,13 +10,17 @@ import java.util.Spliterator;
  * <em>operation flags</em> that describes how the operation processes elements
  * of the stream (such as short-circuiting or respecting encounter order; see
  * {@link StreamOpFlag}).
+ * 数据流管道中的一种操作，它接受数据流作为输入并产生结果或副作用。
+ * 注意：终结操作有输入类型、数据流形状和结果类型。
+ * TerminalOp也有一组操作标志，用来描述操作如何处理数据流的元素。
  *
  * <p>A {@code TerminalOp} must provide a sequential and parallel implementation
  * of the operation relative to a given stream source and set of intermediate
  * operations.
+ * TerminalOp必须提供相对于给定数据流源和中间操作集合的操作的顺序和并行实现。
  *
- * @param <E_IN> the type of input elements
- * @param <R>    the type of the result
+ * @param <E_IN> the type of input elements 输入元素的类型
+ * @param <R>    the type of the result 结果的类型
  * @since 1.8
  */
 interface TerminalOp<E_IN, R> {
@@ -69,6 +50,7 @@ interface TerminalOp<E_IN, R> {
      * Performs a parallel evaluation of the operation using the specified
      * {@code PipelineHelper}, which describes the upstream intermediate
      * operations.
+     * 使用指定的数据流管道辅助者对操作执行并行计算，它描述了上游中间操作。
      *
      * @implSpec The default performs a sequential evaluation of the operation
      * using the specified {@code PipelineHelper}.
@@ -79,8 +61,9 @@ interface TerminalOp<E_IN, R> {
      */
     default <P_IN> R evaluateParallel(PipelineHelper<E_IN> helper,
                                       Spliterator<P_IN> spliterator) {
-        if (Tripwire.ENABLED)
+        if (Tripwire.ENABLED) {
             Tripwire.trip(getClass(), "{0} triggering TerminalOp.evaluateParallel serial default");
+        }
         return evaluateSequential(helper, spliterator);
     }
 
@@ -88,6 +71,7 @@ interface TerminalOp<E_IN, R> {
      * Performs a sequential evaluation of the operation using the specified
      * {@code PipelineHelper}, which describes the upstream intermediate
      * operations.
+     * 使用指定的数据流管道辅助者对操作执行顺序求值，它描述了上游中间操作。
      *
      * @param helper the pipeline helper
      * @param spliterator the source spliterator

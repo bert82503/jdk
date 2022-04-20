@@ -1,27 +1,3 @@
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 package java.util;
 
 import java.util.function.LongConsumer;
@@ -32,6 +8,7 @@ import java.util.function.Supplier;
  * A container object which may or may not contain a {@code long} value.
  * If a value is present, {@code isPresent()} will return {@code true} and
  * {@code getAsLong()} will return the value.
+ * 可能包含长整数值的容器对象。
  *
  * <p>Additional methods that depend on the presence or absence of a contained
  * value are provided, such as {@link #orElse(long) orElse()}
@@ -47,6 +24,7 @@ import java.util.function.Supplier;
  * @since 1.8
  */
 public final class OptionalLong {
+
     /**
      * Common instance for {@code empty()}.
      */
@@ -54,8 +32,13 @@ public final class OptionalLong {
 
     /**
      * If true then the value is present, otherwise indicates no value is present
+     * <p>
+     * true表示值是存在的
      */
     private final boolean isPresent;
+    /**
+     * 有意义的值
+     */
     private final long value;
 
     /**
@@ -65,6 +48,7 @@ public final class OptionalLong {
      * should exist per VM.
      */
     private OptionalLong() {
+        // 值不存在
         this.isPresent = false;
         this.value = 0;
     }
@@ -107,6 +91,7 @@ public final class OptionalLong {
     /**
      * If a value is present in this {@code OptionalLong}, returns the value,
      * otherwise throws {@code NoSuchElementException}.
+     * 如果值是存在的，则返回该值；否则，抛出没有这个元素异常。
      *
      * @return the value held by this {@code OptionalLong}
      * @throws NoSuchElementException if there is no value present
@@ -138,8 +123,9 @@ public final class OptionalLong {
      * null
      */
     public void ifPresent(LongConsumer consumer) {
-        if (isPresent)
+        if (isPresent) {
             consumer.accept(value);
+        }
     }
 
     /**
@@ -186,9 +172,12 @@ public final class OptionalLong {
         if (isPresent) {
             return value;
         } else {
+            // 值不存在，则抛出异常(fail-fast，快速失败)
             throw exceptionSupplier.get();
         }
     }
+
+    // Object
 
     /**
      * Indicates whether some other object is "equal to" this OptionalLong. The
@@ -205,6 +194,7 @@ public final class OptionalLong {
      */
     @Override
     public boolean equals(Object obj) {
+        // 《Effective Java》总结的优化实现
         if (this == obj) {
             return true;
         }

@@ -196,6 +196,7 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
      * @throws IllegalArgumentException      {@inheritDoc}
      * @throws IndexOutOfBoundsException     {@inheritDoc}
      */
+    @Override
     public boolean addAll(int index, Collection<? extends E> c) {
         try {
             boolean modified = false;

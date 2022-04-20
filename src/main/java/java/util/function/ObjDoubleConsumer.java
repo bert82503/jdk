@@ -30,6 +30,7 @@ package java.util.function;
  * {@code (reference, double)} specialization of {@link BiConsumer}.
  * Unlike most other functional interfaces, {@code ObjDoubleConsumer} is
  * expected to operate via side-effects.
+ * T和浮点数参数操作。
  *
  * <p>This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #accept(Object, double)}.
@@ -44,6 +45,7 @@ public interface ObjDoubleConsumer<T> {
 
     /**
      * Performs this operation on the given arguments.
+     * 对给定的整数值参数执行本操作。
      *
      * @param t the first input argument
      * @param value the second input argument
